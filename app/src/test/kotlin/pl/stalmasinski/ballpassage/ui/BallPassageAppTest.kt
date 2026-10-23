@@ -241,7 +241,7 @@ class BallPassageAppTest {
         composeRule.onNodeWithText("Minimalna średnica kulki").assertIsDisplayed()
         composeRule.onNodeWithTag(TestTags.BALL_DIAMETER).assertTextEquals("31,8 mm")
         composeRule.onNodeWithText("Kulki").assertIsDisplayed()
-        composeRule.onNodeWithText("Kulowanie").assertIsDisplayed()
+        composeRule.onNodeWithText("Przelot kulki").assertIsDisplayed()
     }
 
     @Test
