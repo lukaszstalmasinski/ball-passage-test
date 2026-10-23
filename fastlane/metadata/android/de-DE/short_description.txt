@@ -1,1 +1,1 @@
-Kugeldurchmesser für den Kugeldurchlaufversuch an Rohrbögen (VGB-S-013).
+Mindest-Kugeldurchmesser für den Kugeldurchlaufversuch an Rohrbögen.

@@ -33,8 +33,11 @@ public enum class CalculationProblem {
     /** 2·s ≥ d_o, so the tube has no bore. */
     WALL_TOO_THICK,
 
-    /** d_i rounded to whole millimetres is outside 20–57 mm. */
-    INNER_DIAMETER_OUT_OF_RANGE,
+    /** d_i rounded to whole millimetres is below 20 mm. */
+    INNER_DIAMETER_TOO_SMALL,
+
+    /** d_i rounded to whole millimetres is above 57 mm. */
+    INNER_DIAMETER_TOO_LARGE,
 
     /** r_b / d_o is below 0.5. */
     BEND_RATIO_TOO_SMALL,
@@ -45,21 +48,35 @@ public sealed interface CalculationResult {
     public val innerDiameter: BigDecimal get() = dimensions.innerDiameter
     public val bendRatio: BendRatio get() = BendRatio.of(dimensions)
 
+    /**
+     * The ball may be smaller than d_i by at most [deduction] millimetres, so any ball with
+     * [minBallDiameter] ≤ diameter < d_i is suitable for the test.
+     */
     public data class Success(
         override val dimensions: TubeDimensions,
         val row: DiameterRow,
         val column: BendRatioColumn,
         val deduction: BigDecimal,
-        val ballDiameter: BigDecimal,
+        val minBallDiameter: BigDecimal,
     ) : CalculationResult {
         /** True when the result comes from a row that VGB-S-013 does not cover. */
         val isExtrapolated: Boolean get() = !row.coveredByStandard
+
+        /** Upper limit (exclusive) for the ball diameter: the inner diameter of the tube. */
+        val maxBallDiameterExclusive: BigDecimal get() = innerDiameter
+
+        public fun fits(ballDiameter: BigDecimal): Boolean =
+            ballDiameter >= minBallDiameter && ballDiameter < maxBallDiameterExclusive
     }
 
     public data class Failure(
         override val dimensions: TubeDimensions,
         val problems: Set<CalculationProblem>,
-    ) : CalculationResult
+    ) : CalculationResult {
+        /** Smallest bend radius for which Table 3 applies to this tube: 0.5·d_o. */
+        val minBendRadius: BigDecimal
+            get() = BendRatioColumn.entries.first().lowerBound.multiply(dimensions.outerDiameter)
+    }
 }
 
 /** Calculates the ball diameter for the ball passage test (Kugeldurchlaufversuch). */
@@ -74,7 +91,15 @@ public object BallPassageCalculator {
         val column = BendRatioColumn.forTube(dimensions)
         if (row == null || column == null) {
             val problems = buildSet {
-                if (row == null) add(CalculationProblem.INNER_DIAMETER_OUT_OF_RANGE)
+                if (row == null) {
+                    add(
+                        if (innerDiameter < BigDecimal(DiameterRow.entries.first().min)) {
+                            CalculationProblem.INNER_DIAMETER_TOO_SMALL
+                        } else {
+                            CalculationProblem.INNER_DIAMETER_TOO_LARGE
+                        },
+                    )
+                }
                 if (column == null) add(CalculationProblem.BEND_RATIO_TOO_SMALL)
             }
             return CalculationResult.Failure(dimensions, problems)
@@ -86,7 +111,7 @@ public object BallPassageCalculator {
             row = row,
             column = column,
             deduction = deduction,
-            ballDiameter = innerDiameter - deduction,
+            minBallDiameter = innerDiameter - deduction,
         )
     }
 }

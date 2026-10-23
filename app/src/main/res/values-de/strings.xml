@@ -1,42 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="field_outer_diameter">Außendurchmesser</string>
-    <string name="field_outer_diameter_hint">Rohraußendurchmesser (dₒ)</string>
-    <string name="field_wall_thickness">Wanddicke</string>
-    <string name="field_wall_thickness_hint">Wanddicke des Rohres (s)</string>
-    <string name="field_bend_radius">Biegeradius</string>
-    <string name="field_bend_radius_hint">Mittlerer Biegeradius (R); 0 für ein gerades Rohr</string>
+    <string name="nav_calculator">Rechner</string>
+    <string name="nav_balls">Kugeln</string>
+    <string name="nav_info">Info</string>
+
+    <string name="field_outer_diameter">Außendurchmesser dₒ</string>
+    <string name="field_wall_thickness">Wanddicke s</string>
+    <string name="field_bend_radius">Biegeradius R</string>
+    <string name="field_bend_radius_hint">Kleinster Biegeradius des Rohres; 0 für ein gerades Rohr</string>
     <string name="clear_field">%1$s löschen</string>
+    <string name="clear_all">Alle Felder löschen</string>
+
+    <string name="recent_title">Letzte Rohre</string>
+    <string name="recent_clear">Letzte Rohre löschen</string>
 
     <string name="error_invalid_number">Gültige Zahl eingeben</string>
     <string name="error_must_be_positive">Der Wert muss größer als 0 sein</string>
     <string name="error_wall_too_thick">Wand zu dick – sie muss kleiner als der halbe Außendurchmesser sein</string>
 
-    <string name="result_label">Kugeldurchmesser</string>
+    <string name="result_label">Mindest-Kugeldurchmesser</string>
     <string name="result_placeholder">Rohrabmessungen eingeben, um den Kugeldurchmesser zu berechnen.</string>
     <string name="result_fix_inputs">Markierte Felder korrigieren.</string>
+    <string name="result_range">Geeignete Kugel: %1$s mm bis unter %2$s mm</string>
+    <string name="result_straight_tube">Gerades Rohr (R = 0)</string>
     <string name="result_extrapolated">Innendurchmesser über 49 mm sind in Tabelle 3 der VGB-S-013 nicht erfasst. Der Wert ist extrapoliert – vor der Verwendung bestätigen.</string>
     <string name="result_failure_title">Kugeldurchmesser kann nicht bestimmt werden</string>
-    <string name="problem_inner_diameter_out_of_range">Der Innendurchmesser von %1$s mm liegt außerhalb des Tabellenbereichs (20–57 mm).</string>
-    <string name="problem_bend_ratio_too_small">Das Biegeverhältnis R / dₒ von %1$s liegt unter dem Tabellenminimum von 0,5.</string>
+    <string name="problem_inner_diameter_too_small">Der Innendurchmesser von %1$s mm liegt unter dem Tabellenminimum von 20 mm.</string>
+    <string name="problem_inner_diameter_too_large">Der Innendurchmesser von %1$s mm liegt über dem Tabellenmaximum von 57 mm.</string>
+    <string name="problem_bend_ratio_too_small">Der Bogen ist zu eng: R / dₒ beträgt %1$s, die Tabelle beginnt bei 0,5. Der Biegeradius muss mindestens %2$s mm betragen.</string>
+
+    <string name="ball_recommended">Aus Ihrem Satz: Kugel %1$s mm verwenden</string>
+    <string name="ball_also_fits">Passt auch: %1$s mm</string>
+    <string name="ball_none_fits">Keine Ihrer Kugeln passt zu diesem Rohr.</string>
+    <string name="ball_set_empty_action">Eigene Kugeln hinzufügen, um einen Vorschlag zu erhalten</string>
+
+    <string name="compact_result">Min. Ø %1$s mm</string>
+    <string name="compact_ball">Kugel %1$s mm</string>
+    <string name="compact_placeholder">Rohrabmessungen eingeben</string>
+    <string name="compact_extrapolated">Extrapoliert, außerhalb der Norm</string>
+
+    <string name="share">Ergebnis teilen</string>
+    <string name="share_heading">Kugeldurchlaufversuch – VGB-S-013, Tabelle 3</string>
+    <string name="share_input">dₒ = %1$s mm, s = %2$s mm, R = %3$s mm</string>
+    <string name="share_calculation">dᵢ = %1$s mm, R / dₒ = %2$s, Abzug %3$s mm</string>
+    <string name="share_result">Mindest-Kugeldurchmesser: %1$s mm (Kugel kleiner als %2$s mm)</string>
+    <string name="share_recommended_ball">Kugel aus meinem Satz: %1$s mm</string>
+    <string name="share_extrapolated">Hinweis: extrapolierter Wert, außerhalb von Tabelle 3 der VGB-S-013.</string>
 
     <string name="breakdown_title">Berechnung</string>
     <string name="breakdown_inner_diameter">Innendurchmesser dᵢ = dₒ − 2s</string>
     <string name="breakdown_bend_ratio">Biegeverhältnis R / dₒ</string>
     <string name="breakdown_straight_tube">∞ (gerades Rohr)</string>
     <string name="breakdown_deduction">Abzug nach Tabelle 3</string>
-    <string name="breakdown_ball_diameter">Kugeldurchmesser dᵢ − Abzug</string>
+    <string name="breakdown_ball_diameter">Mindest-Kugeldurchmesser dᵢ − Abzug</string>
 
     <string name="table_title">VGB-S-013, Tabelle 3</string>
     <string name="table_subtitle">Um wie viel mm die Kugel kleiner als dᵢ sein darf</string>
     <string name="table_footnote">* Nicht von der Norm erfasst – extrapolierte Werte.</string>
+    <string name="table_cell_description">Innendurchmesser %1$s mm, R / dₒ %2$s: %3$s mm</string>
 
-    <string name="about_open">Über die App</string>
-    <string name="about_title">Über Ball Passage Test</string>
-    <string name="about_description" tools:ignore="TypographyDashes">Berechnet den Durchmesser der Stahlkugel für den Kugeldurchlaufversuch an gebogenen Rohren und Rohrschlangen nach VGB-S-013-00-2014-12, Abschnitt 7.2.5, Tabelle 3.</string>
-    <string name="about_method">Der Innendurchmesser ist dᵢ = dₒ − 2s. Die Tabellenzeile wird nach dᵢ, gerundet auf ganze Millimeter, gewählt, die Spalte nach dem Biegeverhältnis R / dₒ. Der Kugeldurchmesser ist dᵢ abzüglich des Tabellenwerts.</string>
-    <string name="about_extrapolation">Tabelle 3 umfasst Innendurchmesser von 20–49 mm. Die Zeile 50–57 mm wurde durch Extrapolation ergänzt und ist immer als außerhalb der Norm gekennzeichnet.</string>
-    <string name="about_disclaimer">Diese App ist nur ein Hilfsmittel. Ergebnisse immer mit der aktuellen Ausgabe der Norm und den Projektanforderungen abgleichen.</string>
-    <string name="about_privacy">Die App funktioniert vollständig offline und erfasst, speichert oder teilt keine Daten.</string>
-    <string name="about_version">Version %1$s</string>
+    <string name="balls_title">Kugelsatz</string>
+    <string name="balls_description">Fügen Sie die Stahlkugeln hinzu, die in Ihrer Werkstatt vorhanden sind. Der Rechner schlägt dann für jedes Rohr die passende Kugel vor.</string>
+    <string name="balls_input_label">Kugeldurchmesser</string>
+    <string name="balls_add">Kugel hinzufügen</string>
+    <string name="balls_empty">Noch keine Kugeln hinzugefügt.</string>
+    <string name="balls_remove">Kugel %1$s mm entfernen</string>
+    <string name="balls_removed">Kugel %1$s mm entfernt</string>
+    <string name="balls_undo">Rückgängig</string>
+    <string name="balls_error_duplicate">Diese Kugel ist bereits im Satz</string>
+
+    <string name="info_title">Informationen</string>
+    <string name="info_section_standard">Norm</string>
+    <string name="info_section_method">Methode</string>
+    <string name="info_section_disclaimer">Haftungsausschluss</string>
+    <string name="info_section_privacy">Datenschutz</string>
+    <string name="info_section_version">Version</string>
+    <string name="info_description" tools:ignore="TypographyDashes">Berechnet den Durchmesser der Stahlkugel für den Kugeldurchlaufversuch an gebogenen Rohren und Rohrschlangen nach VGB-S-013-00-2014-12, Abschnitt 7.2.5, Tabelle 3.</string>
+    <string name="info_extrapolation">Tabelle 3 umfasst Innendurchmesser von 20–49 mm. Die Zeile 50–57 mm wurde durch Extrapolation ergänzt und ist immer als außerhalb der Norm gekennzeichnet.</string>
+    <string name="info_method">Der Innendurchmesser ist dᵢ = dₒ − 2s. Die Tabellenzeile wird nach dᵢ, gerundet auf ganze Millimeter, gewählt, die Spalte nach dem Biegeverhältnis R / dₒ für den kleinsten Biegeradius des Rohres. Die Kugel darf höchstens um den Tabellenwert kleiner als dᵢ sein; ihr Durchmesser muss also mindestens dᵢ abzüglich dieses Werts und kleiner als dᵢ sein. Aus Ihrem Kugelsatz schlägt die App die kleinste Kugel in diesem Bereich vor.</string>
+    <string name="info_disclaimer">Diese App ist nur ein Hilfsmittel. Ergebnisse immer mit der aktuellen Ausgabe der Norm und den Projektanforderungen abgleichen.</string>
+    <string name="info_privacy">Die App funktioniert vollständig offline und erfasst oder teilt keine Daten. Ihr Kugelsatz und die letzten Berechnungen werden nur auf diesem Gerät und in dessen eigener Sicherung gespeichert.</string>
+    <string name="info_version">Version %1$s (%2$d)</string>
 </resources>

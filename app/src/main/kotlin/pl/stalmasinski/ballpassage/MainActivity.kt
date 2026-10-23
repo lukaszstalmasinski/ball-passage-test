@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import pl.stalmasinski.ballpassage.ui.calculator.CalculatorRoute
+import pl.stalmasinski.ballpassage.ui.BallPassageApp
 import pl.stalmasinski.ballpassage.ui.theme.BallPassageTheme
 
 class MainActivity : ComponentActivity() {
@@ -13,7 +13,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             BallPassageTheme {
-                CalculatorRoute()
+                BallPassageApp()
             }
         }
     }

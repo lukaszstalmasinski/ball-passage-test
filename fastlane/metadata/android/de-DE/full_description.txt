@@ -1,14 +1,16 @@
 Ball Passage Test berechnet den Durchmesser der Stahlkugel für den Kugeldurchlaufversuch an gebogenen Rohren und Rohrschlangen – wie im Kessel- und Druckteilebau üblich.
 
-Außendurchmesser, Wanddicke und Biegeradius eingeben – der Kugeldurchmesser wird sofort nach VGB-S-013-00-2014-12, Abschnitt 7.2.5, Tabelle 3 angezeigt.
+Außendurchmesser, Wanddicke und kleinsten Biegeradius eingeben – Mindest-Kugeldurchmesser und zulässiger Bereich werden sofort nach VGB-S-013-00-2014-12, Abschnitt 7.2.5, Tabelle 3 angezeigt.
 
-• Ergebnis direkt bei der Eingabe – ohne „Berechnen“-Taste
+• Ergebnis direkt bei der Eingabe, auch auf kleinen Handys – das Ergebnis bleibt über der Tastatur sichtbar
+• Ihr Kugelsatz: Kugeln aus der Werkstatt eintragen, die App schlägt die passende vor
 • Rechenweg Schritt für Schritt: Innendurchmesser, Biegeverhältnis R/dₒ und Abzug aus der Tabelle
 • Tabelle 3 mit hervorgehobener Zelle für Ihr Rohr
-• Klare Hinweise, wenn ein Rohr außerhalb des Tabellenbereichs liegt
+• Klare Hinweise, wenn ein Rohr außerhalb der Tabelle liegt, z. B. der Mindest-Biegeradius
+• Letzte Rohre für eine erneute Berechnung mit einem Tipp
+• Ergebnis als Text teilen – für Protokolle und Nachrichten
 • Innendurchmesser von 50–57 mm werden mit extrapolierten Werten unterstützt und sind immer deutlich als außerhalb der Norm gekennzeichnet
-• Dezimalkomma und Dezimalpunkt
-• Deutsch, Englisch und Polnisch
+• Dezimalkomma und Dezimalpunkt, Deutsch, Englisch und Polnisch
 • Helles und dunkles Design, Material-You-Farben
 • Vollständig offline, keine Werbung, kein Tracking, keine Datenerfassung
 

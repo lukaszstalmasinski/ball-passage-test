@@ -24,7 +24,7 @@ class BallPassageCalculatorTest {
         val result = calculate(outer, wall, radius)
 
         assertInstanceOf(CalculationResult.Success::class.java, result)
-        assertNumberEquals(expectedBall, (result as CalculationResult.Success).ballDiameter)
+        assertNumberEquals(expectedBall, (result as CalculationResult.Success).minBallDiameter)
     }
 
     @Test
@@ -55,7 +55,7 @@ class BallPassageCalculatorTest {
         val result = BallPassageCalculator.calculate(TubeDimensions(outer, wall, radius)) as CalculationResult.Success
 
         assertNumberEquals(expectedDeduction, result.deduction)
-        assertNumberEquals(BigDecimal(innerDiameter) - BigDecimal(expectedDeduction), result.ballDiameter)
+        assertNumberEquals(BigDecimal(innerDiameter) - BigDecimal(expectedDeduction), result.minBallDiameter)
     }
 
     @ParameterizedTest(name = "r_b={0} with d_o=40 -> {1}")
@@ -107,7 +107,7 @@ class BallPassageCalculatorTest {
 
         assertEquals(DiameterRow.D50_57, result.row)
         assertTrue(result.isExtrapolated)
-        assertNumberEquals("48", result.ballDiameter)
+        assertNumberEquals("48", result.minBallDiameter)
     }
 
     @Test
@@ -116,7 +116,7 @@ class BallPassageCalculatorTest {
 
         assertEquals(BendRatio.StraightTube, result.bendRatio)
         assertEquals(BendRatioColumn.FROM_2_0, result.column)
-        assertNumberEquals("33.3", result.ballDiameter)
+        assertNumberEquals("33.3", result.minBallDiameter)
     }
 
     @Test
@@ -135,18 +135,28 @@ class BallPassageCalculatorTest {
     }
 
     @Test
-    fun `inner diameter out of range`() {
+    fun `inner diameter too small`() {
         val result = calculate("20", "2", "40") as CalculationResult.Failure
 
-        assertEquals(setOf(CalculationProblem.INNER_DIAMETER_OUT_OF_RANGE), result.problems)
+        assertEquals(setOf(CalculationProblem.INNER_DIAMETER_TOO_SMALL), result.problems)
         assertNumberEquals("16", result.innerDiameter)
     }
 
     @Test
-    fun `bend ratio too small`() {
+    fun `inner diameter too large`() {
+        val result = calculate("70", "5", "200") as CalculationResult.Failure
+
+        assertEquals(setOf(CalculationProblem.INNER_DIAMETER_TOO_LARGE), result.problems)
+    }
+
+    @Test
+    fun `bend ratio too small reports the minimum bend radius`() {
         val result = calculate("48.3", "5", "20") as CalculationResult.Failure
 
         assertEquals(setOf(CalculationProblem.BEND_RATIO_TOO_SMALL), result.problems)
+        assertNumberEquals("24.15", result.minBendRadius)
+        // The reported minimum is itself accepted.
+        assertInstanceOf(CalculationResult.Success::class.java, calculate("48.3", "5", "24.15"))
     }
 
     @Test
@@ -154,9 +164,29 @@ class BallPassageCalculatorTest {
         val result = calculate("100", "5", "10") as CalculationResult.Failure
 
         assertEquals(
-            setOf(CalculationProblem.INNER_DIAMETER_OUT_OF_RANGE, CalculationProblem.BEND_RATIO_TOO_SMALL),
+            setOf(CalculationProblem.INNER_DIAMETER_TOO_LARGE, CalculationProblem.BEND_RATIO_TOO_SMALL),
             result.problems,
         )
+    }
+
+    @Test
+    fun `allowed ball range is from the minimum up to the inner diameter`() {
+        val result = calculate("48.3", "5", "70") as CalculationResult.Success
+
+        assertNumberEquals("38.3", result.maxBallDiameterExclusive)
+        assertFalse(result.fits(BigDecimal("31.7")))
+        assertTrue(result.fits(BigDecimal("31.8")))
+        assertTrue(result.fits(BigDecimal("38.2")))
+        assertFalse(result.fits(BigDecimal("38.3")))
+    }
+
+    @Test
+    fun `ball selector returns fitting balls smallest first`() {
+        val result = calculate("48.3", "5", "70") as CalculationResult.Success
+        val balls = listOf("40", "35", "30", "32", "31.8", "38.3").map(::BigDecimal)
+
+        assertEquals(listOf("31.8", "32", "35").map(::BigDecimal), BallSelector.fittingBalls(result, balls))
+        assertEquals(emptyList<BigDecimal>(), BallSelector.fittingBalls(result, listOf(BigDecimal("20"))))
     }
 
     @Test

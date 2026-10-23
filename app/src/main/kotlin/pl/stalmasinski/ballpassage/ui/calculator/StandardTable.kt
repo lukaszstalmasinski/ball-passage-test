@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
@@ -35,6 +36,7 @@ import pl.stalmasinski.ballpassage.core.BallPassageTable
 import pl.stalmasinski.ballpassage.core.BendRatioColumn
 import pl.stalmasinski.ballpassage.core.CalculationResult
 import pl.stalmasinski.ballpassage.core.DiameterRow
+import pl.stalmasinski.ballpassage.ui.TestTags
 
 /** VGB-S-013 Table 3 with the cell used for the current result highlighted. */
 @Composable
@@ -69,11 +71,7 @@ fun StandardTableCard(result: CalculationResult?) {
                 TableRow {
                     HeaderCell(stringResource(R.string.table_header_diameter), weight = ROW_HEADER_WEIGHT)
                     BendRatioColumn.entries.forEach { column ->
-                        val lower = boundFormatter.format(column.lowerBound)
-                        val text = column.upperBound
-                            ?.let { "≥ $lower\n< ${boundFormatter.format(it)}" }
-                            ?: "≥ $lower"
-                        HeaderCell(text, weight = 1f, highlighted = column == activeColumn)
+                        HeaderCell(column.boundsText(boundFormatter, "\n"), weight = 1f, highlighted = column == activeColumn)
                     }
                 }
                 DiameterRow.entries.forEachIndexed { rowIndex, row ->
@@ -85,8 +83,15 @@ fun StandardTableCard(result: CalculationResult?) {
                             italic = !row.coveredByStandard,
                         )
                         BendRatioColumn.entries.forEachIndexed { columnIndex, column ->
+                            val deduction = formatter.format(BallPassageTable.deduction(row, column))
                             ValueCell(
-                                text = formatter.format(BallPassageTable.deduction(row, column)),
+                                text = deduction,
+                                description = stringResource(
+                                    R.string.table_cell_description,
+                                    "${row.min}–${row.max}",
+                                    column.boundsText(boundFormatter, " "),
+                                    deduction,
+                                ),
                                 active = row == activeRow && column == activeColumn,
                                 crossHighlighted = row == activeRow || column == activeColumn,
                                 italic = !row.coveredByStandard,
@@ -108,6 +113,11 @@ fun StandardTableCard(result: CalculationResult?) {
 }
 
 private const val ROW_HEADER_WEIGHT = 1.3f
+
+private fun BendRatioColumn.boundsText(formatter: NumberFormatter, separator: String): String {
+    val lower = formatter.format(lowerBound)
+    return upperBound?.let { "≥ $lower$separator< ${formatter.format(it)}" } ?: "≥ $lower"
+}
 
 @Composable
 private fun TableRow(content: @Composable RowScope.() -> Unit) {
@@ -147,6 +157,7 @@ private fun RowScope.HeaderCell(
 @Composable
 private fun RowScope.ValueCell(
     text: String,
+    description: String,
     active: Boolean,
     crossHighlighted: Boolean,
     italic: Boolean,
@@ -164,7 +175,10 @@ private fun RowScope.ValueCell(
             .clip(RoundedCornerShape(8.dp))
             .background(background)
             .padding(vertical = 10.dp)
-            .semantics { selected = active },
+            .semantics {
+                selected = active
+                contentDescription = description
+            },
         contentAlignment = Alignment.Center,
     ) {
         Text(

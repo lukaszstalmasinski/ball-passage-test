@@ -1,14 +1,16 @@
 Ball Passage Test oblicza średnicę stalowej kulki do próby przelotu kulki (kulowania, Kugeldurchlaufversuch) rur giętych i wężownic – stosowanej przy produkcji kotłów i elementów ciśnieniowych.
 
-Wpisz średnicę zewnętrzną, grubość ścianki i promień gięcia rury – średnica kulki pojawi się od razu, zgodnie z VGB-S-013-00-2014-12, punkt 7.2.5, tabela 3.
+Wpisz średnicę zewnętrzną, grubość ścianki i najmniejszy promień gięcia rury. Minimalna średnica kulki i dopuszczalny zakres pojawią się od razu, zgodnie z VGB-S-013-00-2014-12, punkt 7.2.5, tabela 3.
 
-• Wynik na bieżąco podczas wpisywania – bez przycisku „Oblicz”
+• Wynik na bieżąco podczas wpisywania, także na małych telefonach – wynik jest widoczny nad klawiaturą
+• Twój zestaw kulek: dodaj kulki, które masz w warsztacie, a aplikacja podpowie, której użyć
 • Obliczenia krok po kroku: średnica wewnętrzna, stosunek gięcia R/dₒ i odjęcie z tabeli
 • Tabela 3 z podświetloną komórką użytą dla Twojej rury
-• Jasne wyjaśnienia, gdy rura wykracza poza zakres tabeli
+• Jasne wskazówki, gdy rura wykracza poza tabelę, np. minimalny promień gięcia
+• Ostatnie rury – ponowne obliczenie jednym dotknięciem
+• Udostępnianie wyniku jako tekstu do protokołów i wiadomości
 • Średnice wewnętrzne 50–57 mm obsługiwane z wartościami ekstrapolowanymi, zawsze wyraźnie oznaczonymi jako poza normą
-• Przecinek i kropka dziesiętna
-• Język polski, angielski i niemiecki
+• Przecinek i kropka dziesiętna, język polski, angielski i niemiecki
 • Jasny i ciemny motyw, kolory Material You
 • Działa w pełni offline, bez reklam, bez śledzenia, bez zbierania danych
 

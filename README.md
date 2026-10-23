@@ -5,11 +5,25 @@ Android app that calculates the steel ball diameter for the **ball passage test*
 **VGB-S-013-00-2014-12, section 7.2.5, Table 3**.
 
 <p>
-  <img src="docs/screenshots/success.png" width="200" alt="Result">
-  <img src="docs/screenshots/extrapolated.png" width="200" alt="Extrapolated result">
-  <img src="docs/screenshots/failure.png" width="200" alt="Out of range">
-  <img src="docs/screenshots/success_dark.png" width="200" alt="Dark theme">
+  <img src="docs/screenshots/result.png" width="180" alt="Result with ball suggestion">
+  <img src="docs/screenshots/kbd.png" width="180" alt="Result above the keyboard">
+  <img src="docs/screenshots/balls.png" width="180" alt="Ball set">
+  <img src="docs/screenshots/extrapolated.png" width="180" alt="Extrapolated result">
+  <img src="docs/screenshots/dark.png" width="180" alt="Dark theme">
 </p>
+
+## Features
+
+- **Calculator.** Results update as you type. While the keyboard is open, a compact result bar
+  replaces the navigation bar, so the result stays visible on small phones. The screen also
+  shows the step-by-step calculation and Table 3 with the cell that was used highlighted.
+  When a tube is outside the table, the app says why, for example the minimum bend radius.
+- **Ball set.** Enter the balls available in the workshop. The calculator then recommends the
+  smallest ball that fits the allowed range and lists the others that also fit.
+- **Recent tubes.** The last 8 tubes are kept and can be recalculated with one tap. A tube is
+  saved only after its input has stayed unchanged for 2 s.
+- **Share.** Sends a plain-text summary for protocols and messages.
+- **Info.** Standard, method, disclaimer, privacy and app version.
 
 ## Calculation
 
@@ -17,13 +31,14 @@ Android app that calculates the steel ball diameter for the **ball passage test*
 |---|---|
 | Outer diameter | dₒ |
 | Wall thickness | s |
-| Mean bend radius (0 = straight tube) | R |
+| Smallest bend radius of the tube (0 = straight tube) | R |
 
 1. Inner diameter: `dᵢ = dₒ − 2s`
 2. Row: `dᵢ` rounded to whole millimetres (half up), 20–57 mm.
 3. Column: bend ratio `R / dₒ`, ranges `[0.5, 1.0)`, `[1.0, 1.5)`, `[1.5, 2.0)`, `[2.0, ∞)`.
    A straight tube (R = 0) uses the last column.
-4. Ball diameter: `dᵢ − deduction`
+4. Minimum ball diameter: `dᵢ − deduction`. The ball may be smaller than `dᵢ` by at most the
+   deduction, so a ball with `dᵢ − deduction ≤ d < dᵢ` is suitable.
 
 | dᵢ [mm] \ R/dₒ | 0.5–1.0 | 1.0–1.5 | 1.5–2.0 | ≥ 2.0 |
 |---|---|---|---|---|
@@ -46,11 +61,12 @@ message is fixed, and the extrapolated row is marked.
 
 | Module | Contents |
 |---|---|
-| `:core` | Pure Kotlin calculation (`BallPassageCalculator`, `BallPassageTable`), no Android dependencies |
-| `:app` | Jetpack Compose UI (Material 3), `CalculatorViewModel`, resources in EN / PL / DE |
+| `:core` | Pure Kotlin calculation (`BallPassageCalculator`, `BallPassageTable`) and ball selection (`BallSelector`), no Android dependencies |
+| `:app` | Jetpack Compose UI (Material 3) with three tabs, ViewModels, DataStore persistence (`UserDataRepository`), resources in EN / PL / DE |
 
-Tech: Kotlin, Jetpack Compose, Material 3 (dynamic color, dark theme), AGP 9, minSdk 26,
-targetSdk 36. No network permission, no analytics, no third-party SDKs.
+Tech: Kotlin, Jetpack Compose, Material 3 (dynamic color, dark theme), DataStore, AGP 9,
+minSdk 26, targetSdk 36. No network permission, no analytics, no third-party SDKs. Android
+backup includes only the DataStore file, which holds the ball set and recent tubes.
 
 ## Building
 

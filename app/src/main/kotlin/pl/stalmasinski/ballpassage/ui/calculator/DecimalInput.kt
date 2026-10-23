@@ -17,4 +17,8 @@ object DecimalInput {
         val normalized = text.trim().replace(',', '.')
         return if (pattern.matches(normalized)) BigDecimal(normalized) else null
     }
+
+    /** Formats [value] for an input field: no grouping separators, so that it parses back. */
+    fun format(value: BigDecimal, decimalSeparator: Char): String =
+        value.toPlainString().replace('.', decimalSeparator)
 }
