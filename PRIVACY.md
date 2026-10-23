@@ -12,4 +12,4 @@ _Last updated: 23 October 2026_
   controlled by you and your device settings. Clearing the app data or uninstalling the app
   deletes it.
 
-If you have questions about this policy, contact: CONTACT_EMAIL
+If you have questions about this policy, contact: lukaszstalmasinski@gmail.com
