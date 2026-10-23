@@ -2,6 +2,7 @@ package pl.stalmasinski.ballpassage.ui
 
 import android.content.Intent
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsFocused
 import androidx.compose.ui.test.assertIsNotSelected
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.assertTextContains
@@ -13,6 +14,7 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performImeAction
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTextReplacement
@@ -206,6 +208,18 @@ class BallPassageAppTest {
     }
 
     @Test
+    fun keyboardNextMovesToTheNextField() {
+        val outer = composeRule.onNodeWithTag(TestTags.field(DimensionField.OUTER_DIAMETER))
+        outer.performTextInput("48.3")
+        outer.performImeAction()
+        composeRule.onNodeWithTag(TestTags.field(DimensionField.WALL_THICKNESS)).assertIsFocused().performTextInput("5")
+        composeRule.onNodeWithTag(TestTags.field(DimensionField.WALL_THICKNESS)).performImeAction()
+        composeRule.onNodeWithTag(TestTags.field(DimensionField.BEND_RADIUS)).assertIsFocused().performTextInput("70")
+
+        composeRule.onNodeWithTag(TestTags.BALL_DIAMETER).assertTextEquals("31.8 mm")
+    }
+
+    @Test
     fun backFromAnotherTabReturnsToCalculator() {
         composeRule.onNodeWithTag(TestTags.destination(Destination.INFO.name)).performClick()
 
@@ -227,6 +241,7 @@ class BallPassageAppTest {
         composeRule.onNodeWithText("Minimalna średnica kulki").assertIsDisplayed()
         composeRule.onNodeWithTag(TestTags.BALL_DIAMETER).assertTextEquals("31,8 mm")
         composeRule.onNodeWithText("Kulki").assertIsDisplayed()
+        composeRule.onNodeWithText("Kulowanie").assertIsDisplayed()
     }
 
     @Test
@@ -235,6 +250,7 @@ class BallPassageAppTest {
         enter(outer = "48,3", wall = "5", radius = "70")
 
         composeRule.onNodeWithText("Mindest-Kugeldurchmesser").assertIsDisplayed()
+        composeRule.onNodeWithText("Kugeldurchlauf").assertIsDisplayed()
         composeRule.onNodeWithTag(TestTags.BALL_DIAMETER).assertTextEquals("31,8 mm")
     }
 

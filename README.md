@@ -24,6 +24,9 @@ Android app that calculates the steel ball diameter for the **ball passage test*
   saved only after its input has stayed unchanged for 2 s.
 - **Share.** Sends a plain-text summary for protocols and messages.
 - **Info.** Standard, method, disclaimer, privacy and app version.
+- **Languages.** English, Polish and German. The app name is localized as well: *Ball Passage
+  Test*, *Kulowanie* (PL) and *Kugeldurchlauf* (DE). Library resources are limited to these
+  three languages, so the UI is never mixed.
 
 ## Calculation
 

@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
@@ -181,7 +182,12 @@ private fun DimensionInputs(
                 isError = fieldState.error != null,
                 trailingIcon = if (fieldState.text.isNotEmpty()) {
                     {
-                        IconButton(onClick = { onValueChange(field, "") }) {
+                        // Not focusable, so that the keyboard's Next action moves on to the next field
+                        // instead of stopping on this button. Touch and TalkBack still reach it.
+                        IconButton(
+                            onClick = { onValueChange(field, "") },
+                            modifier = Modifier.focusProperties { canFocus = false },
+                        ) {
                             Icon(
                                 painterResource(R.drawable.ic_clear),
                                 contentDescription = stringResource(R.string.clear_field, label),

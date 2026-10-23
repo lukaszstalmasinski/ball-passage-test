@@ -3,23 +3,27 @@ package pl.stalmasinski.ballpassage.ui.balls
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -34,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -84,98 +89,113 @@ fun BallsScreen(
         topBar = { AppTopBar(title = stringResource(R.string.balls_title), scrollBehavior = scrollBehavior) },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { padding ->
-        Column(
+        // One scrolling list, like the other tabs, so that the top bar tints consistently.
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
                 .consumeWindowInsets(padding)
                 .imePadding(),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Column(
-                modifier = Modifier
-                    .widthIn(max = 600.dp)
-                    .fillMaxWidth(),
-            ) {
-                Column(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
+            val itemModifier = Modifier
+                .widthIn(max = 600.dp)
+                .fillMaxWidth()
+
+            item {
+                Text(
+                    text = stringResource(R.string.balls_description),
+                    modifier = itemModifier,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            item {
+                Row(
+                    modifier = itemModifier,
+                    verticalAlignment = Alignment.Top,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    Text(
-                        text = stringResource(R.string.balls_description),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    OutlinedTextField(
+                        value = state.input,
+                        onValueChange = onInputChange,
+                        modifier = Modifier
+                            .weight(1f)
+                            .testTag(TestTags.BALL_INPUT),
+                        label = { Text(stringResource(R.string.balls_input_label)) },
+                        suffix = { Text(stringResource(R.string.unit_mm)) },
+                        supportingText = state.inputError?.let { error ->
+                            { Text(stringResource(error.messageRes)) }
+                        },
+                        isError = state.inputError != null,
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Decimal,
+                            imeAction = ImeAction.Done,
+                        ),
+                        keyboardActions = KeyboardActions(onDone = { onAdd() }),
                     )
-                    Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        OutlinedTextField(
-                            value = state.input,
-                            onValueChange = onInputChange,
-                            modifier = Modifier
-                                .weight(1f)
-                                .testTag(TestTags.BALL_INPUT),
-                            label = { Text(stringResource(R.string.balls_input_label)) },
-                            suffix = { Text(stringResource(R.string.unit_mm)) },
-                            supportingText = state.inputError?.let { error ->
-                                { Text(stringResource(error.messageRes)) }
-                            },
-                            isError = state.inputError != null,
-                            singleLine = true,
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Decimal,
-                                imeAction = ImeAction.Done,
-                            ),
-                            keyboardActions = KeyboardActions(onDone = { onAdd() }),
-                        )
-                        FilledIconButton(
-                            onClick = { onAdd() },
-                            modifier = Modifier
-                                .padding(top = 12.dp)
-                                .testTag(TestTags.BALL_ADD),
-                        ) {
-                            Icon(painterResource(R.drawable.ic_add), contentDescription = stringResource(R.string.balls_add))
-                        }
+                    FilledIconButton(
+                        onClick = { onAdd() },
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .size(48.dp)
+                            .testTag(TestTags.BALL_ADD),
+                    ) {
+                        Icon(painterResource(R.drawable.ic_add), contentDescription = stringResource(R.string.balls_add))
                     }
                 }
-
-                if (state.balls.isEmpty()) {
-                    Text(
-                        text = stringResource(R.string.balls_empty),
-                        modifier = Modifier.padding(16.dp),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                } else {
-                    LazyColumn(modifier = Modifier.padding(top = 8.dp)) {
-                        items(state.balls, key = { it.toPlainString() }) { ball ->
-                            val size = formatter.format(ball)
-                            ListItem(
-                                headlineContent = {
-                                    Text(stringResource(R.string.ball_size, size), style = MaterialTheme.typography.titleMedium)
-                                },
-                                modifier = Modifier.testTag(TestTags.ballItem(ball)),
-                                trailingContent = {
-                                    IconButton(
-                                        onClick = {
-                                            onRemove(ball)
-                                            scope.launch {
-                                                snackbarHostState.currentSnackbarData?.dismiss()
-                                                val result = snackbarHostState.showSnackbar(
-                                                    message = removedMessage.format(size),
-                                                    actionLabel = undoLabel,
-                                                    duration = SnackbarDuration.Short,
-                                                )
-                                                if (result == SnackbarResult.ActionPerformed) onRestore(ball)
-                                            }
-                                        },
-                                    ) {
-                                        Icon(
-                                            painterResource(R.drawable.ic_delete),
-                                            contentDescription = stringResource(R.string.balls_remove, size),
-                                        )
-                                    }
-                                },
-                            )
-                            HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+            }
+            item {
+                Card(
+                    modifier = itemModifier,
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
+                ) {
+                    if (state.balls.isEmpty()) {
+                        Text(
+                            text = stringResource(R.string.balls_empty),
+                            modifier = Modifier.padding(20.dp),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    } else {
+                        Column(modifier = Modifier.padding(vertical = 8.dp)) {
+                            state.balls.forEachIndexed { index, ball ->
+                                if (index > 0) HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp))
+                                val size = formatter.format(ball)
+                                ListItem(
+                                    headlineContent = {
+                                        Text(stringResource(R.string.ball_size, size), style = MaterialTheme.typography.titleMedium)
+                                    },
+                                    modifier = Modifier
+                                        .padding(start = 4.dp)
+                                        .testTag(TestTags.ballItem(ball)),
+                                    trailingContent = {
+                                        IconButton(
+                                            onClick = {
+                                                onRemove(ball)
+                                                scope.launch {
+                                                    snackbarHostState.currentSnackbarData?.dismiss()
+                                                    val result = snackbarHostState.showSnackbar(
+                                                        message = removedMessage.format(size),
+                                                        actionLabel = undoLabel,
+                                                        duration = SnackbarDuration.Long,
+                                                    )
+                                                    if (result == SnackbarResult.ActionPerformed) onRestore(ball)
+                                                }
+                                            },
+                                        ) {
+                                            Icon(
+                                                painterResource(R.drawable.ic_delete),
+                                                contentDescription = stringResource(R.string.balls_remove, size),
+                                            )
+                                        }
+                                    },
+                                    colors = ListItemDefaults.colors(containerColor = Color.Transparent),
+                                )
+                            }
                         }
                     }
                 }

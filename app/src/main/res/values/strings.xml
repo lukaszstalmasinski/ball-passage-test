@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name" translatable="false">Ball Passage Test</string>
+    <string name="app_name">Ball Passage Test</string>
     <string name="unit_mm" translatable="false">mm</string>
     <string name="value_mm" translatable="false">%1$s mm</string>
     <string name="ball_size" translatable="false">Ø %1$s mm</string>

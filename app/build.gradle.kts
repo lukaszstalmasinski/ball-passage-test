@@ -79,6 +79,8 @@ android {
 
     androidResources {
         generateLocaleConfig = true
+        // Keep library strings to the languages of the app, so that the UI is never mixed.
+        localeFilters += setOf("en", "pl", "de")
     }
 
     testOptions {
