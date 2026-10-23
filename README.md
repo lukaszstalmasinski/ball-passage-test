@@ -119,3 +119,10 @@ by hand or with `fastlane supply`. The privacy policy is in [PRIVACY.md](PRIVACY
 1. Bump `versionCode` and `versionName` in `app/build.gradle.kts`.
 2. Add `fastlane/metadata/android/<locale>/changelogs/<versionCode>.txt`.
 3. Tag and push, for example `git tag v1.0.1 && git push --tags`.
+
+## License
+
+Copyright © 2026 Łukasz Stalmasiński. **All rights reserved.**
+
+The source code is public for reference only. It may not be copied, modified, distributed or
+used in other projects without written permission. See [LICENSE](LICENSE).
