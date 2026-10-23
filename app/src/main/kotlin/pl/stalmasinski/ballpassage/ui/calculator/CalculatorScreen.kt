@@ -16,16 +16,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,7 +39,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import pl.stalmasinski.ballpassage.R
 import pl.stalmasinski.ballpassage.core.TubeDimensions
+import pl.stalmasinski.ballpassage.ui.AppTopBar
 import pl.stalmasinski.ballpassage.ui.TestTags
+import pl.stalmasinski.ballpassage.ui.rememberAppTopBarScrollBehavior
 import pl.stalmasinski.ballpassage.ui.theme.BallPassageTheme
 import java.math.BigDecimal
 import java.text.DecimalFormatSymbols
@@ -56,13 +56,14 @@ fun CalculatorScreen(
     onClearHistory: () -> Unit,
     onOpenBalls: () -> Unit,
 ) {
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val scrollBehavior = rememberAppTopBarScrollBehavior()
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.app_name)) },
+            AppTopBar(
+                title = stringResource(R.string.app_name),
+                scrollBehavior = scrollBehavior,
                 actions = {
                     if (state.hasInput) {
                         IconButton(onClick = onClearAll, modifier = Modifier.testTag(TestTags.CLEAR_ALL)) {
@@ -70,7 +71,6 @@ fun CalculatorScreen(
                         }
                     }
                 },
-                scrollBehavior = scrollBehavior,
             )
         },
     ) { padding ->

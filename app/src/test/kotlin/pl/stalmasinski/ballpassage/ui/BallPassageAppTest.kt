@@ -206,6 +206,20 @@ class BallPassageAppTest {
     }
 
     @Test
+    fun backFromAnotherTabReturnsToCalculator() {
+        composeRule.onNodeWithTag(TestTags.destination(Destination.INFO.name)).performClick()
+
+        composeRule.onNodeWithText("Information").assertIsDisplayed()
+
+        composeRule.runOnUiThread { composeRule.activity.onBackPressedDispatcher.onBackPressed() }
+        composeRule.waitForIdle()
+
+        assertTrue("activity should stay open", !composeRule.activity.isFinishing)
+        composeRule.onNodeWithTag(TestTags.field(DimensionField.OUTER_DIAMETER)).assertExists()
+        composeRule.onNodeWithText("Information").assertDoesNotExist()
+    }
+
+    @Test
     @Config(qualifiers = "+pl")
     fun usesPolishTextsAndDecimalComma() {
         enter(outer = "48,3", wall = "5", radius = "70")

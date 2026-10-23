@@ -1,5 +1,6 @@
 package pl.stalmasinski.ballpassage.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
@@ -9,10 +10,11 @@ import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,6 +45,9 @@ fun BallPassageApp(calculatorViewModel: CalculatorViewModel = viewModel(factory 
     var destination by rememberSaveable { mutableStateOf(Destination.CALCULATOR) }
     val calculatorState by calculatorViewModel.uiState.collectAsStateWithLifecycle()
 
+    // Back from another tab returns to the calculator instead of leaving the app.
+    BackHandler(enabled = destination != Destination.CALCULATOR) { destination = Destination.CALCULATOR }
+
     Scaffold(
         bottomBar = {
             // While typing, the navigation bar gives way to the result so that it stays visible above
@@ -56,7 +61,13 @@ fun BallPassageApp(calculatorViewModel: CalculatorViewModel = viewModel(factory 
                             selected = item == destination,
                             onClick = { destination = item },
                             icon = { Icon(painterResource(item.icon), contentDescription = null) },
-                            label = { Text(stringResource(item.label)) },
+                            label = {
+                                FittingText(
+                                    text = stringResource(item.label),
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = LocalContentColor.current,
+                                )
+                            },
                             modifier = Modifier.testTag(TestTags.destination(item.name)),
                         )
                     }

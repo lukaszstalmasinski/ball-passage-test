@@ -29,13 +29,13 @@ import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import pl.stalmasinski.ballpassage.R
 import pl.stalmasinski.ballpassage.core.BallPassageTable
 import pl.stalmasinski.ballpassage.core.BendRatioColumn
 import pl.stalmasinski.ballpassage.core.CalculationResult
 import pl.stalmasinski.ballpassage.core.DiameterRow
+import pl.stalmasinski.ballpassage.ui.FittingText
 import pl.stalmasinski.ballpassage.ui.TestTags
 
 /** VGB-S-013 Table 3 with the cell used for the current result highlighted. */
@@ -143,13 +143,12 @@ private fun RowScope.HeaderCell(
             .padding(2.dp),
         contentAlignment = Alignment.Center,
     ) {
-        Text(
+        FittingText(
             text = text,
             style = MaterialTheme.typography.labelMedium,
             fontWeight = if (highlighted) FontWeight.Bold else FontWeight.Normal,
             fontStyle = if (italic) FontStyle.Italic else FontStyle.Normal,
             color = if (highlighted) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center,
         )
     }
 }
