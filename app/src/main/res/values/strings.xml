@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name" translatable="false">Ball Passage Test</string>
+    <string name="unit_mm" translatable="false">mm</string>
+    <string name="value_mm" translatable="false">%1$s mm</string>
+    <string name="no_value" translatable="false">—</string>
+    <string name="table_header_diameter" translatable="false">dᵢ [mm]</string>
+    <string name="table_header_ratio" translatable="false">R / dₒ</string>
+
+    <string name="field_outer_diameter">Outer diameter</string>
+    <string name="field_outer_diameter_hint">Outside diameter of the tube (dₒ)</string>
+    <string name="field_wall_thickness">Wall thickness</string>
+    <string name="field_wall_thickness_hint">Wall thickness of the tube (s)</string>
+    <string name="field_bend_radius">Bend radius</string>
+    <string name="field_bend_radius_hint">Mean bend radius (R); 0 for a straight tube</string>
+    <string name="clear_field">Clear %1$s</string>
+
+    <string name="error_invalid_number">Enter a valid number</string>
+    <string name="error_must_be_positive">Must be greater than 0</string>
+    <string name="error_wall_too_thick">Wall is too thick – it must be less than half of the outer diameter</string>
+
+    <string name="result_label">Ball diameter</string>
+    <string name="result_placeholder">Enter the tube dimensions to calculate the ball diameter.</string>
+    <string name="result_fix_inputs">Correct the highlighted fields.</string>
+    <string name="result_extrapolated">Inner diameters above 49 mm are not covered by VGB-S-013 Table 3. This value is extrapolated – confirm it before use.</string>
+    <string name="result_failure_title">Ball diameter cannot be determined</string>
+    <string name="problem_inner_diameter_out_of_range">The inner diameter of %1$s mm is outside the table range of 20–57 mm.</string>
+    <string name="problem_bend_ratio_too_small">The bend ratio R / dₒ of %1$s is below the table minimum of 0.5.</string>
+
+    <string name="breakdown_title">Calculation</string>
+    <string name="breakdown_inner_diameter">Inner diameter dᵢ = dₒ − 2s</string>
+    <string name="breakdown_bend_ratio">Bend ratio R / dₒ</string>
+    <string name="breakdown_straight_tube">∞ (straight tube)</string>
+    <string name="breakdown_deduction">Deduction from Table 3</string>
+    <string name="breakdown_ball_diameter">Ball diameter dᵢ − deduction</string>
+
+    <string name="table_title">VGB-S-013, Table 3</string>
+    <string name="table_subtitle">How much smaller than dᵢ the ball may be, in mm</string>
+    <string name="table_footnote">* Not covered by the standard – extrapolated values.</string>
+
+    <string name="about_open">About</string>
+    <string name="about_title">About Ball Passage Test</string>
+    <string name="about_description" tools:ignore="TypographyDashes">Calculates the steel ball diameter for the ball passage test (Kugeldurchlaufversuch) of bent tubes and tube coils according to VGB-S-013-00-2014-12, section 7.2.5, Table 3.</string>
+    <string name="about_method">The inner diameter is dᵢ = dₒ − 2s. The table row is chosen by dᵢ rounded to whole millimetres and the column by the bend ratio R / dₒ. The ball diameter is dᵢ minus the value from the table.</string>
+    <string name="about_extrapolation">Table 3 covers inner diameters of 20–49 mm. The row 50–57 mm was added by extrapolation and is always marked as outside the standard.</string>
+    <string name="about_disclaimer">This app is an aid only. Always check results against the current edition of the standard and the requirements of your project.</string>
+    <string name="about_privacy">The app works fully offline and does not collect, store or share any data.</string>
+    <string name="about_version">Version %1$s</string>
+</resources>

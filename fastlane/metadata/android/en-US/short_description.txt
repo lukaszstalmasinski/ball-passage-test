@@ -1,0 +1,1 @@
+Ball diameter for the ball passage test of bent tubes (VGB-S-013, Table 3).

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="field_outer_diameter">Außendurchmesser</string>
+    <string name="field_outer_diameter_hint">Rohraußendurchmesser (dₒ)</string>
+    <string name="field_wall_thickness">Wanddicke</string>
+    <string name="field_wall_thickness_hint">Wanddicke des Rohres (s)</string>
+    <string name="field_bend_radius">Biegeradius</string>
+    <string name="field_bend_radius_hint">Mittlerer Biegeradius (R); 0 für ein gerades Rohr</string>
+    <string name="clear_field">%1$s löschen</string>
+
+    <string name="error_invalid_number">Gültige Zahl eingeben</string>
+    <string name="error_must_be_positive">Der Wert muss größer als 0 sein</string>
+    <string name="error_wall_too_thick">Wand zu dick – sie muss kleiner als der halbe Außendurchmesser sein</string>
+
+    <string name="result_label">Kugeldurchmesser</string>
+    <string name="result_placeholder">Rohrabmessungen eingeben, um den Kugeldurchmesser zu berechnen.</string>
+    <string name="result_fix_inputs">Markierte Felder korrigieren.</string>
+    <string name="result_extrapolated">Innendurchmesser über 49 mm sind in Tabelle 3 der VGB-S-013 nicht erfasst. Der Wert ist extrapoliert – vor der Verwendung bestätigen.</string>
+    <string name="result_failure_title">Kugeldurchmesser kann nicht bestimmt werden</string>
+    <string name="problem_inner_diameter_out_of_range">Der Innendurchmesser von %1$s mm liegt außerhalb des Tabellenbereichs (20–57 mm).</string>
+    <string name="problem_bend_ratio_too_small">Das Biegeverhältnis R / dₒ von %1$s liegt unter dem Tabellenminimum von 0,5.</string>
+
+    <string name="breakdown_title">Berechnung</string>
+    <string name="breakdown_inner_diameter">Innendurchmesser dᵢ = dₒ − 2s</string>
+    <string name="breakdown_bend_ratio">Biegeverhältnis R / dₒ</string>
+    <string name="breakdown_straight_tube">∞ (gerades Rohr)</string>
+    <string name="breakdown_deduction">Abzug nach Tabelle 3</string>
+    <string name="breakdown_ball_diameter">Kugeldurchmesser dᵢ − Abzug</string>
+
+    <string name="table_title">VGB-S-013, Tabelle 3</string>
+    <string name="table_subtitle">Um wie viel mm die Kugel kleiner als dᵢ sein darf</string>
+    <string name="table_footnote">* Nicht von der Norm erfasst – extrapolierte Werte.</string>
+
+    <string name="about_open">Über die App</string>
+    <string name="about_title">Über Ball Passage Test</string>
+    <string name="about_description" tools:ignore="TypographyDashes">Berechnet den Durchmesser der Stahlkugel für den Kugeldurchlaufversuch an gebogenen Rohren und Rohrschlangen nach VGB-S-013-00-2014-12, Abschnitt 7.2.5, Tabelle 3.</string>
+    <string name="about_method">Der Innendurchmesser ist dᵢ = dₒ − 2s. Die Tabellenzeile wird nach dᵢ, gerundet auf ganze Millimeter, gewählt, die Spalte nach dem Biegeverhältnis R / dₒ. Der Kugeldurchmesser ist dᵢ abzüglich des Tabellenwerts.</string>
+    <string name="about_extrapolation">Tabelle 3 umfasst Innendurchmesser von 20–49 mm. Die Zeile 50–57 mm wurde durch Extrapolation ergänzt und ist immer als außerhalb der Norm gekennzeichnet.</string>
+    <string name="about_disclaimer">Diese App ist nur ein Hilfsmittel. Ergebnisse immer mit der aktuellen Ausgabe der Norm und den Projektanforderungen abgleichen.</string>
+    <string name="about_privacy">Die App funktioniert vollständig offline und erfasst, speichert oder teilt keine Daten.</string>
+    <string name="about_version">Version %1$s</string>
+</resources>

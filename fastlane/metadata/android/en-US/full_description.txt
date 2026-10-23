@@ -1,0 +1,15 @@
+Ball Passage Test calculates the steel ball diameter for the ball passage test (ball test, Kugeldurchlaufversuch) of bent tubes and tube coils, as used in boiler and pressure-part manufacturing.
+
+Enter the outer diameter, wall thickness and bend radius of the tube – the ball diameter is shown instantly according to VGB-S-013-00-2014-12, section 7.2.5, Table 3.
+
+• Instant result while you type – no "Calculate" button
+• Step-by-step calculation: inner diameter, bend ratio R/dₒ and the deduction from the table
+• Table 3 with the cell used for your tube highlighted
+• Clear explanations when a tube is outside the range of the table
+• Inner diameters of 50–57 mm are supported with extrapolated values and are always clearly marked as outside the standard
+• Accepts both decimal comma and decimal point
+• English, Polish and German
+• Light and dark theme, Material You colours
+• Works fully offline, no ads, no tracking, no data collection
+
+This app is an aid only. Always check results against the current edition of the standard and the requirements of your project.
