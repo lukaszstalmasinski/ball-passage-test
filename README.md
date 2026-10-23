@@ -26,7 +26,8 @@ Android app that calculates the steel ball diameter for the **ball passage test*
 - **Info.** Standard, method, disclaimer, privacy and app version.
 - **Languages.** English, Polish and German. The app name is localized as well: *Ball Passage
   Test*, *Przelot kulki* (PL) and *Kugeldurchlauf* (DE). Library resources are limited to these
-  three languages, so the UI is never mixed.
+  three languages, so the UI is never mixed. Under the launcher icon the English name is
+  shortened to *Ball Passage*, so that it is not cut off.
 
 ## Calculation
 
