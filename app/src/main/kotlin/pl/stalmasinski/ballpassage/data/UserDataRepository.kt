@@ -7,22 +7,26 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import pl.stalmasinski.ballpassage.core.Ball
+import pl.stalmasinski.ballpassage.core.BallSet
+import pl.stalmasinski.ballpassage.core.BallSets
 import pl.stalmasinski.ballpassage.core.TubeDimensions
 import java.io.IOException
-import java.math.BigDecimal
 
 /** Data the user enters that is kept between app launches; stored only on the device. */
 interface UserDataRepository {
-    /** Ball diameters available in the user's workshop, smallest first. */
-    val balls: Flow<List<BigDecimal>>
+    /** The user's ball sets; there is always at least one. */
+    val ballSets: Flow<BallSets>
 
     /** Recently calculated tubes, newest first. */
     val history: Flow<List<TubeDimensions>>
 
-    suspend fun addBall(diameter: BigDecimal)
-
-    suspend fun removeBall(diameter: BigDecimal)
+    /** Applies [transform] to the current ball sets atomically and stores the result. */
+    suspend fun updateBallSets(transform: (BallSets) -> BallSets)
 
     /** Adds [dimensions] to the top of the history, removing an older identical entry. */
     suspend fun addToHistory(dimensions: TubeDimensions)
@@ -40,22 +44,14 @@ class DataStoreUserDataRepository(private val dataStore: DataStore<Preferences>)
         if (error is IOException) emit(emptyPreferences()) else throw error
     }
 
-    override val balls: Flow<List<BigDecimal>> = preferences.map { decodeBalls(it[BALLS]) }
+    override val ballSets: Flow<BallSets> = preferences.map(::readBallSets).distinctUntilChanged()
 
     override val history: Flow<List<TubeDimensions>> = preferences.map { decodeHistory(it[HISTORY]) }
 
-    override suspend fun addBall(diameter: BigDecimal) {
+    override suspend fun updateBallSets(transform: (BallSets) -> BallSets) {
         dataStore.edit { prefs ->
-            val balls = decodeBalls(prefs[BALLS])
-            if (balls.none { it.compareTo(diameter) == 0 }) {
-                prefs[BALLS] = encodeBalls(balls + diameter)
-            }
-        }
-    }
-
-    override suspend fun removeBall(diameter: BigDecimal) {
-        dataStore.edit { prefs ->
-            prefs[BALLS] = encodeBalls(decodeBalls(prefs[BALLS]).filterNot { it.compareTo(diameter) == 0 })
+            prefs[BALL_SETS] = encodeBallSets(transform(readBallSets(prefs)))
+            prefs.remove(LEGACY_BALLS)
         }
     }
 
@@ -71,32 +67,83 @@ class DataStoreUserDataRepository(private val dataStore: DataStore<Preferences>)
         dataStore.edit { it.remove(HISTORY) }
     }
 
+    @Serializable
+    internal data class StoredBallSets(val activeSetId: String, val sets: List<StoredBallSet>)
+
+    @Serializable
+    internal data class StoredBallSet(val id: String, val name: String, val balls: List<StoredBall> = emptyList())
+
+    @Serializable
+    internal data class StoredBall(val id: String, val diameter: String, val label: String = "", val location: String = "")
+
     internal companion object {
-        private val BALLS = stringPreferencesKey("balls")
+        private val BALL_SETS = stringPreferencesKey("ball_sets")
         private val HISTORY = stringPreferencesKey("history")
+
+        /** Version 1.0 stored a single list of diameters, e.g. "30;32;35". */
+        private val LEGACY_BALLS = stringPreferencesKey("balls")
+
+        /** Ids are fixed for the default and migrated data, so that they are stable until the first write. */
+        const val DEFAULT_SET_ID = "default"
 
         private const val ENTRY_SEPARATOR = ";"
         private const val VALUE_SEPARATOR = ","
 
-        /** 32.0 and 32 are the same ball; stores numbers without trailing zeros or exponent. */
-        fun normalize(value: BigDecimal): BigDecimal =
-            value.stripTrailingZeros().let { if (it.scale() < 0) it.setScale(0) else it }
+        private val json = Json { ignoreUnknownKeys = true }
 
-        private fun normalize(dimensions: TubeDimensions) = TubeDimensions(
-            outerDiameter = normalize(dimensions.outerDiameter),
-            wallThickness = normalize(dimensions.wallThickness),
-            bendRadius = normalize(dimensions.bendRadius),
-        )
+        fun readBallSets(prefs: Preferences): BallSets =
+            prefs[BALL_SETS]?.let(::decodeBallSets)
+                ?: migrateLegacyBalls(prefs[LEGACY_BALLS])
 
-        fun encodeBalls(balls: List<BigDecimal>): String =
-            balls.map(::normalize).sorted().joinToString(ENTRY_SEPARATOR) { it.toPlainString() }
-
-        // Corrupted entries are skipped rather than failing the whole list.
-        fun decodeBalls(value: String?): List<BigDecimal> =
-            value.orEmpty()
+        fun migrateLegacyBalls(value: String?): BallSets {
+            val balls = value.orEmpty()
                 .split(ENTRY_SEPARATOR)
                 .mapNotNull { it.toBigDecimalOrNull()?.takeIf { d -> d.signum() > 0 } }
+                .map(BallSets::normalize)
+                .distinct()
                 .sorted()
+                .map { Ball(id = "legacy-${it.toPlainString()}", diameter = it) }
+            return BallSets(listOf(BallSet(DEFAULT_SET_ID, name = "", balls = balls)), DEFAULT_SET_ID)
+        }
+
+        fun encodeBallSets(sets: BallSets): String = json.encodeToString(
+            StoredBallSets.serializer(),
+            StoredBallSets(
+                activeSetId = sets.activeSetId,
+                sets = sets.sets.map { set ->
+                    StoredBallSet(
+                        id = set.id,
+                        name = set.name,
+                        balls = set.balls.map { StoredBall(it.id, it.diameter.toPlainString(), it.label, it.location) },
+                    )
+                },
+            ),
+        )
+
+        /** Returns null when the stored value is unreadable, so that the defaults are used instead of crashing. */
+        fun decodeBallSets(value: String): BallSets? {
+            val stored = runCatching { json.decodeFromString(StoredBallSets.serializer(), value) }.getOrNull()
+                ?: return null
+            val sets = stored.sets.map { set ->
+                BallSet(
+                    id = set.id,
+                    name = set.name,
+                    balls = set.balls.mapNotNull { ball ->
+                        val diameter = ball.diameter.toBigDecimalOrNull()?.takeIf { it.signum() > 0 }
+                            ?: return@mapNotNull null
+                        Ball(ball.id, diameter, ball.label, ball.location)
+                    },
+                )
+            }
+            if (sets.isEmpty()) return null
+            return BallSets(sets, stored.activeSetId)
+        }
+
+        private fun normalize(dimensions: TubeDimensions) = TubeDimensions(
+            outerDiameter = BallSets.normalize(dimensions.outerDiameter),
+            wallThickness = BallSets.normalize(dimensions.wallThickness),
+            bendRadius = BallSets.normalize(dimensions.bendRadius),
+        )
 
         fun encodeHistory(history: List<TubeDimensions>): String =
             history.joinToString(ENTRY_SEPARATOR) { dimensions ->
@@ -104,6 +151,7 @@ class DataStoreUserDataRepository(private val dataStore: DataStore<Preferences>)
                     .joinToString(VALUE_SEPARATOR) { it.toPlainString() }
             }
 
+        // Corrupted entries are skipped rather than failing the whole list.
         fun decodeHistory(value: String?): List<TubeDimensions> =
             value.orEmpty()
                 .split(ENTRY_SEPARATOR)

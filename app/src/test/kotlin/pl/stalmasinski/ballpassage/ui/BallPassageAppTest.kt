@@ -33,6 +33,7 @@ import org.robolectric.annotation.Config
 import pl.stalmasinski.ballpassage.BallPassageApplication
 import pl.stalmasinski.ballpassage.BuildConfig
 import pl.stalmasinski.ballpassage.MainActivity
+import pl.stalmasinski.ballpassage.core.BallSets
 import pl.stalmasinski.ballpassage.core.TubeDimensions
 import pl.stalmasinski.ballpassage.ui.calculator.DimensionField
 import java.math.BigDecimal
@@ -51,7 +52,7 @@ class BallPassageAppTest {
     @After
     fun clearUserData() = runBlocking {
         repository.clearHistory()
-        repository.balls.first().forEach { repository.removeBall(it) }
+        repository.updateBallSets { BallSets.initial("default") }
     }
 
     @Test
@@ -147,7 +148,7 @@ class BallPassageAppTest {
 
         composeRule.onNodeWithText("Add your balls to get a suggestion").performScrollTo().performClick()
 
-        composeRule.onNodeWithText("Ball set").assertIsDisplayed()
+        composeRule.onNodeWithTag(TestTags.SET_SELECTOR).assertIsDisplayed()
     }
 
     @Test
@@ -172,6 +173,37 @@ class BallPassageAppTest {
         composeRule.onNodeWithTag(TestTags.BALL_ADD).performClick()
 
         composeRule.onNodeWithText("This ball is already in your set").assertIsDisplayed()
+    }
+
+    @Test
+    fun ballsTabMarksBallsForTheCalculatedTube() {
+        openBalls()
+        composeRule.onNodeWithTag(TestTags.TUBE_CONTEXT).assertDoesNotExist()
+        listOf("30", "32", "35").forEach(::addBall)
+        composeRule.onNodeWithText("Calculate a tube in the calculator to see which balls fit it.").assertIsDisplayed()
+
+        composeRule.onNodeWithTag(TestTags.destination(Destination.CALCULATOR.name)).performClick()
+        enter(outer = "48.3", wall = "5", radius = "70")
+        openBalls()
+
+        composeRule.onNodeWithText("For tube 48.3 × 5 · R 70").assertIsDisplayed()
+        composeRule.onNodeWithText("Use this").assertIsDisplayed()
+        composeRule.onNodeWithText("Fits").assertIsDisplayed()
+    }
+
+    @Test
+    fun exportShowsQrCodeAndSharesText() {
+        openBalls()
+        addBall("32")
+
+        composeRule.onNodeWithTag(TestTags.EXPORT).performClick()
+        composeRule.onNodeWithTag(TestTags.QR_CODE).assertExists()
+        composeRule.onNodeWithTag(TestTags.EXPORT_SHARE_TEXT).performScrollTo().performClick()
+
+        val chooser = shadowOf(composeRule.activity).nextStartedActivity
+        @Suppress("DEPRECATION")
+        val text = chooser.getParcelableExtra<Intent>(Intent.EXTRA_INTENT)!!.getStringExtra(Intent.EXTRA_TEXT)!!
+        assertTrue(text, text.contains("BPT1\nMy ball set\n32"))
     }
 
     @Test
@@ -258,6 +290,17 @@ class BallPassageAppTest {
         composeRule.onNodeWithTag(TestTags.field(DimensionField.OUTER_DIAMETER)).performTextInput(outer)
         composeRule.onNodeWithTag(TestTags.field(DimensionField.WALL_THICKNESS)).performTextInput(wall)
         composeRule.onNodeWithTag(TestTags.field(DimensionField.BEND_RADIUS)).performTextInput(radius)
+    }
+
+    private fun openBalls() {
+        composeRule.onNodeWithTag(TestTags.destination(Destination.BALLS.name)).performClick()
+        waitForTag(TestTags.SET_SELECTOR)
+    }
+
+    private fun waitForText(text: String) {
+        composeRule.waitUntil(timeoutMillis = 5_000) {
+            composeRule.onAllNodes(hasText(text)).fetchSemanticsNodes().isNotEmpty()
+        }
     }
 
     private fun addBall(diameter: String) {

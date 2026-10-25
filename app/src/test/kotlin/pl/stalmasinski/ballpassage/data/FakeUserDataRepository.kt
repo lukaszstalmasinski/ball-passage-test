@@ -3,25 +3,21 @@ package pl.stalmasinski.ballpassage.data
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import pl.stalmasinski.ballpassage.core.BallSets
 import pl.stalmasinski.ballpassage.core.TubeDimensions
-import java.math.BigDecimal
 
 class FakeUserDataRepository(
-    balls: List<BigDecimal> = emptyList(),
+    ballSets: BallSets = BallSets.initial("default"),
     history: List<TubeDimensions> = emptyList(),
 ) : UserDataRepository {
-    private val ballsState = MutableStateFlow(balls.sorted())
+    private val ballSetsState = MutableStateFlow(ballSets)
     private val historyState = MutableStateFlow(history)
 
-    override val balls: StateFlow<List<BigDecimal>> = ballsState.asStateFlow()
+    override val ballSets: StateFlow<BallSets> = ballSetsState.asStateFlow()
     override val history: StateFlow<List<TubeDimensions>> = historyState.asStateFlow()
 
-    override suspend fun addBall(diameter: BigDecimal) {
-        if (ballsState.value.none { it.compareTo(diameter) == 0 }) ballsState.value = (ballsState.value + diameter).sorted()
-    }
-
-    override suspend fun removeBall(diameter: BigDecimal) {
-        ballsState.value = ballsState.value.filterNot { it.compareTo(diameter) == 0 }
+    override suspend fun updateBallSets(transform: (BallSets) -> BallSets) {
+        ballSetsState.value = transform(ballSetsState.value)
     }
 
     override suspend fun addToHistory(dimensions: TubeDimensions) {

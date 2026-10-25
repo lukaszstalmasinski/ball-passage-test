@@ -63,7 +63,6 @@
     <string name="table_cell_description">Innendurchmesser %1$s mm, R / dₒ %2$s: %3$s mm</string>
 
     <string name="balls_title">Kugelsatz</string>
-    <string name="balls_description">Fügen Sie die Stahlkugeln hinzu, die in Ihrer Werkstatt vorhanden sind. Der Rechner schlägt dann für jedes Rohr die passende Kugel vor.</string>
     <string name="balls_input_label">Kugeldurchmesser</string>
     <string name="balls_add">Kugel hinzufügen</string>
     <string name="balls_empty">Noch keine Kugeln hinzugefügt.</string>
@@ -82,6 +81,75 @@
     <string name="info_extrapolation">Tabelle 3 umfasst Innendurchmesser von 20–49 mm. Die Zeile 50–57 mm wurde durch Extrapolation ergänzt und ist immer als außerhalb der Norm gekennzeichnet.</string>
     <string name="info_method">Der Innendurchmesser ist dᵢ = dₒ − 2s. Die Tabellenzeile wird nach dᵢ, gerundet auf ganze Millimeter, gewählt, die Spalte nach dem Biegeverhältnis R / dₒ für den kleinsten Biegeradius des Rohres. Die Kugel darf höchstens um den Tabellenwert kleiner als dᵢ sein; ihr Durchmesser muss also mindestens dᵢ abzüglich dieses Werts und kleiner als dᵢ sein. Aus Ihrem Kugelsatz schlägt die App die kleinste Kugel in diesem Bereich vor.</string>
     <string name="info_disclaimer">Diese App ist nur ein Hilfsmittel. Ergebnisse immer mit der aktuellen Ausgabe der Norm und den Projektanforderungen abgleichen.</string>
-    <string name="info_privacy">Die App funktioniert vollständig offline und erfasst oder teilt keine Daten. Ihr Kugelsatz und die letzten Berechnungen werden nur auf diesem Gerät und in dessen eigener Sicherung gespeichert.</string>
+    <string name="info_privacy">Die App funktioniert vollständig offline und erfasst oder teilt keine Daten. Ihre Kugelsätze und die letzten Berechnungen werden nur auf diesem Gerät und in dessen eigener Sicherung gespeichert. Die Kamera wird nur zum Scannen eines geteilten Kugelsatzes verwendet; es werden keine Bilder gespeichert.</string>
     <string name="info_version">Version %1$s (%2$d)</string>
+
+    <string name="ball_recommended_from_set">Aus „%1$s“: Kugel %2$s mm verwenden</string>
+    <string name="share_recommended_ball_details">Kugel aus meinem Satz: %1$s mm (%2$s)</string>
+    <string name="compact_ball_label">Kugel %1$s mm · %2$s</string>
+    <string name="set_default_name">Mein Kugelsatz</string>
+    <string name="set_imported_name">Importierter Satz</string>
+    <string name="set_label">Kugelsatz</string>
+    <string name="set_new">Neuer Satz…</string>
+    <string name="set_new_title">Neuer Kugelsatz</string>
+    <string name="set_rename">Satz umbenennen</string>
+    <string name="set_rename_title">Kugelsatz umbenennen</string>
+    <string name="set_delete">Satz löschen</string>
+    <string name="set_delete_title">„%1$s“ löschen?</string>
+    <string name="set_delete_confirm">Löschen</string>
+    <string name="set_name">Name</string>
+    <string name="set_name_hint">z. B. Halle A</string>
+    <string name="export_action">Kugelsatz teilen</string>
+    <string name="more_options">Weitere Optionen</string>
+    <string name="import_scan">Import: QR-Code scannen</string>
+    <string name="import_paste">Import: Text einfügen</string>
+    <string name="context_none">Berechnen Sie ein Rohr im Rechner, um zu sehen, welche Kugeln passen.</string>
+    <string name="context_tube">Für Rohr %1$s × %2$s · R %3$s</string>
+    <string name="range_open">Kugelbereich hinzufügen…</string>
+    <string name="range_title">Bereich hinzufügen</string>
+    <string name="range_description">Fügt alle Kugeln vom ersten bis zum letzten Durchmesser in der angegebenen Schrittweite hinzu. Vorhandene Kugeln werden übersprungen.</string>
+    <string name="range_from">Von</string>
+    <string name="range_to">Bis</string>
+    <string name="range_step">Schritt</string>
+    <string name="range_add">Hinzufügen</string>
+    <string name="range_error_invalid">Gültige Zahlen eingeben</string>
+    <string name="range_error_from">Der erste Durchmesser muss größer als 0 sein</string>
+    <string name="range_error_step">Die Schrittweite muss größer als 0 sein</string>
+    <string name="range_error_order">Der letzte Durchmesser darf nicht kleiner als der erste sein</string>
+    <string name="range_error_too_many">Zu viele Kugeln auf einmal – größere Schrittweite wählen</string>
+    <string name="dialog_cancel">Abbrechen</string>
+    <string name="dialog_save">Speichern</string>
+    <string name="ball_label">Kennzeichnung</string>
+    <string name="ball_label_hint">z. B. K-12</string>
+    <string name="ball_location">Ort</string>
+    <string name="ball_location_hint">z. B. Koffer 2</string>
+    <string name="ball_add_details">Kugel antippen, um Kennzeichnung und Ort hinzuzufügen.</string>
+    <string name="ball_badge_recommended">Verwenden</string>
+    <string name="ball_badge_fits">Passt</string>
+    <string name="export_title">„%1$s“ teilen</string>
+    <string name="export_share_text">Als Text teilen</string>
+    <string name="export_message_header">Kugelsatz „%1$s“ aus der App Ball Passage Test:</string>
+    <string name="export_message_footer">Zum Importieren: Kugeln → ⋮ → Import: Text einfügen.</string>
+    <string name="export_qr_description">QR-Code mit dem Kugelsatz</string>
+    <string name="export_qr_hint">Auf dem anderen Handy: Kugeln → ⋮ → Import: QR-Code scannen.</string>
+    <string name="export_too_large">Dieser Satz ist zu groß für einen QR-Code. Bitte als Text teilen.</string>
+    <string name="import_paste_title">Kugelsatz importieren</string>
+    <string name="import_paste_description">Die ganze Nachricht mit dem geteilten Kugelsatz einfügen.</string>
+    <string name="import_not_found">Kein Kugelsatz gefunden</string>
+    <string name="import_next">Weiter</string>
+    <string name="import_confirm_title">„%1$s“ importieren?</string>
+    <string name="import_confirm_note">Er wird als neuer, aktiver Satz hinzugefügt. Ihre anderen Sätze bleiben unverändert.</string>
+    <string name="import_confirm">Importieren</string>
+    <string name="scan_hint">Die Kamera auf den QR-Code eines geteilten Kugelsatzes richten.</string>
+    <string name="scan_permission_denied">Zum Scannen wird der Kamerazugriff benötigt. Sie können einen Satz auch durch Einfügen des geteilten Texts importieren.</string>
+    <string name="scan_allow_camera">Kamera erlauben</string>
+    <string name="scan_close">Scanner schließen</string>
+    <plurals name="ball_count">
+        <item quantity="one">%d Kugel</item>
+        <item quantity="other">%d Kugeln</item>
+    </plurals>
+    <plurals name="set_delete_message">
+        <item quantity="one">Der Satz mit %d Kugel wird gelöscht.</item>
+        <item quantity="other">Der Satz mit %d Kugeln wird gelöscht.</item>
+    </plurals>
 </resources>

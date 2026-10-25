@@ -59,12 +59,17 @@ class CalculatorViewModelTest {
 
     @Test
     fun `suggests fitting balls from the set`() = runTest(mainDispatcher.dispatcher) {
-        listOf("30", "35", "32", "40").forEach { repository.addBall(BigDecimal(it)) }
+        var id = 0
+        repository.updateBallSets { sets ->
+            sets.addBalls(sets.activeSetId, listOf("30", "35", "32", "40").map(::BigDecimal)) { "b${id++}" }
+                .renameSet(sets.activeSetId, "Hall A")
+        }
         val viewModel = viewModel().filled()
         runCurrent()
 
         assertTrue(viewModel.state.hasBallSet)
-        assertEquals(listOf(BigDecimal("32"), BigDecimal("35")), viewModel.state.fittingBalls)
+        assertEquals("Hall A", viewModel.state.ballSetName)
+        assertEquals(listOf("32", "35"), viewModel.state.fittingBalls.map { it.diameter.toPlainString() })
     }
 
     @Test

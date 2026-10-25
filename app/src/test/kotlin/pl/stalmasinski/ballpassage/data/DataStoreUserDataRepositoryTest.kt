@@ -1,6 +1,8 @@
 package pl.stalmasinski.ballpassage.data
 
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -10,10 +12,13 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.junit.runner.RunWith
+import pl.stalmasinski.ballpassage.core.Ball
+import pl.stalmasinski.ballpassage.core.BallSets
 import pl.stalmasinski.ballpassage.core.TubeDimensions
 import java.io.File
 import java.math.BigDecimal
@@ -30,32 +35,64 @@ class DataStoreUserDataRepositoryTest {
 
     private val dataStoreScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
+    private val dataStore by lazy {
+        PreferenceDataStoreFactory.create(scope = dataStoreScope) { File(folder.root, "test.preferences_pb") }
+    }
+
     @After
     fun cancelDataStore() = dataStoreScope.cancel()
 
-    private fun repository() = DataStoreUserDataRepository(
-        PreferenceDataStoreFactory.create(scope = dataStoreScope) { File(folder.root, "test.preferences_pb") },
-    )
+    private fun repository() = DataStoreUserDataRepository(dataStore)
+
+    private var nextId = 0
+    private val newId = { "id${nextId++}" }
 
     @Test
-    fun `balls are sorted, normalized and deduplicated`() = runTest {
-        val repository = repository()
+    fun `starts with one empty default set`() = runTest {
+        val sets = repository().ballSets.first()
 
-        repository.addBall(BigDecimal("35"))
-        repository.addBall(BigDecimal("31.80"))
-        repository.addBall(BigDecimal("35.0"))
-
-        assertEquals(listOf(BigDecimal("31.8"), BigDecimal("35")), repository.balls.first())
+        assertEquals(1, sets.sets.size)
+        assertEquals("", sets.active.name)
+        assertEquals(emptyList<Ball>(), sets.active.balls)
     }
 
     @Test
-    fun `removing a ball ignores the scale`() = runTest {
+    fun `ball sets survive a new repository instance`() = runTest {
+        repository().updateBallSets { sets ->
+            sets.addBalls(sets.activeSetId, listOf(BigDecimal("32"), BigDecimal("35")), newId)
+                .let { it.updateBallDetails(it.activeSetId, it.active.balls[0].id, "K-12", "case 2") }
+                .createSet("Hall A", newId())
+        }
+
+        val sets = repository().ballSets.first()
+
+        assertEquals(listOf("", "Hall A"), sets.sets.map { it.name })
+        assertEquals("Hall A", sets.active.name)
+        assertEquals(Ball("id0", BigDecimal("32"), "K-12", "case 2"), sets.sets[0].balls[0])
+    }
+
+    @Test
+    fun `migrates the ball list of version 1_0 with stable ids`() = runTest {
+        dataStore.edit { it[stringPreferencesKey("balls")] = "35;32;abc;32.0" }
         val repository = repository()
-        repository.addBall(BigDecimal("32"))
 
-        repository.removeBall(BigDecimal("32.00"))
+        val migrated = repository.ballSets.first()
+        assertEquals(listOf("32", "35"), migrated.active.balls.map { it.diameter.toPlainString() })
+        // Ids do not change until the first write, so that the UI can refer to them.
+        assertEquals(migrated, repository.ballSets.first())
 
-        assertEquals(emptyList<BigDecimal>(), repository.balls.first())
+        repository.updateBallSets { it.removeBall(it.activeSetId, migrated.active.balls[0].id) }
+
+        val updated = repository.ballSets.first()
+        assertEquals(listOf("35"), updated.active.balls.map { it.diameter.toPlainString() })
+        assertNull(dataStore.data.first()[stringPreferencesKey("balls")])
+    }
+
+    @Test
+    fun `unreadable stored sets fall back to the default`() = runTest {
+        dataStore.edit { it[stringPreferencesKey("ball_sets")] = "{not json" }
+
+        assertEquals(BallSets.initial(DataStoreUserDataRepository.DEFAULT_SET_ID), repository().ballSets.first())
     }
 
     @Test
@@ -93,11 +130,7 @@ class DataStoreUserDataRepositoryTest {
     }
 
     @Test
-    fun `corrupted entries are skipped`() {
-        assertEquals(
-            listOf(BigDecimal("12"), BigDecimal("32")),
-            DataStoreUserDataRepository.decodeBalls("32;abc;;-1;0;12"),
-        )
+    fun `corrupted history entries are skipped`() {
         assertEquals(
             listOf(tube("48.3", "5", "70")),
             DataStoreUserDataRepository.decodeHistory("48.3,5,70;1,2;x,y,z;0,1,1"),

@@ -16,7 +16,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import pl.stalmasinski.ballpassage.BallPassageApplication
+import pl.stalmasinski.ballpassage.core.Ball
 import pl.stalmasinski.ballpassage.core.BallPassageCalculator
+import pl.stalmasinski.ballpassage.core.BallSet
 import pl.stalmasinski.ballpassage.core.BallSelector
 import pl.stalmasinski.ballpassage.core.CalculationProblem
 import pl.stalmasinski.ballpassage.core.CalculationResult
@@ -43,9 +45,11 @@ data class CalculatorUiState(
     val fields: Map<DimensionField, FieldState> = DimensionField.entries.associateWith { FieldState() },
     /** Null until all fields hold valid values. */
     val result: CalculationResult? = null,
-    /** Balls from the user's set that fit [result], recommended one first. */
-    val fittingBalls: List<BigDecimal> = emptyList(),
+    /** Balls from the active set that fit [result], recommended one first. */
+    val fittingBalls: List<Ball> = emptyList(),
     val hasBallSet: Boolean = false,
+    /** Name of the active ball set; empty for the default set. */
+    val ballSetName: String = "",
     val history: List<TubeDimensions> = emptyList(),
 ) {
     fun field(field: DimensionField): FieldState = fields.getValue(field)
@@ -66,8 +70,9 @@ class CalculatorViewModel(
     )
 
     val uiState: StateFlow<CalculatorUiState> =
-        combine(inputs, repository.balls, repository.history, ::buildState)
-            .stateIn(viewModelScope, SharingStarted.Eagerly, buildState(inputs.value, emptyList(), emptyList()))
+        combine(inputs, repository.ballSets, repository.history) { inputs, ballSets, history ->
+            buildState(inputs, ballSets.active, history)
+        }.stateIn(viewModelScope, SharingStarted.Eagerly, buildState(inputs.value, EMPTY_SET, emptyList()))
 
     private var historyJob: Job? = null
 
@@ -123,16 +128,23 @@ class CalculatorViewModel(
             }
         }
 
+        private val EMPTY_SET = BallSet(id = "", name = "")
+
         internal fun buildState(
             inputs: Map<DimensionField, String>,
-            balls: List<BigDecimal>,
+            ballSet: BallSet,
             history: List<TubeDimensions>,
         ): CalculatorUiState {
             val calculated = calculate(inputs)
             val result = calculated.result
             return calculated.copy(
-                fittingBalls = if (result is CalculationResult.Success) BallSelector.fittingBalls(result, balls) else emptyList(),
-                hasBallSet = balls.isNotEmpty(),
+                fittingBalls = if (result is CalculationResult.Success) {
+                    BallSelector.fittingBalls(result, ballSet.balls)
+                } else {
+                    emptyList()
+                },
+                hasBallSet = ballSet.balls.isNotEmpty(),
+                ballSetName = ballSet.name,
                 history = history,
             )
         }

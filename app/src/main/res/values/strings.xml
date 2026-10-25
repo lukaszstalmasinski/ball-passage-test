@@ -70,7 +70,6 @@
     <string name="table_cell_description">Inner diameter %1$s mm, R / dₒ %2$s: %3$s mm</string>
 
     <string name="balls_title">Ball set</string>
-    <string name="balls_description">Add the steel balls available in your workshop. The calculator will then suggest which one to use for each tube.</string>
     <string name="balls_input_label">Ball diameter</string>
     <string name="balls_add">Add ball</string>
     <string name="balls_empty">No balls added yet.</string>
@@ -89,6 +88,75 @@
     <string name="info_extrapolation">Table 3 covers inner diameters of 20–49 mm. The row 50–57 mm was added by extrapolation and is always marked as outside the standard.</string>
     <string name="info_method">The inner diameter is dᵢ = dₒ − 2s. The table row is chosen by dᵢ rounded to whole millimetres and the column by the bend ratio R / dₒ, using the smallest bend radius of the tube. The ball may be smaller than dᵢ by at most the value from the table, so its diameter must be at least dᵢ minus that value and less than dᵢ. From your ball set, the app suggests the smallest ball that meets this range.</string>
     <string name="info_disclaimer">This app is an aid only. Always check results against the current edition of the standard and the requirements of your project.</string>
-    <string name="info_privacy">The app works fully offline and does not collect or share any data. Your ball set and recent calculations are stored only on this device and in its own backup.</string>
+    <string name="info_privacy">The app works fully offline and does not collect or share any data. Your ball sets and recent calculations are stored only on this device and in its own backup. The camera is used only to scan a shared ball set; no images are stored.</string>
     <string name="info_version">Version %1$s (%2$d)</string>
+
+    <string name="ball_recommended_from_set">From “%1$s”: use the %2$s mm ball</string>
+    <string name="share_recommended_ball_details">Ball from my set: %1$s mm (%2$s)</string>
+    <string name="compact_ball_label">Ball %1$s mm · %2$s</string>
+    <string name="set_default_name">My ball set</string>
+    <string name="set_imported_name">Imported set</string>
+    <string name="set_label">Ball set</string>
+    <string name="set_new">New set…</string>
+    <string name="set_new_title">New ball set</string>
+    <string name="set_rename">Rename set</string>
+    <string name="set_rename_title">Rename ball set</string>
+    <string name="set_delete">Delete set</string>
+    <string name="set_delete_title">Delete “%1$s”?</string>
+    <string name="set_delete_confirm">Delete</string>
+    <string name="set_name">Name</string>
+    <string name="set_name_hint">e.g. Workshop A</string>
+    <string name="export_action">Share ball set</string>
+    <string name="more_options">More options</string>
+    <string name="import_scan">Import: scan QR code</string>
+    <string name="import_paste">Import: paste text</string>
+    <string name="context_none">Calculate a tube in the calculator to see which balls fit it.</string>
+    <string name="context_tube">For tube %1$s × %2$s · R %3$s</string>
+    <string name="range_open">Add a range of balls…</string>
+    <string name="range_title">Add a range</string>
+    <string name="range_description">Adds every ball from the first to the last diameter in the given step. Balls already in the set are skipped.</string>
+    <string name="range_from">From</string>
+    <string name="range_to">To</string>
+    <string name="range_step">Step</string>
+    <string name="range_add">Add</string>
+    <string name="range_error_invalid">Enter valid numbers</string>
+    <string name="range_error_from">The first diameter must be greater than 0</string>
+    <string name="range_error_step">The step must be greater than 0</string>
+    <string name="range_error_order">The last diameter must not be smaller than the first</string>
+    <string name="range_error_too_many">Too many balls at once – use a larger step</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_save">Save</string>
+    <string name="ball_label">Marking</string>
+    <string name="ball_label_hint">e.g. K-12</string>
+    <string name="ball_location">Location</string>
+    <string name="ball_location_hint">e.g. case 2</string>
+    <string name="ball_add_details">Tap a ball to add its marking and location.</string>
+    <string name="ball_badge_recommended">Use this</string>
+    <string name="ball_badge_fits">Fits</string>
+    <string name="export_title">Share “%1$s”</string>
+    <string name="export_share_text">Share as text</string>
+    <string name="export_message_header">Ball set “%1$s” from the Ball Passage Test app:</string>
+    <string name="export_message_footer">To import it: Balls → ⋮ → Import: paste text.</string>
+    <string name="export_qr_description">QR code with the ball set</string>
+    <string name="export_qr_hint">On the other phone: Balls → ⋮ → Import: scan QR code.</string>
+    <string name="export_too_large">This set is too large for a QR code. Share it as text instead.</string>
+    <string name="import_paste_title">Import a ball set</string>
+    <string name="import_paste_description">Paste the whole message with the shared ball set.</string>
+    <string name="import_not_found">No ball set found</string>
+    <string name="import_next">Next</string>
+    <string name="import_confirm_title">Import “%1$s”?</string>
+    <string name="import_confirm_note">It is added as a new set and becomes active. Your other sets do not change.</string>
+    <string name="import_confirm">Import</string>
+    <string name="scan_hint">Point the camera at the QR code of a shared ball set.</string>
+    <string name="scan_permission_denied">Camera access is needed to scan the code. You can also import a set by pasting the shared text.</string>
+    <string name="scan_allow_camera">Allow camera</string>
+    <string name="scan_close">Close scanner</string>
+    <plurals name="ball_count">
+        <item quantity="one">%d ball</item>
+        <item quantity="other">%d balls</item>
+    </plurals>
+    <plurals name="set_delete_message">
+        <item quantity="one">The set with %d ball will be deleted.</item>
+        <item quantity="other">The set with %d balls will be deleted.</item>
+    </plurals>
 </resources>

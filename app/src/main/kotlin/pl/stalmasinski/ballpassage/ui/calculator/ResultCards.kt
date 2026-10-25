@@ -32,10 +32,12 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import pl.stalmasinski.ballpassage.R
+import pl.stalmasinski.ballpassage.core.Ball
 import pl.stalmasinski.ballpassage.core.BendRatio
 import pl.stalmasinski.ballpassage.core.CalculationProblem
 import pl.stalmasinski.ballpassage.core.CalculationResult
 import pl.stalmasinski.ballpassage.ui.TestTags
+import pl.stalmasinski.ballpassage.ui.balls.details
 import pl.stalmasinski.ballpassage.ui.theme.LocalWarningColors
 import java.math.BigDecimal
 
@@ -112,13 +114,14 @@ private fun SuccessContent(result: CalculationResult.Success, state: CalculatorU
             }
         }
     }
-    BallRecommendation(state.fittingBalls, state.hasBallSet, formatter, onOpenBalls)
+    BallRecommendation(state.fittingBalls, state.hasBallSet, state.ballSetName, formatter, onOpenBalls)
 }
 
 @Composable
 private fun BallRecommendation(
-    fittingBalls: List<BigDecimal>,
+    fittingBalls: List<Ball>,
     hasBallSet: Boolean,
+    ballSetName: String,
     formatter: NumberFormatter,
     onOpenBalls: () -> Unit,
 ) {
@@ -136,15 +139,24 @@ private fun BallRecommendation(
                 style = MaterialTheme.typography.bodyMedium,
             )
             else -> Column(modifier = Modifier.testTag(TestTags.BALL_RECOMMENDATION)) {
+                val recommended = fittingBalls.first()
+                val size = formatter.format(recommended.diameter)
                 Text(
-                    text = stringResource(R.string.ball_recommended, formatter.format(fittingBalls.first())),
+                    text = if (ballSetName.isEmpty()) {
+                        stringResource(R.string.ball_recommended, size)
+                    } else {
+                        stringResource(R.string.ball_recommended_from_set, ballSetName, size)
+                    },
                     style = MaterialTheme.typography.titleSmall,
                 )
+                recommended.details().takeIf { it.isNotEmpty() }?.let {
+                    Text(it, style = MaterialTheme.typography.bodyMedium)
+                }
                 if (fittingBalls.size > 1) {
                     Text(
                         text = stringResource(
                             R.string.ball_also_fits,
-                            fittingBalls.drop(1).joinToString { formatter.format(it) },
+                            fittingBalls.drop(1).joinToString { formatter.format(it.diameter) },
                         ),
                         style = MaterialTheme.typography.bodySmall,
                     )
@@ -176,7 +188,7 @@ private fun ShareButton(text: String) {
 @Composable
 private fun shareText(
     result: CalculationResult.Success,
-    recommendedBall: BigDecimal?,
+    recommendedBall: Ball?,
     formatter: NumberFormatter,
 ): String {
     val dimensions = result.dimensions
@@ -205,7 +217,17 @@ private fun shareText(
                 formatter.format(result.maxBallDiameterExclusive),
             ),
         )
-        recommendedBall?.let { add(stringResource(R.string.share_recommended_ball, formatter.format(it))) }
+        recommendedBall?.let { ball ->
+            val size = formatter.format(ball.diameter)
+            val details = ball.details()
+            add(
+                if (details.isEmpty()) {
+                    stringResource(R.string.share_recommended_ball, size)
+                } else {
+                    stringResource(R.string.share_recommended_ball_details, size, details)
+                },
+            )
+        }
         if (result.isExtrapolated) add(stringResource(R.string.share_extrapolated))
     }
     return lines.joinToString("\n")
@@ -289,8 +311,16 @@ fun CompactResultBar(state: CalculatorUiState) {
                     if (result.isExtrapolated) {
                         Icon(painterResource(R.drawable.ic_warning), contentDescription = stringResource(R.string.compact_extrapolated))
                     }
-                    state.fittingBalls.firstOrNull()?.let {
-                        Text(stringResource(R.string.compact_ball, formatter.format(it)), style = MaterialTheme.typography.titleSmall)
+                    state.fittingBalls.firstOrNull()?.let { ball ->
+                        val size = formatter.format(ball.diameter)
+                        Text(
+                            text = if (ball.label.isEmpty()) {
+                                stringResource(R.string.compact_ball, size)
+                            } else {
+                                stringResource(R.string.compact_ball_label, size, ball.label)
+                            },
+                            style = MaterialTheme.typography.titleSmall,
+                        )
                     }
                 }
                 is CalculationResult.Failure -> Text(

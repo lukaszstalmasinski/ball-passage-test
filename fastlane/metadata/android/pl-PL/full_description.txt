@@ -3,7 +3,9 @@ Ball Passage Test oblicza średnicę stalowej kulki do próby przelotu kulki (ku
 Wpisz średnicę zewnętrzną, grubość ścianki i najmniejszy promień gięcia rury. Minimalna średnica kulki i dopuszczalny zakres pojawią się od razu, zgodnie z VGB-S-013-00-2014-12, punkt 7.2.5, tabela 3.
 
 • Wynik na bieżąco podczas wpisywania, także na małych telefonach – wynik jest widoczny nad klawiaturą
-• Twój zestaw kulek: dodaj kulki, które masz w warsztacie, a aplikacja podpowie, której użyć
+• Twoje zestawy kulek: kulki z każdego warsztatu czy walizki, z oznaczeniem i miejscem (np. K-12 · walizka 2) – aplikacja podpowie, której użyć
+• Dodawanie całego zakresu kulek naraz (np. 20–50 mm co 1 mm)
+• Udostępnianie zestawu współpracownikom kodem QR lub tekstem – skanowanie działa offline
 • Obliczenia krok po kroku: średnica wewnętrzna, stosunek gięcia R/dₒ i odjęcie z tabeli
 • Tabela 3 z podświetloną komórką użytą dla Twojej rury
 • Jasne wskazówki, gdy rura wykracza poza tabelę, np. minimalny promień gięcia

@@ -3,7 +3,9 @@ Ball Passage Test calculates the steel ball diameter for the ball passage test (
 Enter the outer diameter, wall thickness and smallest bend radius of the tube. The minimum ball diameter and the allowed ball range are shown instantly, according to VGB-S-013-00-2014-12, section 7.2.5, Table 3.
 
 • Instant result while you type, also on small phones: the result stays visible above the keyboard
-• Your ball set: add the balls you have in the workshop and the app tells you which one to use
+• Your ball sets: keep the balls of each workshop or case, with marking and location (e.g. K-12 · case 2) – the app tells you which one to use
+• Add a whole range of balls at once (e.g. 20–50 mm every 1 mm)
+• Share a ball set with colleagues by QR code or text – scanning works offline
 • Step-by-step calculation: inner diameter, bend ratio R/dₒ and the deduction from the table
 • Table 3 with the cell used for your tube highlighted
 • Clear guidance when a tube is outside the table, e.g. the minimum bend radius

@@ -18,8 +18,15 @@ Android app that calculates the steel ball diameter for the **ball passage test*
   replaces the navigation bar, so the result stays visible on small phones. The screen also
   shows the step-by-step calculation and Table 3 with the cell that was used highlighted.
   When a tube is outside the table, the app says why, for example the minimum bend radius.
-- **Ball set.** Enter the balls available in the workshop. The calculator then recommends the
-  smallest ball that fits the allowed range and lists the others that also fit.
+- **Ball sets.** Keep the steel balls of each workshop or case as a separate set and switch the
+  active one. You can add balls one by one or as a range (e.g. 20–50 mm every 1 mm), and give
+  each ball a marking and location (e.g. *K-12 · case 2*). The calculator recommends the smallest
+  ball of the active set that fits, together with its marking. The Balls tab marks the balls
+  that fit the tube currently in the calculator.
+- **Sharing ball sets.** A set can be shared as a QR code that you scan in the app on another
+  phone, or as text that you send by message or e-mail and paste on import. Scanning runs
+  fully on the device (CameraX + ZXing, no Google services). The camera permission is requested
+  only when the scanner opens.
 - **Recent tubes.** The last 8 tubes are kept and can be recalculated with one tap. A tube is
   saved only after its input has stayed unchanged for 2 s.
 - **Share.** Sends a plain-text summary for protocols and messages.
@@ -65,7 +72,7 @@ message is fixed, and the extrapolated row is marked.
 
 | Module | Contents |
 |---|---|
-| `:core` | Pure Kotlin calculation (`BallPassageCalculator`, `BallPassageTable`) and ball selection (`BallSelector`), no Android dependencies |
+| `:core` | Pure Kotlin calculation (`BallPassageCalculator`, `BallPassageTable`), ball sets (`BallSets`, `BallRange`), sharing format (`BallSetCodec`) and ball selection (`BallSelector`), no Android dependencies |
 | `:app` | Jetpack Compose UI (Material 3) with three tabs, ViewModels, DataStore persistence (`UserDataRepository`), resources in EN / PL / DE |
 
 Tech: Kotlin, Jetpack Compose, Material 3 (dynamic color, dark theme), DataStore, AGP 9,
@@ -78,11 +85,16 @@ Requirements: JDK 17+ and the Android SDK. Missing SDK platforms are downloaded 
 
 ```sh
 ./gradlew check            # unit tests (core + app, incl. Robolectric UI tests) and lint
+./gradlew connectedDebugAndroidTest  # instrumented tests (dialog flows) on a device or emulator
 ./gradlew assembleDebug    # debug APK
 ./gradlew bundleRelease    # release App Bundle (R8 minified)
 ```
 
 Lint warnings fail the build, and so do Kotlin warnings in the app module.
+
+Instrumented tests (`app/src/androidTest`) cover the dialogs of the Balls tab. They run on a
+device because Robolectric never gets idle after typing into text fields inside Compose
+dialogs. Real devices render those dialogs normally, which was checked by counting frames.
 
 ## Release signing
 

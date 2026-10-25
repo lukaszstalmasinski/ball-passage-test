@@ -39,6 +39,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import pl.stalmasinski.ballpassage.R
+import pl.stalmasinski.ballpassage.core.Ball
+import pl.stalmasinski.ballpassage.core.BallSet
 import pl.stalmasinski.ballpassage.core.TubeDimensions
 import pl.stalmasinski.ballpassage.ui.AppTopBar
 import pl.stalmasinski.ballpassage.ui.TestTags
@@ -243,7 +245,11 @@ private fun CalculatorScreenPreview() {
                     DimensionField.WALL_THICKNESS to "5",
                     DimensionField.BEND_RADIUS to "70",
                 ),
-                balls = listOf(BigDecimal("32"), BigDecimal("35")),
+                ballSet = BallSet(
+                    id = "preview",
+                    name = "",
+                    balls = listOf(Ball("1", BigDecimal("32"), "K-12", "case 2"), Ball("2", BigDecimal("35"))),
+                ),
                 history = listOf(TubeDimensions(BigDecimal("33.7"), BigDecimal("4.5"), BigDecimal("60"))),
             ),
             onValueChange = { _, _ -> },
