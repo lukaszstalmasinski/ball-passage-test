@@ -68,7 +68,9 @@ class BallsFlowTest {
         openBalls()
         addBall("32")
 
-        composeRule.onNodeWithTag(TestTags.ballItem(BigDecimal("32"))).performClick()
+        Espresso.closeSoftKeyboard()
+        composeRule.onNodeWithTag(TestTags.ballItem(BigDecimal("32"))).performScrollTo().performClick()
+        waitForTag(TestTags.BALL_LABEL)
         composeRule.onNodeWithTag(TestTags.BALL_LABEL).performTextInput("K-12")
         composeRule.onNodeWithTag(TestTags.BALL_LOCATION).performTextInput("case 2")
         composeRule.onNodeWithTag(TestTags.DIALOG_CONFIRM).performClick()
