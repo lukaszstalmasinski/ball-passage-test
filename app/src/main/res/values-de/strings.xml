@@ -21,10 +21,10 @@
     <string name="error_must_be_positive">Der Wert muss größer als 0 sein</string>
     <string name="error_wall_too_thick">Wand zu dick – sie muss kleiner als der halbe Außendurchmesser sein</string>
 
-    <string name="result_label">Mindest-Kugeldurchmesser</string>
+    <string name="result_label">Kugeldurchmesser nach Norm</string>
     <string name="result_placeholder">Rohrabmessungen eingeben, um den Kugeldurchmesser zu berechnen.</string>
     <string name="result_fix_inputs">Markierte Felder korrigieren.</string>
-    <string name="result_range">Geeignete Kugel: %1$s mm bis unter %2$s mm</string>
+    <string name="result_standard_ball">Kugel nach Norm: %1$s mm</string>
     <string name="result_straight_tube">Gerades Rohr (R = 0)</string>
     <string name="result_extrapolated">Innendurchmesser über 49 mm sind in Tabelle 3 der VGB-S-013 nicht erfasst. Der Wert ist extrapoliert – vor der Verwendung bestätigen.</string>
     <string name="result_failure_title">Kugeldurchmesser kann nicht bestimmt werden</string>
@@ -37,7 +37,7 @@
     <string name="ball_none_fits">Keine Ihrer Kugeln passt zu diesem Rohr.</string>
     <string name="ball_set_empty_action">Eigene Kugeln hinzufügen, um einen Vorschlag zu erhalten</string>
 
-    <string name="compact_result">Min. Ø %1$s mm</string>
+    <string name="compact_result">Ø %1$s mm</string>
     <string name="compact_ball">Kugel %1$s mm</string>
     <string name="compact_placeholder">Rohrabmessungen eingeben</string>
     <string name="compact_extrapolated">Extrapoliert, außerhalb der Norm</string>
@@ -46,7 +46,7 @@
     <string name="share_heading">Kugeldurchlaufversuch – VGB-S-013, Tabelle 3</string>
     <string name="share_input">dₒ = %1$s mm, s = %2$s mm, R = %3$s mm</string>
     <string name="share_calculation">dᵢ = %1$s mm, R / dₒ = %2$s, Abzug %3$s mm</string>
-    <string name="share_result">Mindest-Kugeldurchmesser: %1$s mm (Kugel kleiner als %2$s mm)</string>
+    <string name="share_result">Kugeldurchmesser nach Norm: %1$s mm</string>
     <string name="share_recommended_ball">Kugel aus meinem Satz: %1$s mm</string>
     <string name="share_extrapolated">Hinweis: extrapolierter Wert, außerhalb von Tabelle 3 der VGB-S-013.</string>
 
@@ -55,7 +55,7 @@
     <string name="breakdown_bend_ratio">Biegeverhältnis R / dₒ</string>
     <string name="breakdown_straight_tube">∞ (gerades Rohr)</string>
     <string name="breakdown_deduction">Abzug nach Tabelle 3</string>
-    <string name="breakdown_ball_diameter">Mindest-Kugeldurchmesser dᵢ − Abzug</string>
+    <string name="breakdown_ball_diameter">Kugeldurchmesser dᵢ − Abzug</string>
 
     <string name="table_title">VGB-S-013, Tabelle 3</string>
     <string name="table_subtitle">Um wie viel mm die Kugel kleiner als dᵢ sein darf</string>

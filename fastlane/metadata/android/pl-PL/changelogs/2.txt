@@ -1,0 +1,1 @@
+Wynik pokazuje teraz jedną średnicę kulki wg normy zamiast przedziału. Kulki z Twojego zestawu są podpowiadane tak jak wcześniej.

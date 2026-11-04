@@ -1,0 +1,1 @@
+The result now shows a single ball diameter per the standard instead of a range. Balls from your set are suggested as before.

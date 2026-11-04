@@ -21,10 +21,10 @@
     <string name="error_must_be_positive">Wartość musi być większa od 0</string>
     <string name="error_wall_too_thick">Ścianka jest za gruba – musi być mniejsza niż połowa średnicy zewnętrznej</string>
 
-    <string name="result_label">Minimalna średnica kulki</string>
+    <string name="result_label">Średnica kulki wg normy</string>
     <string name="result_placeholder">Wpisz wymiary rury, aby obliczyć średnicę kulki.</string>
     <string name="result_fix_inputs">Popraw zaznaczone pola.</string>
-    <string name="result_range">Odpowiednia kulka: od %1$s mm do mniej niż %2$s mm</string>
+    <string name="result_standard_ball">Kulka wg normy: %1$s mm</string>
     <string name="result_straight_tube">Rura prosta (R = 0)</string>
     <string name="result_extrapolated">Średnice wewnętrzne powyżej 49 mm nie są objęte tabelą 3 normy VGB-S-013. Wartość jest ekstrapolowana – potwierdź ją przed użyciem.</string>
     <string name="result_failure_title">Nie można wyznaczyć średnicy kulki</string>
@@ -37,7 +37,7 @@
     <string name="ball_none_fits">Żadna z Twoich kulek nie pasuje do tej rury.</string>
     <string name="ball_set_empty_action">Dodaj swoje kulki, aby dostać podpowiedź</string>
 
-    <string name="compact_result">Min. Ø %1$s mm</string>
+    <string name="compact_result">Ø %1$s mm</string>
     <string name="compact_ball">Kulka %1$s mm</string>
     <string name="compact_placeholder">Wpisz wymiary rury</string>
     <string name="compact_extrapolated">Wartość ekstrapolowana, poza normą</string>
@@ -46,7 +46,7 @@
     <string name="share_heading">Próba przelotu kulki – VGB-S-013, tabela 3</string>
     <string name="share_input">dₒ = %1$s mm, s = %2$s mm, R = %3$s mm</string>
     <string name="share_calculation">dᵢ = %1$s mm, R / dₒ = %2$s, odjęcie %3$s mm</string>
-    <string name="share_result">Minimalna średnica kulki: %1$s mm (kulka mniejsza niż %2$s mm)</string>
+    <string name="share_result">Średnica kulki wg normy: %1$s mm</string>
     <string name="share_recommended_ball">Kulka z mojego zestawu: %1$s mm</string>
     <string name="share_extrapolated">Uwaga: wartość ekstrapolowana, poza tabelą 3 normy VGB-S-013.</string>
 
@@ -55,7 +55,7 @@
     <string name="breakdown_bend_ratio">Stosunek gięcia R / dₒ</string>
     <string name="breakdown_straight_tube">∞ (rura prosta)</string>
     <string name="breakdown_deduction">Odjęcie wg tabeli 3</string>
-    <string name="breakdown_ball_diameter">Minimalna średnica kulki dᵢ − odjęcie</string>
+    <string name="breakdown_ball_diameter">Średnica kulki dᵢ − odjęcie</string>
 
     <string name="table_title">VGB-S-013, tabela 3</string>
     <string name="table_subtitle">O ile mm kulka może być mniejsza od dᵢ</string>

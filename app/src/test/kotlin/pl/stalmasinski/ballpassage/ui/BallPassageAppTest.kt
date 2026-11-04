@@ -63,11 +63,12 @@ class BallPassageAppTest {
     }
 
     @Test
-    fun calculatesMinimumBallDiameterAndHighlightsTableCell() {
+    fun calculatesBallDiameterAndHighlightsTableCell() {
         enter(outer = "48.3", wall = "5", radius = "70")
 
         composeRule.onNodeWithTag(TestTags.BALL_DIAMETER).assertTextEquals("31.8 mm")
-        composeRule.onNodeWithText("Suitable ball: 31.8 mm to less than 38.3 mm").assertIsDisplayed()
+        composeRule.onNodeWithText("Ball diameter per standard").assertIsDisplayed()
+        composeRule.onNodeWithText("less than", substring = true).assertDoesNotExist()
         // d_i = 38.3 mm -> row 30–39 (index 1); R / d_o = 1.44 -> column 1.0–1.5 (index 1).
         composeRule.onNodeWithTag(TestTags.tableCell(1, 1)).performScrollTo().assertIsSelected()
         composeRule.onNodeWithTag(TestTags.tableCell(0, 0)).assertIsNotSelected()
@@ -187,6 +188,7 @@ class BallPassageAppTest {
         openBalls()
 
         composeRule.onNodeWithText("For tube 48.3 × 5 · R 70").assertIsDisplayed()
+        composeRule.onNodeWithText("Ball per standard: 31.8 mm").assertIsDisplayed()
         composeRule.onNodeWithText("Use this").assertIsDisplayed()
         composeRule.onNodeWithText("Fits").assertIsDisplayed()
     }
@@ -227,7 +229,7 @@ class BallPassageAppTest {
         @Suppress("DEPRECATION")
         val text = chooser.getParcelableExtra<Intent>(Intent.EXTRA_INTENT)!!.getStringExtra(Intent.EXTRA_TEXT)!!
         assertTrue(text, text.contains("dₒ = 48.3 mm, s = 5 mm, R = 70 mm"))
-        assertTrue(text, text.contains("Minimum ball diameter: 31.8 mm (ball smaller than 38.3 mm)"))
+        assertTrue(text, text.lines().contains("Ball diameter per standard: 31.8 mm"))
     }
 
     @Test
@@ -270,7 +272,7 @@ class BallPassageAppTest {
     fun usesPolishTextsAndDecimalComma() {
         enter(outer = "48,3", wall = "5", radius = "70")
 
-        composeRule.onNodeWithText("Minimalna średnica kulki").assertIsDisplayed()
+        composeRule.onNodeWithText("Średnica kulki wg normy").assertIsDisplayed()
         composeRule.onNodeWithTag(TestTags.BALL_DIAMETER).assertTextEquals("31,8 mm")
         composeRule.onNodeWithText("Kulki").assertIsDisplayed()
         composeRule.onNodeWithText("Przelot kulki").assertIsDisplayed()
@@ -281,7 +283,7 @@ class BallPassageAppTest {
     fun usesGermanTexts() {
         enter(outer = "48,3", wall = "5", radius = "70")
 
-        composeRule.onNodeWithText("Mindest-Kugeldurchmesser").assertIsDisplayed()
+        composeRule.onNodeWithText("Kugeldurchmesser nach Norm").assertIsDisplayed()
         composeRule.onNodeWithText("Kugeldurchlauf").assertIsDisplayed()
         composeRule.onNodeWithTag(TestTags.BALL_DIAMETER).assertTextEquals("31,8 mm")
     }

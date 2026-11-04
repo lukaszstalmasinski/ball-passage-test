@@ -1,0 +1,1 @@
+Das Ergebnis zeigt jetzt einen einzigen Kugeldurchmesser nach Norm statt eines Bereichs. Kugeln aus Ihrem Satz werden wie bisher vorgeschlagen.

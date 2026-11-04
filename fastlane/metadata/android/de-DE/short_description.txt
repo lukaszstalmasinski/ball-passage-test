@@ -1,1 +1,1 @@
-Mindest-Kugeldurchmesser für den Kugeldurchlaufversuch an Rohrbögen.
+Kugeldurchmesser für den Kugeldurchlaufversuch an Rohrbögen.

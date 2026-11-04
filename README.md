@@ -48,8 +48,8 @@ Android app that calculates the steel ball diameter for the **ball passage test*
 2. Row: `dᵢ` rounded to whole millimetres (half up), 20–57 mm.
 3. Column: bend ratio `R / dₒ`, ranges `[0.5, 1.0)`, `[1.0, 1.5)`, `[1.5, 2.0)`, `[2.0, ∞)`.
    A straight tube (R = 0) uses the last column.
-4. Minimum ball diameter: `dᵢ − deduction`. The ball may be smaller than `dᵢ` by at most the
-   deduction, so a ball with `dᵢ − deduction ≤ d < dᵢ` is suitable.
+4. Ball diameter per standard: `dᵢ − deduction`. This single value is the result. A ball from the
+   set also fits if `dᵢ − deduction ≤ d < dᵢ`; such balls are listed as alternatives.
 
 | dᵢ [mm] \ R/dₒ | 0.5–1.0 | 1.0–1.5 | 1.5–2.0 | ≥ 2.0 |
 |---|---|---|---|---|

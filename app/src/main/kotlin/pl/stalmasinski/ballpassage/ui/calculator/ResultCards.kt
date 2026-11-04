@@ -89,14 +89,6 @@ private fun SuccessContent(result: CalculationResult.Success, state: CalculatorU
         }
         ShareButton(shareText)
     }
-    Text(
-        text = stringResource(
-            R.string.result_range,
-            formatter.format(result.minBallDiameter),
-            formatter.format(result.maxBallDiameterExclusive),
-        ),
-        style = MaterialTheme.typography.bodyMedium,
-    )
     if (result.bendRatio == BendRatio.StraightTube) {
         Text(stringResource(R.string.result_straight_tube), style = MaterialTheme.typography.bodyMedium)
     }
@@ -214,7 +206,6 @@ private fun shareText(
             stringResource(
                 R.string.share_result,
                 formatter.format(result.minBallDiameter),
-                formatter.format(result.maxBallDiameterExclusive),
             ),
         )
         recommendedBall?.let { ball ->

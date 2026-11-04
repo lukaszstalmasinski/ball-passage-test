@@ -28,10 +28,10 @@
     <string name="error_must_be_positive">Must be greater than 0</string>
     <string name="error_wall_too_thick">Wall is too thick – it must be less than half of the outer diameter</string>
 
-    <string name="result_label">Minimum ball diameter</string>
+    <string name="result_label">Ball diameter per standard</string>
     <string name="result_placeholder">Enter the tube dimensions to calculate the ball diameter.</string>
     <string name="result_fix_inputs">Correct the highlighted fields.</string>
-    <string name="result_range">Suitable ball: %1$s mm to less than %2$s mm</string>
+    <string name="result_standard_ball">Ball per standard: %1$s mm</string>
     <string name="result_straight_tube">Straight tube (R = 0)</string>
     <string name="result_extrapolated">Inner diameters above 49 mm are not covered by VGB-S-013 Table 3. This value is extrapolated – confirm it before use.</string>
     <string name="result_failure_title">Ball diameter cannot be determined</string>
@@ -44,7 +44,7 @@
     <string name="ball_none_fits">None of your balls fits this tube.</string>
     <string name="ball_set_empty_action">Add your balls to get a suggestion</string>
 
-    <string name="compact_result">Min. Ø %1$s mm</string>
+    <string name="compact_result">Ø %1$s mm</string>
     <string name="compact_ball">Ball %1$s mm</string>
     <string name="compact_placeholder">Enter the tube dimensions</string>
     <string name="compact_extrapolated">Extrapolated, outside the standard</string>
@@ -53,7 +53,7 @@
     <string name="share_heading">Ball passage test – VGB-S-013, Table 3</string>
     <string name="share_input">dₒ = %1$s mm, s = %2$s mm, R = %3$s mm</string>
     <string name="share_calculation">dᵢ = %1$s mm, R / dₒ = %2$s, deduction %3$s mm</string>
-    <string name="share_result">Minimum ball diameter: %1$s mm (ball smaller than %2$s mm)</string>
+    <string name="share_result">Ball diameter per standard: %1$s mm</string>
     <string name="share_recommended_ball">Ball from my set: %1$s mm</string>
     <string name="share_extrapolated">Note: extrapolated value, outside VGB-S-013 Table 3.</string>
 
@@ -62,7 +62,7 @@
     <string name="breakdown_bend_ratio">Bend ratio R / dₒ</string>
     <string name="breakdown_straight_tube">∞ (straight tube)</string>
     <string name="breakdown_deduction">Deduction from Table 3</string>
-    <string name="breakdown_ball_diameter">Minimum ball diameter dᵢ − deduction</string>
+    <string name="breakdown_ball_diameter">Ball diameter dᵢ − deduction</string>
 
     <string name="table_title">VGB-S-013, Table 3</string>
     <string name="table_subtitle">How much smaller than dᵢ the ball may be, in mm</string>

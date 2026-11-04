@@ -386,9 +386,8 @@ private fun TubeContextCard(tubeContext: TubeContext?, hasBalls: Boolean, modifi
             )
             Text(
                 text = stringResource(
-                    R.string.result_range,
+                    R.string.result_standard_ball,
                     formatter.format(tubeContext.result.minBallDiameter),
-                    formatter.format(tubeContext.result.maxBallDiameterExclusive),
                 ),
                 style = MaterialTheme.typography.bodyMedium,
             )
