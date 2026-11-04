@@ -1,0 +1,1 @@
+Drobna poprawka wyglądu: przycisk dodawania kulki jest teraz wyrównany z polem średnicy.

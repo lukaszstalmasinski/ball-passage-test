@@ -1,0 +1,1 @@
+Kleine optische Korrektur: Die Schaltfläche zum Hinzufügen einer Kugel ist jetzt am Durchmesserfeld ausgerichtet.

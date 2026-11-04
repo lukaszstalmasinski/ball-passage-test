@@ -424,8 +424,9 @@ private fun AddBallRow(
             )
             FilledIconButton(
                 onClick = onAdd,
+                // Centred on the field's 56 dp outline, which starts 8 dp down to leave room for the label.
                 modifier = Modifier
-                    .padding(top = 8.dp)
+                    .padding(top = 12.dp)
                     .size(48.dp)
                     .testTag(TestTags.BALL_ADD),
             ) {
