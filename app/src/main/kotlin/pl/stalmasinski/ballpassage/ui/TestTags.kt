@@ -1,6 +1,5 @@
 package pl.stalmasinski.ballpassage.ui
 
-import pl.stalmasinski.ballpassage.ui.calculator.DimensionField
 import java.math.BigDecimal
 
 /** Stable node tags for UI tests. */
@@ -32,7 +31,7 @@ object TestTags {
     const val QR_SCANNER = "qr_scanner"
     const val IMPORT_TEXT = "import_text"
 
-    fun field(field: DimensionField) = "field_${field.name}"
+    fun field(field: Enum<*>) = "field_${field.name}"
 
     fun tableCell(rowIndex: Int, columnIndex: Int) = "cell_${rowIndex}_$columnIndex"
 

@@ -25,8 +25,8 @@ jobs:
       - name: Set up Gradle build
         uses: ./.github/actions/setup-gradle-build
 
-      - name: Run unit tests, lint and release build
-        run: ./gradlew check assembleRelease bundleRelease :core:jacocoTestReport :app:createDebugUnitTestCoverageReport
+      - name: Run unit tests, screenshot tests, lint and release build
+        run: ./gradlew check verifyRoborazziDebug assembleRelease bundleRelease :core:jacocoTestReport :app:createDebugUnitTestCoverageReport
 
       - name: Write coverage summary
         if: always()
@@ -34,6 +34,7 @@ jobs:
           python3 .github/scripts/coverage_summary.py "unit tests"
           core/build/reports/jacoco/test/jacocoTestReport.xml
           app/build/reports/coverage/test/debug/report.xml
+          --min core=95 --min app=70
           >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload coverage reports
@@ -44,6 +45,14 @@ jobs:
           path: |
             core/build/reports/jacoco/
             app/build/reports/coverage/test/
+
+      - name: Upload screenshot differences
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: screenshot-differences
+          path: app/build/outputs/roborazzi/
+          if-no-files-found: ignore
 
       - name: Upload test reports
         if: failure()

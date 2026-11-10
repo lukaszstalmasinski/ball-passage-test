@@ -146,6 +146,21 @@ class BallsViewModelTest {
     }
 
     @Test
+    fun `a failed save is reported until the message was shown`() {
+        viewModel.onInputChange("32")
+        repository.failWrites = true
+
+        viewModel.add()
+
+        assertTrue(state.saveFailed)
+        assertEquals(emptyList<String>(), diameters)
+
+        viewModel.onSaveErrorShown()
+
+        assertFalse(state.saveFailed)
+    }
+
+    @Test
     fun `range step default`() {
         assertEquals(BigDecimal.ONE, BallsViewModel.DEFAULT_RANGE_STEP)
     }

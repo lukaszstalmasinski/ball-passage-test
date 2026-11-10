@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- App -->
     <string name="app_name">Przelot kulki</string>
     <string name="launcher_name">Przelot kulki</string>
-
     <string name="nav_calculator">Kalkulator</string>
     <string name="nav_balls">Kulki</string>
     <string name="nav_info">Informacje</string>
 
+    <!-- Calculator: inputs and recent tubes -->
     <string name="field_outer_diameter">Średnica zewnętrzna dₒ</string>
     <string name="field_wall_thickness">Grubość ścianki s</string>
     <string name="field_bend_radius">Promień gięcia R</string>
     <string name="field_bend_radius_hint">Najmniejszy promień gięcia rury; 0 dla rury prostej</string>
     <string name="clear_field">Wyczyść: %1$s</string>
     <string name="clear_all">Wyczyść wszystkie pola</string>
-
     <string name="recent_title">Ostatnie rury</string>
     <string name="recent_clear">Wyczyść ostatnie rury</string>
-
     <string name="error_invalid_number">Wpisz poprawną liczbę</string>
     <string name="error_must_be_positive">Wartość musi być większa od 0</string>
     <string name="error_wall_too_thick">Ścianka jest za gruba – musi być mniejsza niż połowa średnicy zewnętrznej</string>
 
+    <!-- Calculator: result -->
     <string name="result_label">Średnica kulki wg normy</string>
     <string name="result_placeholder">Wpisz wymiary rury, aby obliczyć średnicę kulki.</string>
     <string name="result_fix_inputs">Popraw zaznaczone pola.</string>
@@ -31,17 +31,20 @@
     <string name="problem_inner_diameter_too_small">Średnica wewnętrzna %1$s mm jest mniejsza od minimum tabeli (20 mm).</string>
     <string name="problem_inner_diameter_too_large">Średnica wewnętrzna %1$s mm jest większa od maksimum tabeli (57 mm).</string>
     <string name="problem_bend_ratio_too_small">Gięcie jest zbyt ciasne: R / dₒ wynosi %1$s, a tabela zaczyna się od 0,5. Promień gięcia musi wynosić co najmniej %2$s mm.</string>
-
     <string name="ball_recommended">Z Twojego zestawu: użyj kulki %1$s mm</string>
     <string name="ball_also_fits">Pasują też: %1$s mm</string>
     <string name="ball_none_fits">Żadna z Twoich kulek nie pasuje do tej rury.</string>
     <string name="ball_set_empty_action">Dodaj swoje kulki, aby dostać podpowiedź</string>
+    <string name="ball_recommended_from_set">Z zestawu „%1$s”: użyj kulki %2$s mm</string>
 
+    <!-- Calculator: bar above the keyboard -->
     <string name="compact_result">Ø %1$s mm</string>
     <string name="compact_ball">Kulka %1$s mm</string>
     <string name="compact_placeholder">Wpisz wymiary rury</string>
     <string name="compact_extrapolated">Wartość ekstrapolowana, poza normą</string>
+    <string name="compact_ball_label">Kulka %1$s mm · %2$s</string>
 
+    <!-- Calculator: sharing the result -->
     <string name="share">Udostępnij wynik</string>
     <string name="share_heading">Próba przelotu kulki – VGB-S-013, tabela 3</string>
     <string name="share_input">dₒ = %1$s mm, s = %2$s mm, R = %3$s mm</string>
@@ -49,19 +52,21 @@
     <string name="share_result">Średnica kulki wg normy: %1$s mm</string>
     <string name="share_recommended_ball">Kulka z mojego zestawu: %1$s mm</string>
     <string name="share_extrapolated">Uwaga: wartość ekstrapolowana, poza tabelą 3 normy VGB-S-013.</string>
+    <string name="share_recommended_ball_details">Kulka z mojego zestawu: %1$s mm (%2$s)</string>
 
+    <!-- Calculator: calculation steps and Table 3 -->
     <string name="breakdown_title">Obliczenia</string>
     <string name="breakdown_inner_diameter">Średnica wewnętrzna dᵢ = dₒ − 2s</string>
     <string name="breakdown_bend_ratio">Stosunek gięcia R / dₒ</string>
     <string name="breakdown_straight_tube">∞ (rura prosta)</string>
     <string name="breakdown_deduction">Odjęcie wg tabeli 3</string>
     <string name="breakdown_ball_diameter">Średnica kulki dᵢ − odjęcie</string>
-
     <string name="table_title">VGB-S-013, tabela 3</string>
     <string name="table_subtitle">O ile mm kulka może być mniejsza od dᵢ</string>
     <string name="table_footnote">* Poza normą – wartości ekstrapolowane.</string>
     <string name="table_cell_description">Średnica wewnętrzna %1$s mm, R / dₒ %2$s: %3$s mm</string>
 
+    <!-- Balls: list and input -->
     <string name="balls_title">Zestaw kulek</string>
     <string name="balls_input_label">Średnica kulki</string>
     <string name="balls_add">Dodaj kulkę</string>
@@ -70,23 +75,20 @@
     <string name="balls_removed">Usunięto kulkę %1$s mm</string>
     <string name="balls_undo">Cofnij</string>
     <string name="balls_error_duplicate">Ta kulka jest już w zestawie</string>
+    <string name="balls_save_failed">Nie udało się zapisać zmiany. Sprawdź wolne miejsce w telefonie i spróbuj ponownie.</string>
+    <string name="context_none">Policz rurę w kalkulatorze, aby zobaczyć, które kulki do niej pasują.</string>
+    <string name="context_tube">Dla rury %1$s × %2$s · R %3$s</string>
+    <string name="ball_add_details">Dotknij kulki, aby dodać jej oznaczenie i miejsce.</string>
+    <string name="ball_badge_recommended">Użyj</string>
+    <string name="ball_badge_fits">Pasuje</string>
+    <plurals name="ball_count">
+        <item quantity="one">%d kulka</item>
+        <item quantity="few">%d kulki</item>
+        <item quantity="many">%d kulek</item>
+        <item quantity="other">%d kulki</item>
+    </plurals>
 
-    <string name="info_title">Informacje</string>
-    <string name="info_section_standard">Norma</string>
-    <string name="info_section_method">Metoda</string>
-    <string name="info_section_disclaimer">Zastrzeżenie</string>
-    <string name="info_section_privacy">Prywatność</string>
-    <string name="info_section_version">Wersja</string>
-    <string name="info_description" tools:ignore="TypographyDashes">Oblicza średnicę stalowej kulki do próby przelotu kulki (kulowania, Kugeldurchlaufversuch) rur giętych i wężownic według VGB-S-013-00-2014-12, punkt 7.2.5, tabela 3.</string>
-    <string name="info_extrapolation">Tabela 3 obejmuje średnice wewnętrzne 20–49 mm. Wiersz 50–57 mm został dodany przez ekstrapolację i zawsze jest oznaczony jako poza normą.</string>
-    <string name="info_method">Średnica wewnętrzna to dᵢ = dₒ − 2s. Wiersz tabeli wybierany jest według dᵢ zaokrąglonej do pełnych milimetrów, a kolumna według stosunku gięcia R / dₒ dla najmniejszego promienia gięcia rury. Kulka może być mniejsza od dᵢ najwyżej o wartość z tabeli, więc jej średnica musi wynosić co najmniej dᵢ minus ta wartość i mniej niż dᵢ. Z Twojego zestawu aplikacja podpowiada najmniejszą kulkę spełniającą ten zakres.</string>
-    <string name="info_disclaimer">Aplikacja ma charakter pomocniczy. Zawsze sprawdzaj wyniki z aktualnym wydaniem normy i wymaganiami projektu.</string>
-    <string name="info_privacy">Aplikacja działa w pełni offline i nie zbiera ani nie udostępnia żadnych danych. Twoje zestawy kulek i ostatnie obliczenia są zapisane tylko na tym urządzeniu i w jego kopii zapasowej. Aparat służy wyłącznie do skanowania udostępnionego zestawu kulek; żadne zdjęcia nie są zapisywane.</string>
-    <string name="info_version">Wersja %1$s (%2$d)</string>
-
-    <string name="ball_recommended_from_set">Z zestawu „%1$s”: użyj kulki %2$s mm</string>
-    <string name="share_recommended_ball_details">Kulka z mojego zestawu: %1$s mm (%2$s)</string>
-    <string name="compact_ball_label">Kulka %1$s mm · %2$s</string>
+    <!-- Balls: sets -->
     <string name="set_default_name">Mój zestaw</string>
     <string name="set_imported_name">Zaimportowany zestaw</string>
     <string name="set_label">Zestaw kulek</string>
@@ -99,12 +101,15 @@
     <string name="set_delete_confirm">Usuń</string>
     <string name="set_name">Nazwa</string>
     <string name="set_name_hint">np. Hala A</string>
-    <string name="export_action">Udostępnij zestaw</string>
     <string name="more_options">Więcej opcji</string>
-    <string name="import_scan">Importuj: skanuj kod QR</string>
-    <string name="import_paste">Importuj: wklej tekst</string>
-    <string name="context_none">Policz rurę w kalkulatorze, aby zobaczyć, które kulki do niej pasują.</string>
-    <string name="context_tube">Dla rury %1$s × %2$s · R %3$s</string>
+    <plurals name="set_delete_message">
+        <item quantity="one">Zestaw z %d kulką zostanie usunięty.</item>
+        <item quantity="few">Zestaw z %d kulkami zostanie usunięty.</item>
+        <item quantity="many">Zestaw z %d kulkami zostanie usunięty.</item>
+        <item quantity="other">Zestaw z %d kulki zostanie usunięty.</item>
+    </plurals>
+
+    <!-- Balls: dialogs -->
     <string name="range_open">Dodaj zakres kulek…</string>
     <string name="range_title">Dodaj zakres</string>
     <string name="range_description">Dodaje kulki od pierwszej do ostatniej średnicy z podanym krokiem. Kulki, które już są w zestawie, są pomijane.</string>
@@ -123,9 +128,11 @@
     <string name="ball_label_hint">np. K-12</string>
     <string name="ball_location">Miejsce</string>
     <string name="ball_location_hint">np. walizka 2</string>
-    <string name="ball_add_details">Dotknij kulki, aby dodać jej oznaczenie i miejsce.</string>
-    <string name="ball_badge_recommended">Użyj</string>
-    <string name="ball_badge_fits">Pasuje</string>
+
+    <!-- Balls: sharing sets -->
+    <string name="export_action">Udostępnij zestaw</string>
+    <string name="import_scan">Importuj: skanuj kod QR</string>
+    <string name="import_paste">Importuj: wklej tekst</string>
     <string name="export_title">Udostępnij „%1$s”</string>
     <string name="export_share_text">Udostępnij jako tekst</string>
     <string name="export_message_header">Zestaw kulek „%1$s” z aplikacji Ball Passage Test:</string>
@@ -144,16 +151,18 @@
     <string name="scan_permission_denied">Do zeskanowania kodu potrzebny jest dostęp do aparatu. Zestaw możesz też zaimportować, wklejając udostępniony tekst.</string>
     <string name="scan_allow_camera">Zezwól na aparat</string>
     <string name="scan_close">Zamknij skaner</string>
-    <plurals name="ball_count">
-        <item quantity="one">%d kulka</item>
-        <item quantity="few">%d kulki</item>
-        <item quantity="many">%d kulek</item>
-        <item quantity="other">%d kulki</item>
-    </plurals>
-    <plurals name="set_delete_message">
-        <item quantity="one">Zestaw z %d kulką zostanie usunięty.</item>
-        <item quantity="few">Zestaw z %d kulkami zostanie usunięty.</item>
-        <item quantity="many">Zestaw z %d kulkami zostanie usunięty.</item>
-        <item quantity="other">Zestaw z %d kulki zostanie usunięty.</item>
-    </plurals>
+
+    <!-- Info -->
+    <string name="info_title">Informacje</string>
+    <string name="info_section_standard">Norma</string>
+    <string name="info_section_method">Metoda</string>
+    <string name="info_section_disclaimer">Zastrzeżenie</string>
+    <string name="info_section_privacy">Prywatność</string>
+    <string name="info_section_version">Wersja</string>
+    <string name="info_description" tools:ignore="TypographyDashes">Oblicza średnicę stalowej kulki do próby przelotu kulki (kulowania, Kugeldurchlaufversuch) rur giętych i wężownic według VGB-S-013-00-2014-12, punkt 7.2.5, tabela 3.</string>
+    <string name="info_extrapolation">Tabela 3 obejmuje średnice wewnętrzne 20–49 mm. Wiersz 50–57 mm został dodany przez ekstrapolację i zawsze jest oznaczony jako poza normą.</string>
+    <string name="info_method">Średnica wewnętrzna to dᵢ = dₒ − 2s. Wiersz tabeli wybierany jest według dᵢ zaokrąglonej do pełnych milimetrów, a kolumna według stosunku gięcia R / dₒ dla najmniejszego promienia gięcia rury. Kulka może być mniejsza od dᵢ najwyżej o wartość z tabeli, więc jej średnica musi wynosić co najmniej dᵢ minus ta wartość i mniej niż dᵢ. Z Twojego zestawu aplikacja podpowiada najmniejszą kulkę spełniającą ten zakres.</string>
+    <string name="info_disclaimer">Aplikacja ma charakter pomocniczy. Zawsze sprawdzaj wyniki z aktualnym wydaniem normy i wymaganiami projektu.</string>
+    <string name="info_privacy">Aplikacja działa w pełni offline i nie zbiera ani nie udostępnia żadnych danych. Twoje zestawy kulek i ostatnie obliczenia są zapisane tylko na tym urządzeniu i w jego kopii zapasowej. Aparat służy wyłącznie do skanowania udostępnionego zestawu kulek; żadne zdjęcia nie są zapisywane.</string>
+    <string name="info_version">Wersja %1$s (%2$d)</string>
 </resources>
