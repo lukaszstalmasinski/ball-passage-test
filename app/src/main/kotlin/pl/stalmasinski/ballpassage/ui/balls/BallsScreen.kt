@@ -137,12 +137,13 @@ fun BallsScreen(state: BallsUiState, tubeContext: TubeContext?, actions: BallsAc
                 .consumeWindowInsets(padding)
                 .imePadding(),
             contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             val itemModifier = Modifier
                 .widthIn(max = 600.dp)
                 .fillMaxWidth()
+            // The balls are separate items, so the space between sections is part of each section.
+            val sectionModifier = itemModifier.padding(bottom = 16.dp)
 
             item {
                 SetSelector(
@@ -151,39 +152,37 @@ fun BallsScreen(state: BallsUiState, tubeContext: TubeContext?, actions: BallsAc
                     defaultName = defaultSetName,
                     onSelect = actions::selectSet,
                     onNewSet = { dialog = BallsDialog.NEW_SET },
-                    modifier = itemModifier,
+                    modifier = sectionModifier,
                 )
             }
-            item { TubeContextCard(tubeContext, hasBalls = state.balls.isNotEmpty(), modifier = itemModifier) }
+            item { TubeContextCard(tubeContext, hasBalls = state.balls.isNotEmpty(), modifier = sectionModifier) }
             item {
                 AddBallRow(
                     state = state,
                     onInputChange = actions::onInputChange,
                     onAdd = { actions.add() },
                     onAddRange = { dialog = BallsDialog.RANGE },
-                    modifier = itemModifier,
+                    modifier = sectionModifier,
                 )
             }
-            item {
-                BallList(
-                    balls = state.balls,
-                    tubeContext = tubeContext,
-                    onEdit = { editedBallId = it.id },
-                    onRemove = { ball ->
-                        actions.remove(ball)
-                        scope.launch {
-                            snackbarHostState.currentSnackbarData?.dismiss()
-                            val result = snackbarHostState.showSnackbar(
-                                message = removedMessage.format(formatter.format(ball.diameter)),
-                                actionLabel = undoLabel,
-                                duration = SnackbarDuration.Long,
-                            )
-                            if (result == SnackbarResult.ActionPerformed) actions.restore(ball)
-                        }
-                    },
-                    modifier = itemModifier,
-                )
-            }
+            ballList(
+                balls = state.balls,
+                tubeContext = tubeContext,
+                onEdit = { editedBallId = it.id },
+                onRemove = { ball ->
+                    actions.remove(ball)
+                    scope.launch {
+                        snackbarHostState.currentSnackbarData?.dismiss()
+                        val result = snackbarHostState.showSnackbar(
+                            message = removedMessage.format(formatter.format(ball.diameter)),
+                            actionLabel = undoLabel,
+                            duration = SnackbarDuration.Long,
+                        )
+                        if (result == SnackbarResult.ActionPerformed) actions.restore(ball)
+                    }
+                },
+                modifier = itemModifier,
+            )
         }
     }
 

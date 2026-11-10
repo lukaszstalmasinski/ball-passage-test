@@ -1,12 +1,15 @@
 package pl.stalmasinski.ballpassage.ui.balls
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasScrollToKeyAction
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTextInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertTrue
@@ -56,6 +59,19 @@ class BallsTabTest {
         composeRule.onNodeWithTag(TestTags.BALL_ADD).performClick()
 
         composeRule.waitForText("Could not save the change. Check the free storage on the phone and try again.")
+    }
+
+    @Test
+    fun longListComposesOnlyTheVisibleBalls() {
+        composeRule.givenBalls(*(1..200).map { "$it" }.toTypedArray())
+        composeRule.openTab(Destination.BALLS)
+
+        composeRule.onNodeWithTag(TestTags.ballItem(BigDecimal("1"))).assertExists()
+        composeRule.onNodeWithTag(TestTags.ballItem(BigDecimal("200"))).assertDoesNotExist()
+
+        composeRule.onNode(hasScrollToKeyAction()).performScrollToNode(hasTestTag(TestTags.ballItem(BigDecimal("200"))))
+
+        composeRule.onNodeWithTag(TestTags.ballItem(BigDecimal("200"))).assertIsDisplayed()
     }
 
     @Test
