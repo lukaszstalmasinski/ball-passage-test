@@ -19,6 +19,8 @@ import org.junit.rules.TemporaryFolder
 import org.junit.runner.RunWith
 import pl.stalmasinski.ballpassage.core.Ball
 import pl.stalmasinski.ballpassage.core.BallSets
+import pl.stalmasinski.ballpassage.core.KtaTube
+import pl.stalmasinski.ballpassage.core.Standard
 import pl.stalmasinski.ballpassage.core.TubeDimensions
 import java.io.File
 import java.math.BigDecimal
@@ -135,6 +137,38 @@ class DataStoreUserDataRepositoryTest {
             listOf(tube("48.3", "5", "70")),
             DataStoreUserDataRepository.decodeHistory("48.3,5,70;1,2;x,y,z;0,1,1"),
         )
+    }
+
+    @Test
+    fun `history keeps tubes of both standards`() = runTest {
+        val repository = repository()
+        val kta = KtaTube(BigDecimal("25"), BigDecimal("2.6"), BigDecimal("0.5"))
+        val vgb = tube("48.3", "5", "70")
+
+        repository.addToHistory(vgb)
+        repository.addToHistory(kta)
+        repository.addToHistory(KtaTube(BigDecimal("25.0"), BigDecimal("2.60"), BigDecimal("0.50")))
+
+        assertEquals(listOf(kta, vgb), repository.history.first())
+    }
+
+    @Test
+    fun `history entries of version 1_0 are read as VGB-S-013 tubes`() {
+        assertEquals(
+            listOf(tube("48.3", "5", "70"), KtaTube(BigDecimal("25"), BigDecimal("2.6"), BigDecimal("0"))),
+            DataStoreUserDataRepository.decodeHistory("48.3,5,70;K:25,2.6,0;K:1,2;K:25,2.6,-1"),
+        )
+    }
+
+    @Test
+    fun `standard is remembered`() = runTest {
+        val repository = repository()
+        assertEquals(Standard.VGB_S_013, repository.standard.first())
+
+        repository.setStandard(Standard.KTA_3211_1)
+
+        assertEquals(Standard.KTA_3211_1, repository.standard.first())
+        assertEquals(Standard.VGB_S_013, DataStoreUserDataRepository.decodeStandard("unknown"))
     }
 
     private fun tube(outer: String, wall: String, radius: String) =

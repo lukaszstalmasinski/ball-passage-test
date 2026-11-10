@@ -14,6 +14,9 @@ import kotlinx.serialization.json.Json
 import pl.stalmasinski.ballpassage.core.Ball
 import pl.stalmasinski.ballpassage.core.BallSet
 import pl.stalmasinski.ballpassage.core.BallSets
+import pl.stalmasinski.ballpassage.core.KtaTube
+import pl.stalmasinski.ballpassage.core.Standard
+import pl.stalmasinski.ballpassage.core.Tube
 import pl.stalmasinski.ballpassage.core.TubeDimensions
 import java.io.IOException
 
@@ -23,15 +26,20 @@ interface UserDataRepository {
     val ballSets: Flow<BallSets>
 
     /** Recently calculated tubes, newest first. */
-    val history: Flow<List<TubeDimensions>>
+    val history: Flow<List<Tube>>
+
+    /** The standard last chosen in the calculator. */
+    val standard: Flow<Standard>
 
     /** Applies [transform] to the current ball sets atomically and stores the result. */
     suspend fun updateBallSets(transform: (BallSets) -> BallSets)
 
-    /** Adds [dimensions] to the top of the history, removing an older identical entry. */
-    suspend fun addToHistory(dimensions: TubeDimensions)
+    /** Adds [tube] to the top of the history, removing an older identical entry. */
+    suspend fun addToHistory(tube: Tube)
 
     suspend fun clearHistory()
+
+    suspend fun setStandard(standard: Standard)
 
     companion object {
         const val MAX_HISTORY = 8
@@ -46,7 +54,9 @@ class DataStoreUserDataRepository(private val dataStore: DataStore<Preferences>)
 
     override val ballSets: Flow<BallSets> = preferences.map(::readBallSets).distinctUntilChanged()
 
-    override val history: Flow<List<TubeDimensions>> = preferences.map { decodeHistory(it[HISTORY]) }
+    override val history: Flow<List<Tube>> = preferences.map { decodeHistory(it[HISTORY]) }
+
+    override val standard: Flow<Standard> = preferences.map { decodeStandard(it[STANDARD]) }.distinctUntilChanged()
 
     override suspend fun updateBallSets(transform: (BallSets) -> BallSets) {
         dataStore.edit { prefs ->
@@ -55,8 +65,8 @@ class DataStoreUserDataRepository(private val dataStore: DataStore<Preferences>)
         }
     }
 
-    override suspend fun addToHistory(dimensions: TubeDimensions) {
-        val entry = normalize(dimensions)
+    override suspend fun addToHistory(tube: Tube) {
+        val entry = normalize(tube)
         dataStore.edit { prefs ->
             val history = listOf(entry) + decodeHistory(prefs[HISTORY]).filterNot { it == entry }
             prefs[HISTORY] = encodeHistory(history.take(UserDataRepository.MAX_HISTORY))
@@ -65,6 +75,10 @@ class DataStoreUserDataRepository(private val dataStore: DataStore<Preferences>)
 
     override suspend fun clearHistory() {
         dataStore.edit { it.remove(HISTORY) }
+    }
+
+    override suspend fun setStandard(standard: Standard) {
+        dataStore.edit { it[STANDARD] = standard.name }
     }
 
     @Serializable
@@ -79,6 +93,7 @@ class DataStoreUserDataRepository(private val dataStore: DataStore<Preferences>)
     internal companion object {
         private val BALL_SETS = stringPreferencesKey("ball_sets")
         private val HISTORY = stringPreferencesKey("history")
+        private val STANDARD = stringPreferencesKey("standard")
 
         /** Version 1.0 stored a single list of diameters, e.g. "30;32;35". */
         private val LEGACY_BALLS = stringPreferencesKey("balls")
@@ -88,6 +103,9 @@ class DataStoreUserDataRepository(private val dataStore: DataStore<Preferences>)
 
         private const val ENTRY_SEPARATOR = ";"
         private const val VALUE_SEPARATOR = ","
+
+        /** Marks KTA 3211.1 entries; entries without a prefix are VGB-S-013, as in version 1.0. */
+        private const val KTA_PREFIX = "K:"
 
         private val json = Json { ignoreUnknownKeys = true }
 
@@ -139,26 +157,44 @@ class DataStoreUserDataRepository(private val dataStore: DataStore<Preferences>)
             return BallSets(sets, stored.activeSetId)
         }
 
-        private fun normalize(dimensions: TubeDimensions) = TubeDimensions(
-            outerDiameter = BallSets.normalize(dimensions.outerDiameter),
-            wallThickness = BallSets.normalize(dimensions.wallThickness),
-            bendRadius = BallSets.normalize(dimensions.bendRadius),
-        )
+        fun decodeStandard(value: String?): Standard =
+            Standard.entries.firstOrNull { it.name == value } ?: Standard.VGB_S_013
 
-        fun encodeHistory(history: List<TubeDimensions>): String =
-            history.joinToString(ENTRY_SEPARATOR) { dimensions ->
-                listOf(dimensions.outerDiameter, dimensions.wallThickness, dimensions.bendRadius)
+        private fun normalize(tube: Tube): Tube = when (tube) {
+            is TubeDimensions -> TubeDimensions(
+                outerDiameter = BallSets.normalize(tube.outerDiameter),
+                wallThickness = BallSets.normalize(tube.wallThickness),
+                bendRadius = BallSets.normalize(tube.bendRadius),
+            )
+            is KtaTube -> KtaTube(
+                outerDiameter = BallSets.normalize(tube.outerDiameter),
+                wallThickness = BallSets.normalize(tube.wallThickness),
+                undersize = BallSets.normalize(tube.undersize),
+            )
+        }
+
+        fun encodeHistory(history: List<Tube>): String =
+            history.joinToString(ENTRY_SEPARATOR) { tube ->
+                val (prefix, third) = when (tube) {
+                    is TubeDimensions -> "" to tube.bendRadius
+                    is KtaTube -> KTA_PREFIX to tube.undersize
+                }
+                prefix + listOf(tube.outerDiameter, tube.wallThickness, third)
                     .joinToString(VALUE_SEPARATOR) { it.toPlainString() }
             }
 
         // Corrupted entries are skipped rather than failing the whole list.
-        fun decodeHistory(value: String?): List<TubeDimensions> =
+        fun decodeHistory(value: String?): List<Tube> =
             value.orEmpty()
                 .split(ENTRY_SEPARATOR)
                 .mapNotNull { entry ->
-                    val numbers = entry.split(VALUE_SEPARATOR).map { it.toBigDecimalOrNull() }
+                    val isKta = entry.startsWith(KTA_PREFIX)
+                    val numbers = entry.removePrefix(KTA_PREFIX).split(VALUE_SEPARATOR).map { it.toBigDecimalOrNull() }
                     if (numbers.size != 3 || numbers.any { it == null }) return@mapNotNull null
-                    runCatching { TubeDimensions(numbers[0]!!, numbers[1]!!, numbers[2]!!) }.getOrNull()
+                    val (outer, wall, third) = numbers.map { it!! }
+                    runCatching {
+                        if (isKta) KtaTube(outer, wall, third) else TubeDimensions(outer, wall, third)
+                    }.getOrNull()
                 }
     }
 }

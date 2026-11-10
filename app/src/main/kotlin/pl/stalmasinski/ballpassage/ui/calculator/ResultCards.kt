@@ -36,24 +36,36 @@ import pl.stalmasinski.ballpassage.core.Ball
 import pl.stalmasinski.ballpassage.core.BendRatio
 import pl.stalmasinski.ballpassage.core.CalculationProblem
 import pl.stalmasinski.ballpassage.core.CalculationResult
+import pl.stalmasinski.ballpassage.core.KtaCalculator
+import pl.stalmasinski.ballpassage.core.KtaProblem
+import pl.stalmasinski.ballpassage.core.KtaResult
+import pl.stalmasinski.ballpassage.core.Standard
 import pl.stalmasinski.ballpassage.ui.TestTags
 import pl.stalmasinski.ballpassage.ui.balls.details
 import pl.stalmasinski.ballpassage.ui.theme.LocalWarningColors
 import java.math.BigDecimal
 
+private enum class ResultStatus { SUCCESS, FAILURE, NONE }
+
+private val CalculatorUiState.status: ResultStatus
+    get() = when {
+        requirement != null -> ResultStatus.SUCCESS
+        hasResult -> ResultStatus.FAILURE
+        else -> ResultStatus.NONE
+    }
+
 @Composable
 fun ResultCard(state: CalculatorUiState, onOpenBalls: () -> Unit) {
-    val result = state.result
-    val colors = when (result) {
-        is CalculationResult.Success -> CardDefaults.cardColors(
+    val colors = when (state.status) {
+        ResultStatus.SUCCESS -> CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
         )
-        is CalculationResult.Failure -> CardDefaults.cardColors(
+        ResultStatus.FAILURE -> CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.errorContainer,
             contentColor = MaterialTheme.colorScheme.onErrorContainer,
         )
-        null -> CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh)
+        ResultStatus.NONE -> CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh)
     }
 
     Card(modifier = Modifier.fillMaxWidth(), colors = colors) {
@@ -63,25 +75,28 @@ fun ResultCard(state: CalculatorUiState, onOpenBalls: () -> Unit) {
                 .semantics { liveRegion = LiveRegionMode.Polite },
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            when (result) {
-                is CalculationResult.Success -> SuccessContent(result, state, onOpenBalls)
-                is CalculationResult.Failure -> FailureContent(result)
-                null -> PlaceholderContent(hasFieldErrors = state.hasFieldErrors)
+            when (state.status) {
+                ResultStatus.SUCCESS -> SuccessContent(state, onOpenBalls)
+                ResultStatus.FAILURE -> FailureContent(state)
+                ResultStatus.NONE -> PlaceholderContent(hasFieldErrors = state.hasFieldErrors)
             }
         }
     }
 }
 
 @Composable
-private fun SuccessContent(result: CalculationResult.Success, state: CalculatorUiState, onOpenBalls: () -> Unit) {
+private fun SuccessContent(state: CalculatorUiState, onOpenBalls: () -> Unit) {
     val formatter = rememberNumberFormatter()
-    val shareText = shareText(result, state.fittingBalls.firstOrNull(), formatter)
+    val requirement = requireNotNull(state.requirement)
+    val shareText = shareText(state, state.fittingBalls.firstOrNull(), formatter)
+    val vgb = state.result as? CalculationResult.Success
+    val kta = state.ktaResult as? KtaResult.Success
 
     Row(verticalAlignment = Alignment.Top) {
         Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(stringResource(R.string.result_label), style = MaterialTheme.typography.titleMedium)
             Text(
-                text = stringResource(R.string.value_mm, formatter.format(result.minBallDiameter)),
+                text = stringResource(R.string.value_mm, formatter.format(requirement.minBallDiameter)),
                 modifier = Modifier.testTag(TestTags.BALL_DIAMETER),
                 style = MaterialTheme.typography.displayMedium,
                 fontWeight = FontWeight.Medium,
@@ -89,24 +104,32 @@ private fun SuccessContent(result: CalculationResult.Success, state: CalculatorU
         }
         ShareButton(shareText)
     }
-    if (result.bendRatio == BendRatio.StraightTube) {
+    if (vgb?.bendRatio == BendRatio.StraightTube) {
         Text(stringResource(R.string.result_straight_tube), style = MaterialTheme.typography.bodyMedium)
     }
-    if (result.isExtrapolated) {
-        val warning = LocalWarningColors.current
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .testTag(TestTags.EXTRAPOLATION_WARNING),
-            colors = CardDefaults.cardColors(containerColor = warning.container, contentColor = warning.onContainer),
-        ) {
-            Row(modifier = Modifier.padding(12.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                Icon(painterResource(R.drawable.ic_warning), contentDescription = null, modifier = Modifier.size(20.dp))
-                Text(stringResource(R.string.result_extrapolated), style = MaterialTheme.typography.bodyMedium)
-            }
-        }
+    if (vgb?.isExtrapolated == true) {
+        WarningCard(stringResource(R.string.result_extrapolated), TestTags.EXTRAPOLATION_WARNING)
+    }
+    if (kta?.isOutsideScope == true) {
+        WarningCard(stringResource(R.string.result_kta_scope), TestTags.OUTSIDE_SCOPE_WARNING)
     }
     BallRecommendation(state.fittingBalls, state.hasBallSet, state.ballSetName, formatter, onOpenBalls)
+}
+
+@Composable
+private fun WarningCard(text: String, tag: String) {
+    val warning = LocalWarningColors.current
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag(tag),
+        colors = CardDefaults.cardColors(containerColor = warning.container, contentColor = warning.onContainer),
+    ) {
+        Row(modifier = Modifier.padding(12.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Icon(painterResource(R.drawable.ic_warning), contentDescription = null, modifier = Modifier.size(20.dp))
+            Text(text, style = MaterialTheme.typography.bodyMedium)
+        }
+    }
 }
 
 @Composable
@@ -178,36 +201,45 @@ private fun ShareButton(text: String) {
 
 /** Plain-text summary for protocols and messages. */
 @Composable
-private fun shareText(
-    result: CalculationResult.Success,
-    recommendedBall: Ball?,
-    formatter: NumberFormatter,
-): String {
-    val dimensions = result.dimensions
+private fun shareText(state: CalculatorUiState, recommendedBall: Ball?, formatter: NumberFormatter): String {
+    val vgb = state.result as? CalculationResult.Success
+    val kta = state.ktaResult as? KtaResult.Success
+    val requirement = requireNotNull(state.requirement)
     val lines = buildList {
-        add(stringResource(R.string.share_heading))
-        add(
-            stringResource(
-                R.string.share_input,
-                formatter.format(dimensions.outerDiameter),
-                formatter.format(dimensions.wallThickness),
-                formatter.format(dimensions.bendRadius),
-            ),
-        )
-        add(
-            stringResource(
-                R.string.share_calculation,
-                formatter.format(result.innerDiameter),
-                bendRatioText(result.bendRatio, formatter),
-                formatter.format(result.deduction),
-            ),
-        )
-        add(
-            stringResource(
-                R.string.share_result,
-                formatter.format(result.minBallDiameter),
-            ),
-        )
+        if (vgb != null) {
+            val dimensions = vgb.dimensions
+            add(stringResource(R.string.share_heading))
+            add(
+                stringResource(
+                    R.string.share_input,
+                    formatter.format(dimensions.outerDiameter),
+                    formatter.format(dimensions.wallThickness),
+                    formatter.format(dimensions.bendRadius),
+                ),
+            )
+            add(
+                stringResource(
+                    R.string.share_calculation,
+                    formatter.format(vgb.innerDiameter),
+                    bendRatioText(vgb.bendRatio, formatter),
+                    formatter.format(vgb.deduction),
+                ),
+            )
+        }
+        if (kta != null) {
+            val tube = kta.tube
+            add(stringResource(R.string.share_heading_kta))
+            add(
+                stringResource(
+                    R.string.share_input_kta,
+                    formatter.format(tube.outerDiameter),
+                    formatter.format(tube.wallThickness),
+                    formatter.format(tube.undersize),
+                ),
+            )
+            add(stringResource(R.string.share_calculation_kta, formatter.format(kta.innerDiameter)))
+        }
+        add(stringResource(R.string.share_result, formatter.format(requirement.minBallDiameter)))
         recommendedBall?.let { ball ->
             val size = formatter.format(ball.diameter)
             val details = ball.details()
@@ -219,13 +251,14 @@ private fun shareText(
                 },
             )
         }
-        if (result.isExtrapolated) add(stringResource(R.string.share_extrapolated))
+        if (vgb?.isExtrapolated == true) add(stringResource(R.string.share_extrapolated))
+        if (kta?.isOutsideScope == true) add(stringResource(R.string.share_outside_scope))
     }
     return lines.joinToString("\n")
 }
 
 @Composable
-private fun FailureContent(result: CalculationResult.Failure) {
+private fun FailureContent(state: CalculatorUiState) {
     val formatter = rememberNumberFormatter()
 
     Row(
@@ -236,23 +269,36 @@ private fun FailureContent(result: CalculationResult.Failure) {
         Icon(painterResource(R.drawable.ic_error), contentDescription = null)
         Text(stringResource(R.string.result_failure_title), style = MaterialTheme.typography.titleMedium)
     }
-    CalculationProblem.entries.filter { it in result.problems }.forEach { problem ->
-        val message = when (problem) {
-            CalculationProblem.INNER_DIAMETER_TOO_SMALL ->
-                stringResource(R.string.problem_inner_diameter_too_small, formatter.format(result.innerDiameter))
-            CalculationProblem.INNER_DIAMETER_TOO_LARGE ->
-                stringResource(R.string.problem_inner_diameter_too_large, formatter.format(result.innerDiameter))
-            CalculationProblem.BEND_RATIO_TOO_SMALL ->
-                stringResource(
-                    R.string.problem_bend_ratio_too_small,
-                    bendRatioText(result.bendRatio, formatter),
-                    formatter.format(result.minBendRadius),
-                )
-            // The view model reports this one on the wall thickness field and never shows a failed result for it.
-            CalculationProblem.WALL_TOO_THICK -> null
+    val messages = buildList {
+        (state.result as? CalculationResult.Failure)?.let { result ->
+            CalculationProblem.entries.filter { it in result.problems }.forEach { problem ->
+                when (problem) {
+                    CalculationProblem.INNER_DIAMETER_TOO_SMALL ->
+                        add(stringResource(R.string.problem_inner_diameter_too_small, formatter.format(result.innerDiameter)))
+                    CalculationProblem.INNER_DIAMETER_TOO_LARGE ->
+                        add(stringResource(R.string.problem_inner_diameter_too_large, formatter.format(result.innerDiameter)))
+                    CalculationProblem.BEND_RATIO_TOO_SMALL ->
+                        add(
+                            stringResource(
+                                R.string.problem_bend_ratio_too_small,
+                                bendRatioText(result.bendRatio, formatter),
+                                formatter.format(result.minBendRadius),
+                            ),
+                        )
+                    // The view model reports this one on the wall thickness field and never shows a failed result for it.
+                    CalculationProblem.WALL_TOO_THICK -> Unit
+                }
+            }
         }
-        message?.let { Text(it, style = MaterialTheme.typography.bodyMedium) }
+        (state.ktaResult as? KtaResult.Failure)?.let { result ->
+            when (result.problem) {
+                KtaProblem.NO_BALL -> add(stringResource(R.string.problem_kta_no_ball, formatter.format(result.innerDiameter)))
+                // Reported on the wall thickness field, as for VGB-S-013.
+                KtaProblem.WALL_TOO_THICK -> Unit
+            }
+        }
     }
+    messages.forEach { Text(it, style = MaterialTheme.typography.bodyMedium) }
 }
 
 @Composable
@@ -269,11 +315,10 @@ private fun PlaceholderContent(hasFieldErrors: Boolean) {
 @Composable
 fun CompactResultBar(state: CalculatorUiState) {
     val formatter = rememberNumberFormatter()
-    val result = state.result
-    val (container, content) = when (result) {
-        is CalculationResult.Success -> MaterialTheme.colorScheme.primaryContainer to MaterialTheme.colorScheme.onPrimaryContainer
-        is CalculationResult.Failure -> MaterialTheme.colorScheme.errorContainer to MaterialTheme.colorScheme.onErrorContainer
-        null -> MaterialTheme.colorScheme.surfaceContainerHigh to MaterialTheme.colorScheme.onSurfaceVariant
+    val (container, content) = when (state.status) {
+        ResultStatus.SUCCESS -> MaterialTheme.colorScheme.primaryContainer to MaterialTheme.colorScheme.onPrimaryContainer
+        ResultStatus.FAILURE -> MaterialTheme.colorScheme.errorContainer to MaterialTheme.colorScheme.onErrorContainer
+        ResultStatus.NONE -> MaterialTheme.colorScheme.surfaceContainerHigh to MaterialTheme.colorScheme.onSurfaceVariant
     }
 
     Surface(
@@ -291,16 +336,20 @@ fun CompactResultBar(state: CalculatorUiState) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            when (result) {
-                is CalculationResult.Success -> {
+            when (state.status) {
+                ResultStatus.SUCCESS -> {
                     Text(
-                        text = stringResource(R.string.compact_result, formatter.format(result.minBallDiameter)),
+                        text = stringResource(R.string.compact_result, formatter.format(requireNotNull(state.requirement).minBallDiameter)),
                         modifier = Modifier.weight(1f),
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Medium,
                     )
-                    if (result.isExtrapolated) {
-                        Icon(painterResource(R.drawable.ic_warning), contentDescription = stringResource(R.string.compact_extrapolated))
+                    if (state.isOutsideStandard) {
+                        val description = when (state.standard) {
+                            Standard.VGB_S_013 -> R.string.compact_extrapolated
+                            Standard.KTA_3211_1 -> R.string.compact_outside_scope
+                        }
+                        Icon(painterResource(R.drawable.ic_warning), contentDescription = stringResource(description))
                     }
                     state.fittingBalls.firstOrNull()?.let { ball ->
                         val size = formatter.format(ball.diameter)
@@ -314,11 +363,11 @@ fun CompactResultBar(state: CalculatorUiState) {
                         )
                     }
                 }
-                is CalculationResult.Failure -> Text(
+                ResultStatus.FAILURE -> Text(
                     text = stringResource(R.string.result_failure_title),
                     style = MaterialTheme.typography.titleSmall,
                 )
-                null -> Text(
+                ResultStatus.NONE -> Text(
                     text = stringResource(if (state.hasFieldErrors) R.string.result_fix_inputs else R.string.compact_placeholder),
                     style = MaterialTheme.typography.bodyMedium,
                 )
@@ -329,7 +378,7 @@ fun CompactResultBar(state: CalculatorUiState) {
 
 /** Step-by-step values, so that the result can be checked by hand. */
 @Composable
-fun CalculationBreakdown(result: CalculationResult) {
+fun CalculationBreakdown(state: CalculatorUiState) {
     val formatter = rememberNumberFormatter()
     val mm = { value: BigDecimal -> formatter.format(value) }
 
@@ -343,25 +392,53 @@ fun CalculationBreakdown(result: CalculationResult) {
                 modifier = Modifier.semantics { heading() },
                 style = MaterialTheme.typography.titleMedium,
             )
-            BreakdownRow(
-                label = stringResource(R.string.breakdown_inner_diameter),
-                value = stringResource(R.string.value_mm, mm(result.innerDiameter)),
-            )
-            BreakdownRow(
-                label = stringResource(R.string.breakdown_bend_ratio),
-                value = bendRatioText(result.bendRatio, formatter),
-            )
-            if (result is CalculationResult.Success) {
+            state.result?.let { result ->
                 BreakdownRow(
-                    label = stringResource(R.string.breakdown_deduction),
-                    value = stringResource(R.string.value_mm, mm(result.deduction)),
+                    label = stringResource(R.string.breakdown_inner_diameter),
+                    value = stringResource(R.string.value_mm, mm(result.innerDiameter)),
                 )
-                HorizontalDivider()
                 BreakdownRow(
-                    label = stringResource(R.string.breakdown_ball_diameter),
-                    value = stringResource(R.string.value_mm, mm(result.minBallDiameter)),
-                    emphasized = true,
+                    label = stringResource(R.string.breakdown_bend_ratio),
+                    value = bendRatioText(result.bendRatio, formatter),
                 )
+                if (result is CalculationResult.Success) {
+                    BreakdownRow(
+                        label = stringResource(R.string.breakdown_deduction),
+                        value = stringResource(R.string.value_mm, mm(result.deduction)),
+                    )
+                    HorizontalDivider()
+                    BreakdownRow(
+                        label = stringResource(R.string.breakdown_ball_diameter),
+                        value = stringResource(R.string.value_mm, mm(result.minBallDiameter)),
+                        emphasized = true,
+                    )
+                }
+            }
+            state.ktaResult?.let { result ->
+                BreakdownRow(
+                    label = stringResource(R.string.breakdown_inner_diameter),
+                    value = stringResource(R.string.value_mm, mm(result.innerDiameter)),
+                )
+                BreakdownRow(
+                    label = stringResource(R.string.field_undersize),
+                    value = stringResource(R.string.value_mm, mm(result.tube.undersize)),
+                )
+                BreakdownRow(
+                    label = stringResource(R.string.breakdown_tenth),
+                    value = stringResource(R.string.value_mm, mm(result.tenthOfInnerDiameter)),
+                )
+                BreakdownRow(
+                    label = stringResource(R.string.breakdown_allowance),
+                    value = stringResource(R.string.value_mm, mm(KtaCalculator.FIXED_ALLOWANCE)),
+                )
+                if (result is KtaResult.Success) {
+                    HorizontalDivider()
+                    BreakdownRow(
+                        label = stringResource(R.string.breakdown_ball_kta),
+                        value = stringResource(R.string.value_mm, mm(result.minBallDiameter)),
+                        emphasized = true,
+                    )
+                }
             }
         }
     }

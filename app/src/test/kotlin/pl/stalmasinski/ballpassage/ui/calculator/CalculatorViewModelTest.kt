@@ -17,6 +17,11 @@ import org.junit.Test
 import pl.stalmasinski.ballpassage.MainDispatcherRule
 import pl.stalmasinski.ballpassage.core.CalculationProblem
 import pl.stalmasinski.ballpassage.core.CalculationResult
+import pl.stalmasinski.ballpassage.core.KtaProblem
+import pl.stalmasinski.ballpassage.core.KtaResult
+import pl.stalmasinski.ballpassage.core.KtaTube
+import pl.stalmasinski.ballpassage.core.Standard
+import pl.stalmasinski.ballpassage.core.Tube
 import pl.stalmasinski.ballpassage.core.TubeDimensions
 import pl.stalmasinski.ballpassage.data.FakeUserDataRepository
 import java.math.BigDecimal
@@ -178,7 +183,7 @@ class CalculatorViewModelTest {
         viewModel.onValueChange(DimensionField.BEND_RADIUS, "70")
 
         advanceTimeBy(CalculatorViewModel.HISTORY_DELAY_MILLIS - 1)
-        assertEquals(emptyList<TubeDimensions>(), repository.history.value)
+        assertEquals(emptyList<Tube>(), repository.history.value)
 
         advanceTimeBy(2)
         assertEquals(listOf(tube("48.3", "5", "70")), repository.history.value)
@@ -194,7 +199,7 @@ class CalculatorViewModelTest {
 
         advanceTimeBy(CalculatorViewModel.HISTORY_DELAY_MILLIS * 2)
 
-        assertEquals(emptyList<TubeDimensions>(), repository.history.value)
+        assertEquals(emptyList<Tube>(), repository.history.value)
     }
 
     @Test
@@ -216,7 +221,91 @@ class CalculatorViewModelTest {
         viewModel.clearHistory()
         runCurrent()
 
-        assertEquals(emptyList<TubeDimensions>(), viewModel.state.history)
+        assertEquals(emptyList<Tube>(), viewModel.state.history)
+    }
+
+    @Test
+    fun `KTA 3211_1 uses the undersize field`() = runTest(mainDispatcher.dispatcher) {
+        val viewModel = viewModel().filled()
+
+        viewModel.selectStandard(Standard.KTA_3211_1)
+        runCurrent()
+        assertEquals(Standard.KTA_3211_1, viewModel.state.standard)
+        assertEquals(
+            listOf(DimensionField.OUTER_DIAMETER, DimensionField.WALL_THICKNESS, DimensionField.UNDERSIZE),
+            viewModel.state.visibleFields,
+        )
+        assertNull(viewModel.state.result)
+        assertNull(viewModel.state.ktaResult)
+
+        viewModel.onValueChange(DimensionField.OUTER_DIAMETER, "25")
+        viewModel.onValueChange(DimensionField.WALL_THICKNESS, "2,6")
+        viewModel.onValueChange(DimensionField.UNDERSIZE, "0")
+        runCurrent()
+
+        val result = viewModel.state.ktaResult as KtaResult.Success
+        assertEquals(0, BigDecimal("15.82").compareTo(result.minBallDiameter))
+        assertEquals(result, viewModel.state.requirement)
+        assertEquals(Standard.KTA_3211_1, repository.standard.value)
+    }
+
+    @Test
+    fun `switching back keeps the inputs of each standard`() = runTest(mainDispatcher.dispatcher) {
+        val viewModel = viewModel().filled()
+        viewModel.selectStandard(Standard.KTA_3211_1)
+        viewModel.onValueChange(DimensionField.UNDERSIZE, "0.5")
+
+        viewModel.selectStandard(Standard.VGB_S_013)
+        runCurrent()
+
+        assertTrue(viewModel.state.result is CalculationResult.Success)
+        assertEquals("0.5", viewModel.state.field(DimensionField.UNDERSIZE).text)
+    }
+
+    @Test
+    fun `KTA tube too small for any ball is a failed result`() = runTest(mainDispatcher.dispatcher) {
+        val viewModel = viewModel()
+        viewModel.selectStandard(Standard.KTA_3211_1)
+        viewModel.onValueChange(DimensionField.OUTER_DIAMETER, "6")
+        viewModel.onValueChange(DimensionField.WALL_THICKNESS, "2")
+        viewModel.onValueChange(DimensionField.UNDERSIZE, "0")
+        runCurrent()
+
+        assertEquals(KtaProblem.NO_BALL, (viewModel.state.ktaResult as KtaResult.Failure).problem)
+        assertNull(viewModel.state.requirement)
+    }
+
+    @Test
+    fun `KTA tubes go to the history and switch the standard when applied`() = runTest(mainDispatcher.dispatcher) {
+        val viewModel = viewModel()
+        viewModel.selectStandard(Standard.KTA_3211_1)
+        viewModel.onValueChange(DimensionField.OUTER_DIAMETER, "25")
+        viewModel.onValueChange(DimensionField.WALL_THICKNESS, "2.6")
+        viewModel.onValueChange(DimensionField.UNDERSIZE, "0.5")
+        advanceTimeBy(CalculatorViewModel.HISTORY_DELAY_MILLIS + 1)
+        val kta = KtaTube(BigDecimal("25"), BigDecimal("2.6"), BigDecimal("0.5"))
+        assertEquals(listOf<Tube>(kta), repository.history.value)
+
+        viewModel.applyHistory(tube("48.3", "5", "70"), decimalSeparator = '.')
+        runCurrent()
+        assertEquals(Standard.VGB_S_013, viewModel.state.standard)
+        assertTrue(viewModel.state.result is CalculationResult.Success)
+
+        viewModel.applyHistory(kta, decimalSeparator = ',')
+        runCurrent()
+        assertEquals(Standard.KTA_3211_1, viewModel.state.standard)
+        assertEquals("2,6", viewModel.state.field(DimensionField.WALL_THICKNESS).text)
+        assertTrue(viewModel.state.ktaResult is KtaResult.Success)
+    }
+
+    @Test
+    fun `a new screen starts with the standard chosen last time`() = runTest(mainDispatcher.dispatcher) {
+        repository.setStandard(Standard.KTA_3211_1)
+
+        val viewModel = viewModel()
+        runCurrent()
+
+        assertEquals(Standard.KTA_3211_1, viewModel.state.standard)
     }
 
     private fun CalculatorViewModel.filled() = apply {

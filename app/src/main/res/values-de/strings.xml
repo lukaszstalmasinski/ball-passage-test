@@ -104,7 +104,7 @@
     <string name="import_scan">Import: QR-Code scannen</string>
     <string name="import_paste">Import: Text einfügen</string>
     <string name="context_none">Berechnen Sie ein Rohr im Rechner, um zu sehen, welche Kugeln passen.</string>
-    <string name="context_tube">Für Rohr %1$s × %2$s · R %3$s</string>
+    <string name="context_tube">Für Rohr %1$s</string>
     <string name="range_open">Kugelbereich hinzufügen…</string>
     <string name="range_title">Bereich hinzufügen</string>
     <string name="range_description">Fügt alle Kugeln vom ersten bis zum letzten Durchmesser in der angegebenen Schrittweite hinzu. Vorhandene Kugeln werden übersprungen.</string>
@@ -144,6 +144,19 @@
     <string name="scan_permission_denied">Zum Scannen wird der Kamerazugriff benötigt. Sie können einen Satz auch durch Einfügen des geteilten Texts importieren.</string>
     <string name="scan_allow_camera">Kamera erlauben</string>
     <string name="scan_close">Scanner schließen</string>
+    <string name="standard_label">Norm</string>
+    <string name="field_undersize">Größte zulässige Maßunterschreitung Δ</string>
+    <string name="field_undersize_hint">Aus der Rohrspezifikation</string>
+    <string name="result_kta_scope">KTA 3211.1 erfasst kaltgebogene Rohre bis 38 × 4 mm (ferritisch) und 42,4 × 3,6 mm (austenitisch). Dieses Rohr ist größer – den Wert vor der Verwendung bestätigen.</string>
+    <string name="problem_kta_no_ball">Der Innendurchmesser von %1$s mm ist zu klein: Nach Abzug von Δ + 0,1·dᵢ + 2 mm bleibt keine Kugel.</string>
+    <string name="compact_outside_scope">Außerhalb des Geltungsbereichs von KTA 3211.1</string>
+    <string name="share_heading_kta">Kugeldurchlaufversuch – KTA 3211.1, 10.2.2.2</string>
+    <string name="share_outside_scope">Hinweis: Rohr außerhalb des Geltungsbereichs von KTA 3211.1.</string>
+    <string name="breakdown_tenth">0,1 · dᵢ</string>
+    <string name="breakdown_allowance">Fester Zuschlag</string>
+    <string name="breakdown_ball_kta">Kugeldurchmesser dᵢ − (Δ + 0,1·dᵢ + 2 mm)</string>
+    <string name="info_standards">Die Norm wählen Sie oben im Rechner: VGB-S-013 oder KTA 3211.1.</string>
+    <string name="info_kta" tools:ignore="TypographyDashes">KTA 3211.1 (Fassung 2017-11, Abschnitte 10.2.2.2 und 10.4.2.2): Durch jedes gebogene Rohr muss eine Kugel vom Durchmesser D_K = dᵢ − (Δ + 0,1·dᵢ + 2 mm) frei durchgehen. dᵢ ist der Nenn-Innendurchmesser und Δ die größte zulässige Maßunterschreitung aus der Rohrspezifikation. Die Regel gilt für nahtlose, kaltgebogene Rohre bis 38 × 4 mm (ferritisch) und 42,4 × 3,6 mm (austenitisch).</string>
     <plurals name="ball_count">
         <item quantity="one">%d Kugel</item>
         <item quantity="other">%d Kugeln</item>

@@ -64,17 +64,21 @@ import kotlinx.coroutines.launch
 import pl.stalmasinski.ballpassage.R
 import pl.stalmasinski.ballpassage.core.Ball
 import pl.stalmasinski.ballpassage.core.BallSet
-import pl.stalmasinski.ballpassage.core.CalculationResult
+import pl.stalmasinski.ballpassage.core.Tube
 import pl.stalmasinski.ballpassage.core.SharedBallSet
 import pl.stalmasinski.ballpassage.ui.AppTopBar
 import pl.stalmasinski.ballpassage.ui.TestTags
 import pl.stalmasinski.ballpassage.ui.calculator.rememberNumberFormatter
+import pl.stalmasinski.ballpassage.ui.calculator.tubeLabel
 import pl.stalmasinski.ballpassage.ui.qr.QrScannerDialog
 import pl.stalmasinski.ballpassage.ui.rememberAppTopBarScrollBehavior
+import java.math.BigDecimal
 
 /** The calculator's current tube, so that the list can mark the balls that fit it. */
 data class TubeContext(
-    val result: CalculationResult.Success,
+    val tube: Tube,
+    /** The ball diameter required by the standard. */
+    val ballDiameter: BigDecimal,
     val fittingBalls: List<Ball>,
 )
 
@@ -374,20 +378,14 @@ private fun TubeContextCard(tubeContext: TubeContext?, hasBalls: Boolean, modifi
                 )
                 return@Column
             }
-            val dimensions = tubeContext.result.dimensions
             Text(
-                text = stringResource(
-                    R.string.context_tube,
-                    formatter.format(dimensions.outerDiameter),
-                    formatter.format(dimensions.wallThickness),
-                    formatter.format(dimensions.bendRadius),
-                ),
+                text = stringResource(R.string.context_tube, tubeLabel(tubeContext.tube, formatter)),
                 style = MaterialTheme.typography.titleSmall,
             )
             Text(
                 text = stringResource(
                     R.string.result_standard_ball,
-                    formatter.format(tubeContext.result.minBallDiameter),
+                    formatter.format(tubeContext.ballDiameter),
                 ),
                 style = MaterialTheme.typography.bodyMedium,
             )

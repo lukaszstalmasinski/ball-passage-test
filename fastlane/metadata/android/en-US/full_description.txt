@@ -2,6 +2,7 @@ Ball Passage Test calculates the steel ball diameter for the ball passage test (
 
 Enter the outer diameter, wall thickness and smallest bend radius of the tube. The ball diameter is shown instantly, according to VGB-S-013-00-2014-12, section 7.2.5, Table 3.
 
+• Second standard: KTA 3211.1 (German nuclear safety rule, sections 10.2.2.2 and 10.4.2.2) – D_K = dᵢ − (Δ + 0.1·dᵢ + 2 mm)
 • Instant result while you type, also on small phones: the result stays visible above the keyboard
 • Your ball sets: keep the balls of each workshop or case, with marking and location (e.g. K-12 · case 2) – the app tells you which one to use
 • Add a whole range of balls at once (e.g. 20–50 mm every 1 mm)

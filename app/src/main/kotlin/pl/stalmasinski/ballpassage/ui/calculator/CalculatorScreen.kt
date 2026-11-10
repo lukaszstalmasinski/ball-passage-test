@@ -22,6 +22,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,6 +37,8 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,6 +46,9 @@ import androidx.compose.ui.unit.dp
 import pl.stalmasinski.ballpassage.R
 import pl.stalmasinski.ballpassage.core.Ball
 import pl.stalmasinski.ballpassage.core.BallSet
+import pl.stalmasinski.ballpassage.core.KtaTube
+import pl.stalmasinski.ballpassage.core.Standard
+import pl.stalmasinski.ballpassage.core.Tube
 import pl.stalmasinski.ballpassage.core.TubeDimensions
 import pl.stalmasinski.ballpassage.ui.AppTopBar
 import pl.stalmasinski.ballpassage.ui.TestTags
@@ -54,8 +62,9 @@ import java.text.DecimalFormatSymbols
 fun CalculatorScreen(
     state: CalculatorUiState,
     onValueChange: (DimensionField, String) -> Unit,
+    onSelectStandard: (Standard) -> Unit,
     onClearAll: () -> Unit,
-    onApplyHistory: (TubeDimensions, Char) -> Unit,
+    onApplyHistory: (Tube, Char) -> Unit,
     onClearHistory: () -> Unit,
     onOpenBalls: () -> Unit,
 ) {
@@ -93,22 +102,51 @@ fun CalculatorScreen(
                     .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
+                StandardSelector(selected = state.standard, onSelect = onSelectStandard)
                 if (state.history.isNotEmpty()) {
                     RecentTubes(history = state.history, onApply = onApplyHistory, onClear = onClearHistory)
                 }
                 DimensionInputs(state = state, onValueChange = onValueChange)
                 ResultCard(state = state, onOpenBalls = onOpenBalls)
-                state.result?.let { CalculationBreakdown(result = it) }
-                StandardTableCard(result = state.result)
+                if (state.hasResult) CalculationBreakdown(state = state)
+                if (state.standard == Standard.VGB_S_013) StandardTableCard(result = state.result)
             }
         }
     }
 }
 
 @Composable
+private fun StandardSelector(selected: Standard, onSelect: (Standard) -> Unit) {
+    val description = stringResource(R.string.standard_label)
+    SingleChoiceSegmentedButtonRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .semantics { contentDescription = description },
+    ) {
+        Standard.entries.forEachIndexed { index, standard ->
+            SegmentedButton(
+                selected = standard == selected,
+                onClick = { onSelect(standard) },
+                shape = SegmentedButtonDefaults.itemShape(index = index, count = Standard.entries.size),
+                modifier = Modifier.testTag(TestTags.standard(standard)),
+            ) {
+                Text(stringResource(standard.labelRes))
+            }
+        }
+    }
+}
+
+@get:StringRes
+val Standard.labelRes: Int
+    get() = when (this) {
+        Standard.VGB_S_013 -> R.string.standard_vgb
+        Standard.KTA_3211_1 -> R.string.standard_kta
+    }
+
+@Composable
 private fun RecentTubes(
-    history: List<TubeDimensions>,
-    onApply: (TubeDimensions, Char) -> Unit,
+    history: List<Tube>,
+    onApply: (Tube, Char) -> Unit,
     onClear: () -> Unit,
 ) {
     val formatter = rememberNumberFormatter()
@@ -134,16 +172,7 @@ private fun RecentTubes(
             history.forEachIndexed { index, tube ->
                 SuggestionChip(
                     onClick = { onApply(tube, decimalSeparator) },
-                    label = {
-                        Text(
-                            stringResource(
-                                R.string.recent_item,
-                                formatter.format(tube.outerDiameter),
-                                formatter.format(tube.wallThickness),
-                                formatter.format(tube.bendRadius),
-                            ),
-                        )
-                    },
+                    label = { Text(tubeLabel(tube, formatter)) },
                     modifier = Modifier.testTag(TestTags.historyItem(index)),
                 )
             }
@@ -166,10 +195,10 @@ private fun DimensionInputs(
     val focusManager = LocalFocusManager.current
 
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        DimensionField.entries.forEach { field ->
+        state.visibleFields.forEach { field ->
             val fieldState = state.field(field)
             val label = stringResource(field.labelRes)
-            val isLast = field == DimensionField.entries.last()
+            val isLast = field == state.visibleFields.last()
             val supportingText = fieldState.error?.messageRes ?: field.hintRes
 
             OutlinedTextField(
@@ -216,13 +245,15 @@ private val DimensionField.labelRes: Int
         DimensionField.OUTER_DIAMETER -> R.string.field_outer_diameter
         DimensionField.WALL_THICKNESS -> R.string.field_wall_thickness
         DimensionField.BEND_RADIUS -> R.string.field_bend_radius
+        DimensionField.UNDERSIZE -> R.string.field_undersize
     }
 
-/** Only the bend radius needs an explanation; the other labels are self-explanatory. */
+/** Only the bend radius and the undersize need an explanation; the other labels are self-explanatory. */
 @get:StringRes
 private val DimensionField.hintRes: Int?
     get() = when (this) {
         DimensionField.BEND_RADIUS -> R.string.field_bend_radius_hint
+        DimensionField.UNDERSIZE -> R.string.field_undersize_hint
         else -> null
     }
 
@@ -245,14 +276,19 @@ private fun CalculatorScreenPreview() {
                     DimensionField.WALL_THICKNESS to "5",
                     DimensionField.BEND_RADIUS to "70",
                 ),
+                standard = Standard.VGB_S_013,
                 ballSet = BallSet(
                     id = "preview",
                     name = "",
                     balls = listOf(Ball("1", BigDecimal("32"), "K-12", "case 2"), Ball("2", BigDecimal("35"))),
                 ),
-                history = listOf(TubeDimensions(BigDecimal("33.7"), BigDecimal("4.5"), BigDecimal("60"))),
+                history = listOf(
+                    TubeDimensions(BigDecimal("33.7"), BigDecimal("4.5"), BigDecimal("60")),
+                    KtaTube(BigDecimal("25"), BigDecimal("2.6"), BigDecimal("0.5")),
+                ),
             ),
             onValueChange = { _, _ -> },
+            onSelectStandard = {},
             onClearAll = {},
             onApplyHistory = { _, _ -> },
             onClearHistory = {},

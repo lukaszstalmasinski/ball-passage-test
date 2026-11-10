@@ -2,7 +2,8 @@
 
 Android app that calculates the steel ball diameter for the **ball passage test**
 (ball test, *Kugeldurchlaufversuch*, *kulowanie*) of bent tubes according to
-**VGB-S-013-00-2014-12, section 7.2.5, Table 3**.
+**VGB-S-013-00-2014-12, section 7.2.5, Table 3** or **KTA 3211.1 (2017-11), sections 10.2.2.2
+and 10.4.2.2**.
 
 <p>
   <img src="docs/screenshots/result.png" width="180" alt="Result with ball suggestion">
@@ -67,6 +68,15 @@ floating-point rounding.
 This app replaces the earlier *Kulowanie* web app (React PWA) and keeps its calculation
 rules. Changes from the old app: the analytics are removed, an inverted validation
 message is fixed, and the extrapolated row is marked.
+
+### KTA 3211.1
+
+KTA 3211.1 (2017-11), 10.2.2.2 (3) and 10.4.2.2 (3): a ball of diameter
+`D_K = dᵢ − (Δ + 0.1·dᵢ + 2 mm)` must pass freely through every bent tube. `dᵢ` is the nominal
+inner diameter and `Δ` the largest permissible undersize ("größte zulässige
+Maßunterschreitung"). The rule does not define `Δ` further, so it is an input taken from the tube
+specification. The rule covers seamless cold-bent tubes up to 38 × 4 mm (ferritic, 10.2) and
+42.4 × 3.6 mm (austenitic, 10.4); larger tubes get a warning.
 
 ## Project structure
 

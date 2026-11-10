@@ -1,0 +1,1 @@
+Neu: KTA 3211.1. Die Norm wählen Sie oben im Rechner; KTA 3211.1 liefert D_K = dᵢ − (Δ + 0,1·dᵢ + 2 mm) und warnt, wenn das Rohr außerhalb des Geltungsbereichs liegt.

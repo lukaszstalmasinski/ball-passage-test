@@ -1,5 +1,6 @@
 package pl.stalmasinski.ballpassage.ui
 
+import pl.stalmasinski.ballpassage.core.Standard
 import pl.stalmasinski.ballpassage.ui.calculator.DimensionField
 import java.math.BigDecimal
 
@@ -8,6 +9,7 @@ object TestTags {
     const val BALL_DIAMETER = "ball_diameter"
     const val BALL_RECOMMENDATION = "ball_recommendation"
     const val EXTRAPOLATION_WARNING = "extrapolation_warning"
+    const val OUTSIDE_SCOPE_WARNING = "outside_scope_warning"
     const val FAILURE = "failure"
     const val SHARE = "share"
     const val CLEAR_ALL = "clear_all"
@@ -33,6 +35,8 @@ object TestTags {
     const val IMPORT_TEXT = "import_text"
 
     fun field(field: DimensionField) = "field_${field.name}"
+
+    fun standard(standard: Standard) = "standard_${standard.name}"
 
     fun tableCell(rowIndex: Int, columnIndex: Int) = "cell_${rowIndex}_$columnIndex"
 

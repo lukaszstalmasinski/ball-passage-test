@@ -2,6 +2,7 @@ Ball Passage Test berechnet den Durchmesser der Stahlkugel für den Kugeldurchla
 
 Außendurchmesser, Wanddicke und kleinsten Biegeradius eingeben – Der Kugeldurchmesser wird sofort nach VGB-S-013-00-2014-12, Abschnitt 7.2.5, Tabelle 3 angezeigt.
 
+• Zweite Norm: KTA 3211.1 (Abschnitte 10.2.2.2 und 10.4.2.2) – D_K = dᵢ − (größte zulässige Maßunterschreitung + 0,1·dᵢ + 2 mm)
 • Ergebnis direkt bei der Eingabe, auch auf kleinen Handys – das Ergebnis bleibt über der Tastatur sichtbar
 • Ihre Kugelsätze: Kugeln jeder Werkstatt oder jedes Koffers, mit Kennzeichnung und Ort (z. B. K-12 · Koffer 2) – die App schlägt die passende vor
 • Einen ganzen Kugelbereich auf einmal hinzufügen (z. B. 20–50 mm in 1-mm-Schritten)

@@ -111,7 +111,7 @@
     <string name="import_scan">Import: scan QR code</string>
     <string name="import_paste">Import: paste text</string>
     <string name="context_none">Calculate a tube in the calculator to see which balls fit it.</string>
-    <string name="context_tube">For tube %1$s × %2$s · R %3$s</string>
+    <string name="context_tube">For tube %1$s</string>
     <string name="range_open">Add a range of balls…</string>
     <string name="range_title">Add a range</string>
     <string name="range_description">Adds every ball from the first to the last diameter in the given step. Balls already in the set are skipped.</string>
@@ -151,6 +151,24 @@
     <string name="scan_permission_denied">Camera access is needed to scan the code. You can also import a set by pasting the shared text.</string>
     <string name="scan_allow_camera">Allow camera</string>
     <string name="scan_close">Close scanner</string>
+    <string name="standard_vgb" translatable="false">VGB-S-013</string>
+    <string name="standard_kta" translatable="false">KTA 3211.1</string>
+    <string name="recent_item_kta" translatable="false">%1$s × %2$s · Δ %3$s</string>
+    <string name="share_input_kta" translatable="false">dₒ = %1$s mm, s = %2$s mm, Δ = %3$s mm</string>
+    <string name="share_calculation_kta" translatable="false">dᵢ = %1$s mm, D_K = dᵢ − (Δ + 0.1·dᵢ + 2 mm)</string>
+    <string name="standard_label">Standard</string>
+    <string name="field_undersize">Largest permissible undersize Δ</string>
+    <string name="field_undersize_hint">From the tube specification</string>
+    <string name="result_kta_scope">KTA 3211.1 covers cold-bent tubes up to 38 × 4 mm (ferritic) and 42.4 × 3.6 mm (austenitic). This tube is larger – confirm the value before use.</string>
+    <string name="problem_kta_no_ball">The inner diameter of %1$s mm is too small: after deducting Δ + 0.1·dᵢ + 2 mm, no ball remains.</string>
+    <string name="compact_outside_scope">Outside the scope of KTA 3211.1</string>
+    <string name="share_heading_kta">Ball passage test – KTA 3211.1, 10.2.2.2</string>
+    <string name="share_outside_scope">Note: the tube is outside the scope of KTA 3211.1.</string>
+    <string name="breakdown_tenth">0.1 · dᵢ</string>
+    <string name="breakdown_allowance">Fixed allowance</string>
+    <string name="breakdown_ball_kta">Ball diameter dᵢ − (Δ + 0.1·dᵢ + 2 mm)</string>
+    <string name="info_standards">Choose the standard at the top of the calculator: VGB-S-013 or KTA 3211.1.</string>
+    <string name="info_kta" tools:ignore="TypographyDashes">KTA 3211.1 (edition 2017-11, sections 10.2.2.2 and 10.4.2.2): a ball of diameter D_K = dᵢ − (Δ + 0.1·dᵢ + 2 mm) must pass freely through every bent tube. dᵢ is the nominal inner diameter and Δ the largest permissible undersize from the tube specification. The rule covers seamless cold-bent tubes up to 38 × 4 mm (ferritic) and 42.4 × 3.6 mm (austenitic).</string>
     <plurals name="ball_count">
         <item quantity="one">%d ball</item>
         <item quantity="other">%d balls</item>

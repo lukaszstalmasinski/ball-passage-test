@@ -57,16 +57,13 @@ public sealed interface CalculationResult {
         val row: DiameterRow,
         val column: BendRatioColumn,
         val deduction: BigDecimal,
-        val minBallDiameter: BigDecimal,
-    ) : CalculationResult {
+        override val minBallDiameter: BigDecimal,
+    ) : CalculationResult, BallRequirement {
         /** True when the result comes from a row that VGB-S-013 does not cover. */
         val isExtrapolated: Boolean get() = !row.coveredByStandard
 
         /** Upper limit (exclusive) for the ball diameter: the inner diameter of the tube. */
-        val maxBallDiameterExclusive: BigDecimal get() = innerDiameter
-
-        public fun fits(ballDiameter: BigDecimal): Boolean =
-            ballDiameter >= minBallDiameter && ballDiameter < maxBallDiameterExclusive
+        override val maxBallDiameterExclusive: BigDecimal get() = innerDiameter
     }
 
     public data class Failure(

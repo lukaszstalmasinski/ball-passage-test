@@ -10,21 +10,15 @@ import java.math.BigDecimal
  * @property bendRadius mean bend radius (r_b), zero means a straight tube.
  */
 public data class TubeDimensions(
-    val outerDiameter: BigDecimal,
-    val wallThickness: BigDecimal,
+    override val outerDiameter: BigDecimal,
+    override val wallThickness: BigDecimal,
     val bendRadius: BigDecimal,
-) {
+) : Tube {
     init {
         require(outerDiameter.signum() > 0) { "Outer diameter must be greater than zero." }
         require(wallThickness.signum() > 0) { "Wall thickness must be greater than zero." }
         require(bendRadius.signum() >= 0) { "Bend radius must not be negative." }
     }
 
-    /** Inner diameter d_i = d_o − 2·s. May be zero or negative when the wall is too thick. */
-    val innerDiameter: BigDecimal
-        get() = outerDiameter - wallThickness.multiply(TWO)
-
-    private companion object {
-        val TWO: BigDecimal = BigDecimal(2)
-    }
+    override val standard: Standard get() = Standard.VGB_S_013
 }

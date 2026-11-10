@@ -4,6 +4,7 @@ Ball Passage Test oblicza średnicę stalowej kulki do próby przelotu kulki (ku
 
 Wpisz średnicę zewnętrzną, grubość ścianki i najmniejszy promień gięcia rury. Średnica kulki pojawi się od razu, zgodnie z VGB-S-013-00-2014-12, punkt 7.2.5, tabela 3.
 
+• Druga norma: KTA 3211.1 (niemiecka reguła bezpieczeństwa jądrowego, punkty 10.2.2.2 i 10.4.2.2) – D_K = dᵢ − (Δ + 0,1·dᵢ + 2 mm)
 • Wynik na bieżąco podczas wpisywania, także na małych telefonach – wynik jest widoczny nad klawiaturą
 • Twoje zestawy kulek: kulki z każdego warsztatu czy walizki, z oznaczeniem i miejscem (np. K-12 · walizka 2) – aplikacja podpowie, której użyć
 • Dodawanie całego zakresu kulek naraz (np. 20–50 mm co 1 mm)

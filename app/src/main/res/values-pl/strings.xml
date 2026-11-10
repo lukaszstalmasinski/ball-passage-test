@@ -104,7 +104,7 @@
     <string name="import_scan">Importuj: skanuj kod QR</string>
     <string name="import_paste">Importuj: wklej tekst</string>
     <string name="context_none">Policz rurę w kalkulatorze, aby zobaczyć, które kulki do niej pasują.</string>
-    <string name="context_tube">Dla rury %1$s × %2$s · R %3$s</string>
+    <string name="context_tube">Dla rury %1$s</string>
     <string name="range_open">Dodaj zakres kulek…</string>
     <string name="range_title">Dodaj zakres</string>
     <string name="range_description">Dodaje kulki od pierwszej do ostatniej średnicy z podanym krokiem. Kulki, które już są w zestawie, są pomijane.</string>
@@ -144,6 +144,19 @@
     <string name="scan_permission_denied">Do zeskanowania kodu potrzebny jest dostęp do aparatu. Zestaw możesz też zaimportować, wklejając udostępniony tekst.</string>
     <string name="scan_allow_camera">Zezwól na aparat</string>
     <string name="scan_close">Zamknij skaner</string>
+    <string name="standard_label">Norma</string>
+    <string name="field_undersize">Największa dopuszczalna odchyłka minus Δ</string>
+    <string name="field_undersize_hint">Ze specyfikacji rury</string>
+    <string name="result_kta_scope">KTA 3211.1 obejmuje rury gięte na zimno do 38 × 4 mm (ferrytyczne) i 42,4 × 3,6 mm (austenityczne). Ta rura jest większa – potwierdź wartość przed użyciem.</string>
+    <string name="problem_kta_no_ball">Średnica wewnętrzna %1$s mm jest za mała: po odjęciu Δ + 0,1·dᵢ + 2 mm nie zostaje żadna kulka.</string>
+    <string name="compact_outside_scope">Poza zakresem KTA 3211.1</string>
+    <string name="share_heading_kta">Próba przelotu kulki – KTA 3211.1, 10.2.2.2</string>
+    <string name="share_outside_scope">Uwaga: rura poza zakresem KTA 3211.1.</string>
+    <string name="breakdown_tenth">0,1 · dᵢ</string>
+    <string name="breakdown_allowance">Stały naddatek</string>
+    <string name="breakdown_ball_kta">Średnica kulki dᵢ − (Δ + 0,1·dᵢ + 2 mm)</string>
+    <string name="info_standards">Normę wybierasz na górze kalkulatora: VGB-S-013 albo KTA 3211.1.</string>
+    <string name="info_kta" tools:ignore="TypographyDashes">KTA 3211.1 (wydanie 2017-11, punkty 10.2.2.2 i 10.4.2.2): przez każdą giętą rurę musi swobodnie przejść kulka o średnicy D_K = dᵢ − (Δ + 0,1·dᵢ + 2 mm). dᵢ to nominalna średnica wewnętrzna, a Δ to największa dopuszczalna odchyłka minus ze specyfikacji rury. Reguła obejmuje rury bez szwu gięte na zimno do 38 × 4 mm (ferrytyczne) i 42,4 × 3,6 mm (austenityczne).</string>
     <plurals name="ball_count">
         <item quantity="one">%d kulka</item>
         <item quantity="few">%d kulki</item>

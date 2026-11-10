@@ -51,8 +51,13 @@ fun InfoScreen() {
                     .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(24.dp),
             ) {
-                Section(R.string.info_section_standard, R.string.info_description, R.string.info_extrapolation)
-                Section(R.string.info_section_method, R.string.info_method)
+                Section(
+                    R.string.info_section_standard,
+                    R.string.info_description,
+                    R.string.info_extrapolation,
+                    R.string.info_standards,
+                )
+                Section(R.string.info_section_method, R.string.info_method, R.string.info_kta)
                 Section(R.string.info_section_disclaimer, R.string.info_disclaimer)
                 Section(R.string.info_section_privacy, R.string.info_privacy)
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {

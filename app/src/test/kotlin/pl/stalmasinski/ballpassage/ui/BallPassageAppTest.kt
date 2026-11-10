@@ -34,6 +34,7 @@ import pl.stalmasinski.ballpassage.BallPassageApplication
 import pl.stalmasinski.ballpassage.BuildConfig
 import pl.stalmasinski.ballpassage.MainActivity
 import pl.stalmasinski.ballpassage.core.BallSets
+import pl.stalmasinski.ballpassage.core.Standard
 import pl.stalmasinski.ballpassage.core.TubeDimensions
 import pl.stalmasinski.ballpassage.ui.calculator.DimensionField
 import java.math.BigDecimal
@@ -53,6 +54,7 @@ class BallPassageAppTest {
     fun clearUserData() = runBlocking {
         repository.clearHistory()
         repository.updateBallSets { BallSets.initial("default") }
+        repository.setStandard(Standard.VGB_S_013)
     }
 
     @Test
@@ -82,6 +84,24 @@ class BallPassageAppTest {
 
         composeRule.onNodeWithTag(TestTags.BALL_DIAMETER).assertTextEquals("48 mm")
         composeRule.onNodeWithTag(TestTags.EXTRAPOLATION_WARNING).performScrollTo().assertIsDisplayed()
+    }
+
+    @Test
+    fun calculatesBallDiameterPerKta() {
+        composeRule.onNodeWithTag(TestTags.standard(Standard.KTA_3211_1)).performClick()
+        composeRule.onNodeWithTag(TestTags.field(DimensionField.BEND_RADIUS)).assertDoesNotExist()
+
+        composeRule.onNodeWithTag(TestTags.field(DimensionField.OUTER_DIAMETER)).performTextInput("25")
+        composeRule.onNodeWithTag(TestTags.field(DimensionField.WALL_THICKNESS)).performTextInput("2.6")
+        composeRule.onNodeWithTag(TestTags.field(DimensionField.UNDERSIZE)).performTextInput("0.5")
+
+        composeRule.onNodeWithTag(TestTags.BALL_DIAMETER).assertTextEquals("15.32 mm")
+        composeRule.onNodeWithText("Ball diameter dᵢ − (Δ + 0.1·dᵢ + 2 mm)").performScrollTo().assertIsDisplayed()
+        composeRule.onNodeWithTag(TestTags.OUTSIDE_SCOPE_WARNING).assertDoesNotExist()
+        composeRule.onNodeWithText("VGB-S-013, Table 3").assertDoesNotExist()
+
+        composeRule.onNodeWithTag(TestTags.field(DimensionField.OUTER_DIAMETER)).performTextReplacement("48.3")
+        composeRule.onNodeWithTag(TestTags.OUTSIDE_SCOPE_WARNING).performScrollTo().assertIsDisplayed()
     }
 
     @Test

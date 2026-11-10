@@ -1,0 +1,1 @@
+Nowość: tryb KTA 3211.1. Normę wybierasz na górze kalkulatora; KTA 3211.1 liczy D_K = dᵢ − (Δ + 0,1·dᵢ + 2 mm) i ostrzega, gdy rura jest poza zakresem reguły.

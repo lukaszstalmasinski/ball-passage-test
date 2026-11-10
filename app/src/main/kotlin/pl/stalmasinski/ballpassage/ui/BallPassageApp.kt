@@ -27,7 +27,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import pl.stalmasinski.ballpassage.R
-import pl.stalmasinski.ballpassage.core.CalculationResult
 import pl.stalmasinski.ballpassage.ui.balls.BallsRoute
 import pl.stalmasinski.ballpassage.ui.balls.TubeContext
 import pl.stalmasinski.ballpassage.ui.calculator.CalculatorScreen
@@ -87,14 +86,19 @@ fun BallPassageApp(calculatorViewModel: CalculatorViewModel = viewModel(factory 
                 Destination.CALCULATOR -> CalculatorScreen(
                     state = calculatorState,
                     onValueChange = calculatorViewModel::onValueChange,
+                    onSelectStandard = calculatorViewModel::selectStandard,
                     onClearAll = calculatorViewModel::clearAll,
                     onApplyHistory = calculatorViewModel::applyHistory,
                     onClearHistory = calculatorViewModel::clearHistory,
                     onOpenBalls = { destination = Destination.BALLS },
                 )
                 Destination.BALLS -> BallsRoute(
-                    tubeContext = (calculatorState.result as? CalculationResult.Success)?.let {
-                        TubeContext(result = it, fittingBalls = calculatorState.fittingBalls)
+                    tubeContext = calculatorState.calculatedTube?.let { tube ->
+                        TubeContext(
+                            tube = tube,
+                            ballDiameter = requireNotNull(calculatorState.requirement).minBallDiameter,
+                            fittingBalls = calculatorState.fittingBalls,
+                        )
                     },
                 )
                 Destination.INFO -> InfoScreen()
