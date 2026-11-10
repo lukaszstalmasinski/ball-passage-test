@@ -1,6 +1,6 @@
-name: Promote to production
+name: "Play: promote to production"
 
-# Started by hand (Actions → Promote to production → Run workflow) after the build has been
+# Started by hand (Actions → "Play: promote to production" → Run workflow) after the build has been
 # tested. Moves the alpha release (or the internal one, if alpha is skipped) to production and
 # uploads the store listing (texts, icon, feature graphic and screenshots) from
 # fastlane/metadata/android.
@@ -18,11 +18,12 @@ on:
         default: true
 
 concurrency:
-  group: release
+  group: google-play
   cancel-in-progress: false
 
 jobs:
   promote:
+    name: Promote to production
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment: release
@@ -30,24 +31,18 @@ jobs:
       contents: read
       id-token: write   # Workload Identity Federation
     steps:
-      - uses: actions/checkout@v7
+      - name: Check out
+        uses: actions/checkout@v7
 
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v3
+      - name: Set up fastlane
+        uses: ./.github/actions/setup-fastlane
         with:
-          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+          workload-identity-provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service-account: ${{ vars.GCP_SERVICE_ACCOUNT }}
 
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.3'
+      - name: Promote ${{ inputs.from }} to production
+        run: fastlane android promote_production from:${{ inputs.from }}
 
-      - name: Install fastlane
-        run: gem install fastlane --no-document
-
-      - name: Promote to production
-        run: fastlane android production from:${{ inputs.from }}
-
-      - name: Upload the store listing
+      - name: Upload store listing
         if: inputs.listing
-        run: fastlane android listing
+        run: fastlane android upload_listing
