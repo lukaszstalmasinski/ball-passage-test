@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
+import pl.stalmasinski.ballpassage.core.calculate
 import java.math.BigDecimal
 
 class BallPassageCalculatorTest {
@@ -186,9 +187,6 @@ class BallPassageCalculatorTest {
         assertThrows<IllegalArgumentException> { calculate("10", "0", "10") }
         assertThrows<IllegalArgumentException> { calculate("10", "1", "-1") }
     }
-
-    private fun calculate(outer: String, wall: String, radius: String): CalculationResult =
-        BallPassageCalculator.calculate(TubeDimensions(BigDecimal(outer), BigDecimal(wall), BigDecimal(radius)))
 
     private fun assertNumberEquals(expected: String, actual: BigDecimal) =
         assertNumberEquals(BigDecimal(expected), actual)

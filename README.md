@@ -99,7 +99,8 @@ Requirements: JDK 17+ and the Android SDK. Missing SDK platforms are downloaded 
 ./gradlew bundleRelease    # release App Bundle (R8 minified)
 ```
 
-Lint warnings fail the build, and so do Kotlin warnings in the app module.
+Lint warnings fail the build, and so do Kotlin compiler warnings in both modules. `check` also runs
+ktlint (code style, configured in `.editorconfig`); `./gradlew ktlintFormat` fixes most findings.
 
 Test coverage is measured with JaCoCo:
 
@@ -122,12 +123,22 @@ the totals and a per-file table in the job summary of each run and keeps the rep
 | Single composables | `app/src/test/.../ui/<feature>/*Test` | JVM | Robolectric, `createComposeRule` |
 | Tabs of the running app | `app/src/test/.../ui/<feature>/*TabTest`, `NavigationTest`, `LocalizationTest` | JVM | Robolectric, `MainActivity` with a fake repository |
 | Dialogs and dialog flows | `app/src/androidTest/.../ui/balls` | device or emulator | Compose UI test |
+| Screenshots of the main screens | `app/src/test/.../ui/ScreenshotTest`, images in `app/src/test/screenshots` | JVM | Robolectric, Roborazzi |
 
 - Tests mirror the packages of the code they test.
+- Screenshot tests compare the main screens with the images in `app/src/test/screenshots`
+  (`./gradlew verifyRoborazziDebug`, run in Checks). After an intended change of the UI, record new
+  images with `./gradlew recordRoborazziDebug` and commit them; the review then shows the change.
+- Checks fails when line coverage of the unit tests drops below 95% for `core` or 70% for `app`.
 - Robolectric tests use `TestBallPassageApplication` (see `app/src/test/resources/robolectric.properties`),
   which swaps DataStore for `FakeUserDataRepository`: every test starts with fresh data and sets
-  it up directly (`givenBalls(...)`), not through the UI. `AppTestRule.kt` holds the shared steps
-  (`enterTube`, `openTab`, `addBall`, `sharedText`).
+  it up directly (`givenBalls(...)`), not through the UI.
+- Shared test code:
+  - `core/src/testFixtures`: builders such as `tube("48.3", "5", "70")`, `calculate(...)` and
+    `ball("32", label = "K-12")`, used by the tests of `core` and `app`.
+  - `app/src/testShared`: steps through the running app (`enterTube`, `openTab`, `addBall`,
+    `waitForTag`), used by both the Robolectric and the device tests.
+  - `app/src/test/.../ui/AppTestRule.kt`: Robolectric-only steps (`givenBalls`, `sharedText`).
 - Dialogs are tested on a device, because Robolectric never gets idle after typing into text
   fields inside Compose dialogs. Real devices render those dialogs normally, which was checked by
   counting frames.
@@ -166,7 +177,8 @@ The `fastlane/metadata/android/` folder holds the Google Play listing in EN, PL 
 titles, short and full descriptions, changelogs, the 512 px icon, the feature graphic and
 phone screenshots. The folder layout follows the
 [fastlane supply](https://docs.fastlane.tools/actions/supply/) format, so you can upload it
-by hand or with `fastlane supply`. "Play: promote to production" uploads it to Google Play, and
+by hand or with `fastlane supply`. `scripts/store_screenshots.py` takes the phone screenshots on an
+emulator in all three languages (see the comment at its top). "Play: promote to production" uploads it to Google Play, and
 so does **Actions → Play: update store listing**, which changes no release. The privacy
 policy is in [PRIVACY.md](PRIVACY.md).
 

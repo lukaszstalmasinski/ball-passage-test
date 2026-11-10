@@ -18,6 +18,7 @@ import pl.stalmasinski.ballpassage.MainDispatcherRule
 import pl.stalmasinski.ballpassage.core.calculation.CalculationProblem
 import pl.stalmasinski.ballpassage.core.calculation.CalculationResult
 import pl.stalmasinski.ballpassage.core.calculation.TubeDimensions
+import pl.stalmasinski.ballpassage.core.tube
 import pl.stalmasinski.ballpassage.data.FakeUserDataRepository
 import java.math.BigDecimal
 
@@ -209,6 +210,19 @@ class CalculatorViewModelTest {
     }
 
     @Test
+    fun `history that cannot be saved does not stop the calculator`() = runTest(mainDispatcher.dispatcher) {
+        repository.failWrites = true
+        val viewModel = viewModel().filled()
+
+        advanceTimeBy(CalculatorViewModel.HISTORY_DELAY_MILLIS * 2)
+        viewModel.clearHistory()
+        runCurrent()
+
+        assertTrue(viewModel.state.result is CalculationResult.Success)
+        assertEquals(emptyList<TubeDimensions>(), viewModel.state.history)
+    }
+
+    @Test
     fun `clear history`() = runTest(mainDispatcher.dispatcher) {
         repository.addToHistory(tube("48.3", "5", "70"))
         val viewModel = viewModel()
@@ -224,7 +238,4 @@ class CalculatorViewModelTest {
         onValueChange(DimensionField.WALL_THICKNESS, "5")
         onValueChange(DimensionField.BEND_RADIUS, "70")
     }
-
-    private fun tube(outer: String, wall: String, radius: String) =
-        TubeDimensions(BigDecimal(outer), BigDecimal(wall), BigDecimal(radius))
 }
