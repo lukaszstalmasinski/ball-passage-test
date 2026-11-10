@@ -210,6 +210,19 @@ class CalculatorViewModelTest {
     }
 
     @Test
+    fun `history that cannot be saved does not stop the calculator`() = runTest(mainDispatcher.dispatcher) {
+        repository.failWrites = true
+        val viewModel = viewModel().filled()
+
+        advanceTimeBy(CalculatorViewModel.HISTORY_DELAY_MILLIS * 2)
+        viewModel.clearHistory()
+        runCurrent()
+
+        assertTrue(viewModel.state.result is CalculationResult.Success)
+        assertEquals(emptyList<TubeDimensions>(), viewModel.state.history)
+    }
+
+    @Test
     fun `clear history`() = runTest(mainDispatcher.dispatcher) {
         repository.addToHistory(tube("48.3", "5", "70"))
         val viewModel = viewModel()

@@ -75,6 +75,7 @@
     <string name="balls_removed">Kugel %1$s mm entfernt</string>
     <string name="balls_undo">Rückgängig</string>
     <string name="balls_error_duplicate">Diese Kugel ist bereits im Satz</string>
+    <string name="balls_save_failed">Die Änderung konnte nicht gespeichert werden. Prüfen Sie den freien Speicher und versuchen Sie es erneut.</string>
     <string name="context_none">Berechnen Sie ein Rohr im Rechner, um zu sehen, welche Kugeln passen.</string>
     <string name="context_tube">Für Rohr %1$s × %2$s · R %3$s</string>
     <string name="ball_add_details">Kugel antippen, um Kennzeichnung und Ort hinzuzufügen.</string>

@@ -82,6 +82,7 @@
     <string name="balls_removed">%1$s mm ball removed</string>
     <string name="balls_undo">Undo</string>
     <string name="balls_error_duplicate">This ball is already in your set</string>
+    <string name="balls_save_failed">Could not save the change. Check the free storage on the phone and try again.</string>
     <string name="context_none">Calculate a tube in the calculator to see which balls fit it.</string>
     <string name="context_tube">For tube %1$s × %2$s · R %3$s</string>
     <string name="ball_add_details">Tap a ball to add its marking and location.</string>
