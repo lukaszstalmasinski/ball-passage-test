@@ -1,0 +1,53 @@
+# Google Play publishing, run by the Release and Promote workflows.
+# Authentication: GOOGLE_APPLICATION_CREDENTIALS, set by google-github-actions/auth
+# (Workload Identity Federation). See "Publishing to Google Play" in README.md.
+
+default_platform(:android)
+
+platform :android do
+  def play_options
+    {
+      package_name: "pl.stalmasinski.ballpassage",
+      json_key: ENV.fetch("GOOGLE_APPLICATION_CREDENTIALS"),
+      metadata_path: "fastlane/metadata/android",
+      skip_upload_apk: true,
+    }
+  end
+
+  desc "Upload the release bundle and its changelogs to the internal testing track"
+  lane :internal do
+    upload_to_play_store(
+      **play_options,
+      track: "internal",
+      aab: "app/build/outputs/bundle/release/app-release.aab",
+      mapping: "app/build/outputs/mapping/release/mapping.txt",
+      # The store listing is shared by all tracks, so it is uploaded only on promotion.
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+    )
+  end
+
+  desc "Move the current internal release to production"
+  lane :production do
+    upload_to_play_store(
+      **play_options,
+      track: "internal",
+      track_promote_to: "production",
+      skip_upload_aab: true,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      skip_upload_changelogs: true,
+    )
+  end
+
+  desc "Upload the store listing: texts, icon, feature graphic and screenshots"
+  lane :listing do
+    upload_to_play_store(
+      **play_options,
+      skip_upload_aab: true,
+      skip_upload_changelogs: true,
+    )
+  end
+end

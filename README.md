@@ -110,10 +110,9 @@ keyAlias=upload
 keyPassword=...
 ```
 
-CI (`.github/workflows/release.yml`) builds a signed bundle when a `v*` tag is pushed and
-attaches it to a GitHub release together with the R8 mapping file. It needs these repository
-secrets: `UPLOAD_KEYSTORE_BASE64`, `UPLOAD_KEYSTORE_PASSWORD`, `UPLOAD_KEY_ALIAS` and
-`UPLOAD_KEY_PASSWORD`.
+The Release workflow signs with the same key, kept as secrets of the `release` environment:
+`UPLOAD_KEYSTORE_BASE64`, `UPLOAD_KEYSTORE_PASSWORD`, `UPLOAD_KEY_ALIAS` and
+`UPLOAD_KEY_PASSWORD` (see [Publishing to Google Play](#publishing-to-google-play)).
 
 To create the upload key:
 
@@ -128,13 +127,60 @@ The `fastlane/metadata/android/` folder holds the Google Play listing in EN, PL 
 titles, short and full descriptions, changelogs, the 512 px icon, the feature graphic and
 phone screenshots. The folder layout follows the
 [fastlane supply](https://docs.fastlane.tools/actions/supply/) format, so you can upload it
-by hand or with `fastlane supply`. The privacy policy is in [PRIVACY.md](PRIVACY.md).
+by hand or with `fastlane supply`. The Promote workflow uploads it to Google Play. The privacy
+policy is in [PRIVACY.md](PRIVACY.md).
 
 ## Releasing a new version
 
 1. Bump `versionCode` and `versionName` in `app/build.gradle.kts`.
 2. Add `fastlane/metadata/android/<locale>/changelogs/<versionCode>.txt`.
-3. Tag and push, for example `git tag v1.0.1 && git push --tags`.
+3. Merge to `main`, then tag and push, for example `git tag -a v1.0.3 -m "Version 1.0.3"` and
+   `git push origin v1.0.3`.
+4. Approve the **Release** run in GitHub Actions. It runs the tests, builds the signed bundle and
+   uploads it with the changelogs to the **internal testing** track.
+5. Check the internal build on a phone. Then run **Actions → Promote to production → Run
+   workflow**. After approval it moves the release to production and uploads the store listing
+   (texts and images). Google reviews the changes before they appear.
+
+## Publishing to Google Play
+
+Publishing uses [fastlane](https://docs.fastlane.tools/actions/upload_to_play_store/)
+(`fastlane/Fastfile`). GitHub Actions signs in to Google with Workload Identity Federation, so
+the repository holds no Google credentials. Only this repository, in jobs of the `release`
+environment, can act as the publishing service account.
+
+The `release` environment:
+
+- accepts only `v*` tags and `main`, and waits for approval by the owner,
+- holds the upload key secrets (see [Release signing](#release-signing)),
+- holds two variables: `GCP_WORKLOAD_IDENTITY_PROVIDER` (the provider's full resource name) and
+  `GCP_SERVICE_ACCOUNT` (the service account e-mail).
+
+Google Cloud setup, done once in Cloud Shell:
+
+```sh
+PROJECT_ID=ball-passage-publishing          # any free project ID
+REPO_ID=1431022668                          # gh api repos/lukaszstalmasinski/ball-passage-test -q .id
+gcloud projects create "$PROJECT_ID"
+gcloud config set project "$PROJECT_ID"
+gcloud services enable androidpublisher.googleapis.com iam.googleapis.com \
+  iamcredentials.googleapis.com sts.googleapis.com
+gcloud iam service-accounts create play-publisher --display-name="Google Play publisher"
+gcloud iam workload-identity-pools create github --location=global --display-name="GitHub Actions"
+gcloud iam workload-identity-pools providers create-oidc ball-passage-test \
+  --location=global --workload-identity-pool=github --display-name="ball-passage-test" \
+  --issuer-uri="https://token.actions.githubusercontent.com" \
+  --attribute-mapping="google.subject=assertion.sub,attribute.repository_id=assertion.repository_id,attribute.environment=assertion.environment" \
+  --attribute-condition="assertion.repository_id == '$REPO_ID' && assertion.environment == 'release'"
+PROJECT_NUMBER=$(gcloud projects describe "$PROJECT_ID" --format='value(projectNumber)')
+gcloud iam service-accounts add-iam-policy-binding \
+  "play-publisher@$PROJECT_ID.iam.gserviceaccount.com" --role=roles/iam.workloadIdentityUser \
+  --member="principalSet://iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/github/attribute.repository_id/$REPO_ID"
+```
+
+Then in Play Console, **Users and permissions → Invite new users**: invite the service account
+e-mail and give it, for this app, the permissions to release to testing tracks and production
+and to manage the store listing.
 
 ## License
 

@@ -1,20 +1,28 @@
 name: Release
 
-# Builds a signed App Bundle for Google Play when a version tag (e.g. v1.0.0) is pushed.
-# Required repository secrets:
-#   UPLOAD_KEYSTORE_BASE64  - upload keystore (.jks), base64-encoded
-#   UPLOAD_KEYSTORE_PASSWORD, UPLOAD_KEY_ALIAS, UPLOAD_KEY_PASSWORD
+# A pushed version tag (e.g. v1.0.3) builds a signed App Bundle and uploads it to the
+# internal testing track of Google Play, together with the changelogs for its versionCode.
+# Moving it to production is a separate, manual workflow (promote.yml).
+#
+# The job runs in the "release" environment, which holds the upload key, accepts only v* tags
+# and main, and waits for approval. Google Play access uses Workload Identity Federation, so
+# no Google credentials are stored here. See "Publishing to Google Play" in README.md.
 on:
   push:
     tags: ['v*']
 
-permissions:
-  contents: write
+concurrency:
+  group: release
+  cancel-in-progress: false
 
 jobs:
   release:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
+    environment: release
+    permissions:
+      contents: write   # GitHub release
+      id-token: write   # Workload Identity Federation
     steps:
       - uses: actions/checkout@v7
 
@@ -30,12 +38,12 @@ jobs:
           UPLOAD_KEYSTORE_BASE64: ${{ secrets.UPLOAD_KEYSTORE_BASE64 }}
         run: |
           if [ -z "$UPLOAD_KEYSTORE_BASE64" ]; then
-            echo "::error::Secret UPLOAD_KEYSTORE_BASE64 is not set."
+            echo "::error::Secret UPLOAD_KEYSTORE_BASE64 is not set in the release environment."
             exit 1
           fi
           echo "$UPLOAD_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/upload.jks"
 
-      - name: Build signed bundle
+      - name: Tests, lint and signed bundle
         env:
           BPT_KEYSTORE_FILE: ${{ runner.temp }}/upload.jks
           BPT_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
@@ -43,10 +51,29 @@ jobs:
           BPT_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
         run: ./gradlew check bundleRelease
 
+      - name: Remove upload keystore
+        if: always()
+        run: rm -f "$RUNNER_TEMP/upload.jks"
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+
+      - name: Install fastlane
+        run: gem install fastlane --no-document
+
+      - name: Upload to the internal testing track
+        run: fastlane android internal
+
+      # The bundle and the R8 mapping file are not attached: the repository is public, and the
+      # mapping file would reveal the obfuscated code. Google Play keeps both.
       - name: Create GitHub release
         uses: softprops/action-gh-release@v3
         with:
           generate_release_notes: true
-          files: |
-            app/build/outputs/bundle/release/app-release.aab
-            app/build/outputs/mapping/release/mapping.txt
