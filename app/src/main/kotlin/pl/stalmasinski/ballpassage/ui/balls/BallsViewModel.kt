@@ -19,7 +19,7 @@ import pl.stalmasinski.ballpassage.core.BallSetCodec
 import pl.stalmasinski.ballpassage.core.BallSets
 import pl.stalmasinski.ballpassage.core.SharedBallSet
 import pl.stalmasinski.ballpassage.data.UserDataRepository
-import pl.stalmasinski.ballpassage.ui.calculator.DecimalInput
+import pl.stalmasinski.ballpassage.ui.common.DecimalInput
 import java.math.BigDecimal
 import java.util.UUID
 
@@ -58,7 +58,7 @@ data class BallsUiState(
 class BallsViewModel(
     private val repository: UserDataRepository,
     private val newId: () -> String = { UUID.randomUUID().toString() },
-) : ViewModel() {
+) : ViewModel(), BallsActions {
 
     private val input = MutableStateFlow("")
     private val inputError = MutableStateFlow<BallInputError?>(null)
@@ -70,13 +70,12 @@ class BallsViewModel(
 
     private val activeSetId: String get() = uiState.value.activeSet.id
 
-    fun onInputChange(text: String) {
+    override fun onInputChange(text: String) {
         input.value = DecimalInput.sanitize(text)
         inputError.value = null
     }
 
-    /** Adds the typed ball; returns false and sets an error when the input is not accepted. */
-    fun add(): Boolean {
+    override fun add(): Boolean {
         val value = DecimalInput.parse(input.value)
         inputError.value = when {
             value == null -> BallInputError.INVALID_NUMBER
@@ -91,7 +90,7 @@ class BallsViewModel(
         return true
     }
 
-    fun addRange(from: String, to: String, step: String): RangeResult {
+    override fun addRange(from: String, to: String, step: String): RangeResult {
         val values = listOf(from, to, step).map(DecimalInput::parse)
         if (values.any { it == null }) return RangeResult.Invalid(RangeError.INVALID_NUMBER)
 
@@ -106,31 +105,29 @@ class BallsViewModel(
         }
     }
 
-    fun remove(ball: Ball) = update { it.removeBall(activeSetId, ball.id) }
+    override fun remove(ball: Ball) = update { it.removeBall(activeSetId, ball.id) }
 
-    /** Puts back a ball removed by mistake, with its label and location. */
-    fun restore(ball: Ball) = update { it.restoreBall(activeSetId, ball) }
+    override fun restore(ball: Ball) = update { it.restoreBall(activeSetId, ball) }
 
-    fun updateDetails(ball: Ball, label: String, location: String) =
+    override fun updateDetails(ball: Ball, label: String, location: String) =
         update { it.updateBallDetails(activeSetId, ball.id, label, location) }
 
-    fun createSet(name: String) {
+    override fun createSet(name: String) {
         val id = newId()
         update { it.createSet(name, id) }
     }
 
-    fun renameSet(name: String) = update { it.renameSet(activeSetId, name) }
+    override fun renameSet(name: String) = update { it.renameSet(activeSetId, name) }
 
-    fun deleteSet() = update { it.deleteSet(activeSetId) }
+    override fun deleteSet() = update { it.deleteSet(activeSetId) }
 
-    fun selectSet(set: BallSet) = update { it.selectSet(set.id) }
+    override fun selectSet(set: BallSet) = update { it.selectSet(set.id) }
 
-    /** The active set in the sharing format, for a QR code or a message, under its displayed [name]. */
-    fun exportText(name: String): String = BallSetCodec.encode(uiState.value.activeSet.copy(name = name))
+    override fun exportText(name: String): String = BallSetCodec.encode(uiState.value.activeSet.copy(name = name))
 
-    fun parseImport(text: String): SharedBallSet? = BallSetCodec.decode(text)
+    override fun parseImport(text: String): SharedBallSet? = BallSetCodec.decode(text)
 
-    fun importSet(shared: SharedBallSet) = update { it.importSet(shared, newId) }
+    override fun importSet(shared: SharedBallSet) = update { it.importSet(shared, newId) }
 
     private fun update(transform: (BallSets) -> BallSets) {
         viewModelScope.launch { repository.updateBallSets(transform) }

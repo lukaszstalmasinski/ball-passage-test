@@ -9,6 +9,7 @@ import org.junit.Rule
 import org.junit.Test
 import pl.stalmasinski.ballpassage.MainDispatcherRule
 import pl.stalmasinski.ballpassage.data.FakeUserDataRepository
+import pl.stalmasinski.ballpassage.ui.common.details
 import java.math.BigDecimal
 
 class BallsViewModelTest {

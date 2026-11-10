@@ -40,8 +40,8 @@ import pl.stalmasinski.ballpassage.core.Ball
 import pl.stalmasinski.ballpassage.core.BallSets
 import pl.stalmasinski.ballpassage.core.SharedBallSet
 import pl.stalmasinski.ballpassage.ui.TestTags
-import pl.stalmasinski.ballpassage.ui.calculator.DecimalInput
-import pl.stalmasinski.ballpassage.ui.calculator.rememberNumberFormatter
+import pl.stalmasinski.ballpassage.ui.common.DecimalInput
+import pl.stalmasinski.ballpassage.ui.common.rememberNumberFormatter
 import pl.stalmasinski.ballpassage.ui.qr.QrCodeImage
 import pl.stalmasinski.ballpassage.ui.qr.QrCodes
 

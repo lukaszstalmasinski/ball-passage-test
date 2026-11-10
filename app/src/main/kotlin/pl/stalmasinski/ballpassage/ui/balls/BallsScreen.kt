@@ -68,7 +68,8 @@ import pl.stalmasinski.ballpassage.core.CalculationResult
 import pl.stalmasinski.ballpassage.core.SharedBallSet
 import pl.stalmasinski.ballpassage.ui.AppTopBar
 import pl.stalmasinski.ballpassage.ui.TestTags
-import pl.stalmasinski.ballpassage.ui.calculator.rememberNumberFormatter
+import pl.stalmasinski.ballpassage.ui.common.details
+import pl.stalmasinski.ballpassage.ui.common.rememberNumberFormatter
 import pl.stalmasinski.ballpassage.ui.qr.QrScannerDialog
 import pl.stalmasinski.ballpassage.ui.rememberAppTopBarScrollBehavior
 
@@ -91,7 +92,7 @@ private enum class BallsDialog { RANGE, NEW_SET, RENAME_SET, DELETE_SET, EXPORT,
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BallsScreen(state: BallsUiState, tubeContext: TubeContext?, actions: BallsViewModel) {
+fun BallsScreen(state: BallsUiState, tubeContext: TubeContext?, actions: BallsActions) {
     val formatter = rememberNumberFormatter()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -524,9 +525,6 @@ private fun FitBadge(@StringRes text: Int, recommended: Boolean) {
         )
     }
 }
-
-/** Label and location joined for display, e.g. "K-12 · case 2". */
-fun Ball.details(): String = listOf(label, location).filter { it.isNotEmpty() }.joinToString(" · ")
 
 @get:StringRes
 private val BallInputError.messageRes: Int

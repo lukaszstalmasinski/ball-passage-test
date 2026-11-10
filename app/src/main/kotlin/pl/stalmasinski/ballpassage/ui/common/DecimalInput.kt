@@ -1,4 +1,4 @@
-package pl.stalmasinski.ballpassage.ui.calculator
+package pl.stalmasinski.ballpassage.ui.common
 
 import java.math.BigDecimal
 

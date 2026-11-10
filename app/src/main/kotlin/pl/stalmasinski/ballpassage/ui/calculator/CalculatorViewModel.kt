@@ -24,6 +24,7 @@ import pl.stalmasinski.ballpassage.core.CalculationProblem
 import pl.stalmasinski.ballpassage.core.CalculationResult
 import pl.stalmasinski.ballpassage.core.TubeDimensions
 import pl.stalmasinski.ballpassage.data.UserDataRepository
+import pl.stalmasinski.ballpassage.ui.common.DecimalInput
 import java.math.BigDecimal
 
 /** Input fields in the order they are shown. */

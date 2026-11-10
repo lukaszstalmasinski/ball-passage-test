@@ -37,7 +37,9 @@ import pl.stalmasinski.ballpassage.core.BendRatio
 import pl.stalmasinski.ballpassage.core.CalculationProblem
 import pl.stalmasinski.ballpassage.core.CalculationResult
 import pl.stalmasinski.ballpassage.ui.TestTags
-import pl.stalmasinski.ballpassage.ui.balls.details
+import pl.stalmasinski.ballpassage.ui.common.NumberFormatter
+import pl.stalmasinski.ballpassage.ui.common.details
+import pl.stalmasinski.ballpassage.ui.common.rememberNumberFormatter
 import pl.stalmasinski.ballpassage.ui.theme.LocalWarningColors
 import java.math.BigDecimal
 

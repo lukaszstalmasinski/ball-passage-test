@@ -37,6 +37,8 @@ import pl.stalmasinski.ballpassage.core.CalculationResult
 import pl.stalmasinski.ballpassage.core.DiameterRow
 import pl.stalmasinski.ballpassage.ui.FittingText
 import pl.stalmasinski.ballpassage.ui.TestTags
+import pl.stalmasinski.ballpassage.ui.common.NumberFormatter
+import pl.stalmasinski.ballpassage.ui.common.rememberNumberFormatter
 
 /** VGB-S-013 Table 3 with the cell used for the current result highlighted. */
 @Composable
