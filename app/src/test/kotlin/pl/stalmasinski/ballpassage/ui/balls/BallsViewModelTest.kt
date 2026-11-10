@@ -161,6 +161,27 @@ class BallsViewModelTest {
     }
 
     @Test
+    fun `other changes and leaving the tab clear the error about the typed ball`() {
+        viewModel.onInputChange("32")
+        viewModel.add()
+        viewModel.onInputChange("32")
+        viewModel.add()
+        assertEquals(BallInputError.DUPLICATE, state.inputError)
+
+        viewModel.addRange("40", "41", "1")
+
+        assertNull(state.inputError)
+        assertEquals("32", state.input)
+
+        viewModel.add()
+        assertEquals(BallInputError.DUPLICATE, state.inputError)
+
+        viewModel.onScreenLeft()
+
+        assertNull(state.inputError)
+    }
+
+    @Test
     fun `range step default`() {
         assertEquals(BigDecimal.ONE, BallsViewModel.DEFAULT_RANGE_STEP)
     }
