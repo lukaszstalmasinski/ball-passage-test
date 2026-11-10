@@ -27,7 +27,24 @@ jobs:
       - uses: gradle/actions/setup-gradle@v6
 
       - name: Tests, lint and release build
-        run: ./gradlew check assembleRelease bundleRelease
+        run: ./gradlew check assembleRelease bundleRelease :core:jacocoTestReport :app:createDebugUnitTestCoverageReport
+
+      - name: Coverage summary
+        if: always()
+        run: >
+          python3 .github/scripts/coverage_summary.py "unit tests"
+          core/build/reports/jacoco/test/jacocoTestReport.xml
+          app/build/reports/coverage/test/debug/report.xml
+          >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload coverage reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-unit
+          path: |
+            core/build/reports/jacoco/
+            app/build/reports/coverage/test/
 
       - name: Upload reports
         if: failure()
@@ -65,7 +82,21 @@ jobs:
           target: google_apis
           arch: x86_64
           disable-animations: true
-          script: ./gradlew connectedDebugAndroidTest
+          script: ./gradlew createDebugAndroidTestCoverageReport
+
+      - name: Coverage summary
+        if: always()
+        run: >
+          python3 .github/scripts/coverage_summary.py "tests on a device"
+          app/build/reports/coverage/androidTest/debug/connected/report.xml
+          >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-device
+          path: app/build/reports/coverage/androidTest/
 
       - name: Upload instrumented test reports
         if: failure()

@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
+    jacoco
 }
 
 java {
@@ -24,4 +25,13 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+// Coverage report: ./gradlew :core:jacocoTestReport (build/reports/jacoco/test).
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
 }
