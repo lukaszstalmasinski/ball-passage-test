@@ -1,4 +1,6 @@
-Ball Passage Test oblicza średnicę stalowej kulki do próby przelotu kulki (kulowania, Kugeldurchlaufversuch) rur giętych i wężownic – stosowanej przy produkcji kotłów i elementów ciśnieniowych.
+Kulowanie rur bez szukania w tabelach: kalkulator podaje średnicę kulki od razu po wpisaniu wymiarów rury.
+
+Ball Passage Test oblicza średnicę stalowej kulki do próby przelotu kulki (kulowanie, Kugeldurchlaufversuch) rur giętych i wężownic – stosowanej przy produkcji kotłów i elementów ciśnieniowych.
 
 Wpisz średnicę zewnętrzną, grubość ścianki i najmniejszy promień gięcia rury. Średnica kulki pojawi się od razu, zgodnie z VGB-S-013-00-2014-12, punkt 7.2.5, tabela 3.
 

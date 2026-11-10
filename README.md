@@ -127,7 +127,8 @@ The `fastlane/metadata/android/` folder holds the Google Play listing in EN, PL 
 titles, short and full descriptions, changelogs, the 512 px icon, the feature graphic and
 phone screenshots. The folder layout follows the
 [fastlane supply](https://docs.fastlane.tools/actions/supply/) format, so you can upload it
-by hand or with `fastlane supply`. The Promote workflow uploads it to Google Play. The privacy
+by hand or with `fastlane supply`. Promote to production uploads it to Google Play, and so
+does **Actions → Update store listing**, which changes no release. The privacy
 policy is in [PRIVACY.md](PRIVACY.md).
 
 ## Releasing a new version
