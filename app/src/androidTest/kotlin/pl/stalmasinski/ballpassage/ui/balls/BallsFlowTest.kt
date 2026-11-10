@@ -124,6 +124,24 @@ class BallsFlowTest {
     }
 
     @Test
+    fun importConfirmationSurvivesRecreation() {
+        goTo(Destination.BALLS)
+        composeRule.onNodeWithTag(TestTags.BALLS_MENU).performClick()
+        composeRule.onNodeWithText("Import: paste text").performClick()
+        composeRule.onNodeWithTag(TestTags.IMPORT_TEXT).performTextInput("BPT1\nHall C\n32")
+        composeRule.onNodeWithTag(TestTags.DIALOG_CONFIRM).performClick()
+        composeRule.onNodeWithText("Import “Hall C”?").assertIsDisplayed()
+
+        // As on rotation: the activity is destroyed and created again.
+        composeRule.activityRule.scenario.recreate()
+
+        composeRule.waitForText("Import “Hall C”?")
+        composeRule.onNodeWithTag(TestTags.DIALOG_CONFIRM).performClick()
+        composeRule.waitForTag(TestTags.ballItem(BigDecimal("32")))
+        composeRule.onNodeWithText("Hall C").assertIsDisplayed()
+    }
+
+    @Test
     fun deletingASetReturnsToTheOtherOne() {
         goTo(Destination.BALLS)
         composeRule.onNodeWithTag(TestTags.SET_SELECTOR).performClick()

@@ -84,7 +84,8 @@ fun BallsScreen(state: BallsUiState, tubeContext: TubeContext?, actions: BallsAc
 
     var dialog by rememberSaveable { mutableStateOf<BallsDialog?>(null) }
     var editedBallId by rememberSaveable { mutableStateOf<String?>(null) }
-    var pendingImport by remember { mutableStateOf<SharedBallSet?>(null) }
+    // A scanned or pasted set waits here for confirmation; it survives rotation.
+    var pendingImport by rememberSaveable(stateSaver = SharedBallSetSaver) { mutableStateOf<SharedBallSet?>(null) }
     var menuExpanded by remember { mutableStateOf(false) }
 
     Scaffold(
