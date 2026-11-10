@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kugeldurchlaufversuch – Kugeldurchmesser berechnen (VGB-S-013, KTA 3211.1)</title>
+  <meta name="description" content="Kugeldurchlaufversuch an gebogenen Rohren und Rohrschlangen: Kugeldurchmesser nach VGB-S-013 und KTA 3211.1 berechnen. Kostenlose Android-App, ohne Werbung, offline.">
+  <link rel="canonical" href="https://lukaszstalmasinski.github.io/ball-passage-test/de/">
+  <link rel="alternate" hreflang="pl" href="https://lukaszstalmasinski.github.io/ball-passage-test/">
+  <link rel="alternate" hreflang="de" href="https://lukaszstalmasinski.github.io/ball-passage-test/de/">
+  <link rel="alternate" hreflang="en" href="https://lukaszstalmasinski.github.io/ball-passage-test/en/">
+  <link rel="alternate" hreflang="x-default" href="https://lukaszstalmasinski.github.io/ball-passage-test/en/">
+  <meta property="og:title" content="Kugeldurchlaufversuch – Kugeldurchmesser berechnen">
+  <meta property="og:description" content="Kugeldurchmesser für den Kugeldurchlaufversuch an Rohrbögen nach VGB-S-013 und KTA 3211.1. Kostenlose Android-App.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="de_DE">
+  <meta property="og:image" content="https://lukaszstalmasinski.github.io/ball-passage-test/assets/de-result.webp">
+  <link rel="icon" href="../assets/icon.png">
+  <link rel="stylesheet" href="../assets/site.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Kugeldurchlaufversuch Rechner",
+    "operatingSystem": "Android",
+    "applicationCategory": "BusinessApplication",
+    "inLanguage": ["de", "pl", "en"],
+    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"},
+    "url": "https://play.google.com/store/apps/details?id=pl.stalmasinski.ballpassage"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type": "Question", "name": "Welcher Kugeldurchmesser gilt nach KTA 3211.1?",
+       "acceptedAnswer": {"@type": "Answer", "text": "D_K = dᵢ − (größte zulässige Maßunterschreitung + 0,1·dᵢ + 2 mm), wobei dᵢ der Nenn-Innendurchmesser ist (KTA 3211.1, Abschnitte 10.2.2.2 und 10.4.2.2)."}},
+      {"@type": "Question", "name": "Welche Kugel für ein Rohr 48,3 × 5 mm mit Biegeradius 70 mm?",
+       "acceptedAnswer": {"@type": "Answer", "text": "Nach VGB-S-013: Innendurchmesser 38,3 mm, R/dₒ = 1,44, Abzug nach Tabelle 3 6,5 mm, also Kugeldurchmesser 31,8 mm."}},
+      {"@type": "Question", "name": "Funktioniert die App ohne Internet?",
+       "acceptedAnswer": {"@type": "Answer", "text": "Ja. Die App funktioniert vollständig offline, ohne Werbung und ohne Datenerfassung."}}
+    ]
+  }
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <a class="brand" href="./"><img src="../assets/icon.png" alt="" width="36" height="36">Kugeldurchlauf</a>
+      <nav class="lang" aria-label="Sprache">
+        <a href="../" hreflang="pl" lang="pl">PL</a>
+        <a href="./" aria-current="page" hreflang="de" lang="de">DE</a>
+        <a href="../en/" hreflang="en" lang="en">EN</a>
+      </nav>
+    </header>
+
+    <main>
+      <div class="hero">
+        <div>
+          <h1>Kugeldurchlaufversuch – Kugeldurchmesser in Sekunden</h1>
+          <p class="lead">Außendurchmesser, Wanddicke und Biegeradius eingeben – die App berechnet den Kugeldurchmesser für den Kugeldurchlaufversuch nach <strong>VGB-S-013</strong> oder <strong>KTA 3211.1</strong> und schlägt die passende Kugel aus Ihrem Koffer vor.</p>
+          <a class="cta" href="https://play.google.com/store/apps/details?id=pl.stalmasinski.ballpassage&amp;hl=de">Bei Google Play herunterladen</a>
+          <span class="cta-note">Kostenlos, ohne Werbung, offline. Ab Android 8.0.</span>
+        </div>
+        <div class="shots">
+          <img src="../assets/de-result.webp" width="540" height="1080" alt="Ergebnis: Kugeldurchmesser 31,8 mm für Rohr 48,3 × 5, R 70">
+          <img src="../assets/de-balls.webp" width="540" height="1080" alt="Kugelsatz mit Vorschlag, welche Kugel zu verwenden ist">
+        </div>
+      </div>
+
+      <section>
+        <h2>Was ist der Kugeldurchlaufversuch?</h2>
+        <p>Beim Kugeldurchlaufversuch wird geprüft, ob gebogene Rohre und Rohrschlangen in den Bögen nicht zu stark abgeflacht sind. Eine Stahlkugel mit festgelegtem Durchmesser wird durch das Rohr getrieben; geht sie frei durch, ist der Querschnitt in Ordnung. Der Versuch gehört zur Fertigung von Kesseln, Überhitzern, Economisern und anderen Druckteilen.</p>
+      </section>
+
+      <section>
+        <h2>Kugeldurchmesser bestimmen</h2>
+        <h3>KTA 3211.1 (Abschnitte 10.2.2.2 und 10.4.2.2)</h3>
+        <p>An jedem kaltgebogenen Rohr ist der Kugeldurchlaufversuch durchzuführen. Eine Kugel vom Durchmesser</p>
+        <p class="formula">D_K = dᵢ − (größte zulässige Maßunterschreitung + 0,1 · dᵢ + 2 mm)</p>
+        <p>muss freien Durchgang haben. dᵢ ist der Nenn-Innendurchmesser; die größte zulässige Maßunterschreitung stammt aus der Rohrspezifikation. Die Regel gilt für ferritische Rohre bis 38 × 4 mm und austenitische bis 42,4 × 3,6 mm.</p>
+        <h3>VGB-S-013 (Abschnitt 7.2.5, Tabelle 3)</h3>
+        <p>Der Kugeldurchmesser ist der Innendurchmesser abzüglich des Werts aus Tabelle 3. Der Wert hängt vom Innendurchmesser (Zeilen 20–29, 30–39 und 40–49 mm) und vom Biegeverhältnis R/dₒ ab.</p>
+        <div class="example">
+          <p><strong>Beispiel: Rohr 48,3 × 5 mm, Biegeradius 70 mm</strong></p>
+          <ol>
+            <li>Innendurchmesser: dᵢ = 48,3 − 2 · 5 = 38,3 mm (Zeile 30–39 mm)</li>
+            <li>Biegeverhältnis: R/dₒ = 70 / 48,3 = 1,44 (Spalte 1,0–1,5)</li>
+            <li>Abzug nach Tabelle 3: 6,5 mm</li>
+            <li><strong>Kugeldurchmesser: 38,3 − 6,5 = 31,8 mm</strong></li>
+          </ol>
+        </div>
+      </section>
+
+      <section>
+        <h2>Funktionen</h2>
+        <ul class="features">
+          <li><strong>Ergebnis sofort</strong>Der Kugeldurchmesser erscheint schon bei der Eingabe, auch über der Tastatur auf kleinen Handys.</li>
+          <li><strong>Rechenweg</strong>Innendurchmesser, Biegeverhältnis und Abzug – leicht nachzuprüfen und ins Protokoll zu übernehmen.</li>
+          <li><strong>Ihre Kugelsätze</strong>Kugeln jedes Koffers oder jeder Werkstatt, mit Kennzeichnung und Ort. Die App schlägt die passende vor.</li>
+          <li><strong>Sätze teilen</strong>Kugelsatz per QR-Code oder Text an Kollegen weitergeben.</li>
+          <li><strong>Zwei Normen</strong>VGB-S-013 und KTA 3211.1, mit Warnung, wenn das Rohr außerhalb des Geltungsbereichs liegt.</li>
+          <li><strong>Ohne Werbung, offline</strong>Keine Datenerfassung. Deutsch, Polnisch und Englisch.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Fragen</h2>
+        <details>
+          <summary>Welcher Kugeldurchmesser gilt nach KTA 3211.1?</summary>
+          <p>D_K = dᵢ − (größte zulässige Maßunterschreitung + 0,1 · dᵢ + 2 mm). Beispiel: Rohr 25 × 2,6 mm mit 0,5 mm Maßunterschreitung ergibt dᵢ = 19,8 mm und D_K = 15,32 mm.</p>
+        </details>
+        <details>
+          <summary>Funktioniert die App ohne Internet?</summary>
+          <p>Ja. Sie funktioniert vollständig offline, ohne Werbung und ohne Datenerfassung. Kugelsätze und letzte Rohre bleiben auf dem Gerät.</p>
+        </details>
+        <details>
+          <summary>Ersetzt die App die Norm?</summary>
+          <p>Nein. Sie ist ein Hilfsmittel – Ergebnisse immer mit der aktuellen Ausgabe der Norm und den Projektanforderungen prüfen.</p>
+        </details>
+      </section>
+
+      <section>
+        <a class="cta" href="https://play.google.com/store/apps/details?id=pl.stalmasinski.ballpassage&amp;hl=de">Bei Google Play herunterladen</a>
+      </section>
+    </main>
+
+    <footer>
+      <p>© 2026 Łukasz Stalmasiński · <a href="https://github.com/lukaszstalmasinski/ball-passage-test/blob/main/PRIVACY.md">Datenschutz</a> · <a href="https://github.com/lukaszstalmasinski/ball-passage-test">Quellcode</a></p>
+      <p>Die App ist ein Hilfsmittel und steht in keiner Verbindung zu VGB PowerTech oder dem KTA.</p>
+    </footer>
+  </div>
+</body>
+</html>
