@@ -1,0 +1,33 @@
+name: "Play: update store listing"
+
+# Started by hand (Actions → "Play: update store listing" → Run workflow). Uploads the store listing
+# from fastlane/metadata/android (titles, descriptions, icon, feature graphic and screenshots)
+# without touching any release. Google reviews the changes before they appear.
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: google-play
+  cancel-in-progress: false
+
+jobs:
+  listing:
+    name: Update store listing
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: release
+    permissions:
+      contents: read
+      id-token: write   # Workload Identity Federation
+    steps:
+      - name: Check out
+        uses: actions/checkout@v7
+
+      - name: Set up fastlane
+        uses: ./.github/actions/setup-fastlane
+        with:
+          workload-identity-provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service-account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+
+      - name: Upload store listing
+        run: fastlane android upload_listing

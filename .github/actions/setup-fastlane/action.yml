@@ -1,0 +1,30 @@
+name: Set up fastlane for Google Play
+description: >
+  Signs in to Google Cloud with Workload Identity Federation (no stored key) and installs fastlane.
+  The job needs `permissions: id-token: write`. Run after actions/checkout.
+
+inputs:
+  workload-identity-provider:
+    description: Full resource name of the workload identity provider.
+    required: true
+  service-account:
+    description: E-mail of the service account that publishes to Google Play.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Sign in to Google Cloud
+      uses: google-github-actions/auth@v3
+      with:
+        workload_identity_provider: ${{ inputs.workload-identity-provider }}
+        service_account: ${{ inputs.service-account }}
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.3'
+
+    - name: Install fastlane
+      shell: bash
+      run: gem install fastlane --no-document

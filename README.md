@@ -120,7 +120,7 @@ keyAlias=upload
 keyPassword=...
 ```
 
-The Release workflow signs with the same key, kept as secrets of the `release` environment:
+The "Play: release to internal testing" workflow signs with the same key, kept as secrets of the `release` environment:
 `UPLOAD_KEYSTORE_BASE64`, `UPLOAD_KEYSTORE_PASSWORD` and `UPLOAD_KEY_PASSWORD`. The key alias
 is not secret, so it is the environment variable `UPLOAD_KEY_ALIAS` (see [Publishing to Google Play](#publishing-to-google-play)).
 
@@ -137,8 +137,8 @@ The `fastlane/metadata/android/` folder holds the Google Play listing in EN, PL 
 titles, short and full descriptions, changelogs, the 512 px icon, the feature graphic and
 phone screenshots. The folder layout follows the
 [fastlane supply](https://docs.fastlane.tools/actions/supply/) format, so you can upload it
-by hand or with `fastlane supply`. Promote to production uploads it to Google Play, and so
-does **Actions → Update store listing**, which changes no release. The privacy
+by hand or with `fastlane supply`. "Play: promote to production" uploads it to Google Play, and
+so does **Actions → Play: update store listing**, which changes no release. The privacy
 policy is in [PRIVACY.md](PRIVACY.md).
 
 ## Releasing a new version
@@ -147,15 +147,32 @@ policy is in [PRIVACY.md](PRIVACY.md).
 2. Add `fastlane/metadata/android/<locale>/changelogs/<versionCode>.txt`.
 3. Merge to `main`, then tag and push, for example `git tag -a v1.0.3 -m "Version 1.0.3"` and
    `git push origin v1.0.3`.
-4. Approve the **Release** run in GitHub Actions. It runs the tests, builds the signed bundle and
+4. Approve the **Play: release to internal testing** run in GitHub Actions. It runs the tests, builds the signed bundle and
    uploads it with the changelogs to the **internal testing** track.
-5. Check the internal build on a phone. Then run **Actions → Promote to alpha → Run workflow**.
+5. Check the internal build on a phone. Then run **Actions → Play: promote to alpha → Run workflow**.
    After approval it moves the release to closed testing (alpha), where the testers get it as an
    update from Google Play once Google has reviewed it.
-6. When the testers are happy, run **Actions → Promote to production → Run workflow**. It
+6. When the testers are happy, run **Actions → Play: promote to production → Run workflow**. It
    promotes the alpha release by default; choose `internal` to skip alpha. After approval it
    moves the release to production and uploads the store listing (texts and images). Google
    reviews the changes before they appear.
+
+## GitHub Actions
+
+Workflow names start with their area, and each file is named after its workflow:
+
+| Workflow | File | Runs on |
+|---|---|---|
+| Checks (jobs: Build and unit tests, Device tests) | `checks.yml` | push to `main`, pull requests |
+| Pages: deploy website | `pages-deploy.yml` | changes in `docs/` on `main` |
+| Play: release to internal testing | `play-release.yml` | `v*` tags |
+| Play: promote to alpha | `play-promote-alpha.yml` | by hand |
+| Play: promote to production | `play-promote-production.yml` | by hand |
+| Play: update store listing | `play-store-listing.yml` | by hand |
+
+Shared steps are local actions: `.github/actions/setup-gradle-build` (JDK and Gradle) and
+`.github/actions/setup-fastlane` (Google sign-in and fastlane). The fastlane lanes are named the
+same way: `upload_internal`, `promote_alpha`, `promote_production` and `upload_listing`.
 
 ## Publishing to Google Play
 

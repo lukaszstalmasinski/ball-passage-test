@@ -1,9 +1,10 @@
-# Google Play publishing, run by the Release and Promote workflows.
+# Google Play publishing, run by the "Play: …" workflows in .github/workflows.
 # Authentication: GOOGLE_APPLICATION_CREDENTIALS, set by google-github-actions/auth
 # (Workload Identity Federation). See "Publishing to Google Play" in README.md.
 #
-# Flow: a version tag uploads to internal testing; "Promote to alpha" moves it to closed
-# testing; "Promote to production" moves the alpha (or internal) release to production.
+# Flow: a version tag uploads to internal testing (upload_internal); "Play: promote to alpha"
+# moves it to closed testing (promote_alpha); "Play: promote to production" moves the alpha (or
+# internal) release to production (promote_production).
 
 default_platform(:android)
 
@@ -38,7 +39,7 @@ platform :android do
   end
 
   desc "Upload the release bundle and its changelogs to the internal testing track"
-  lane :internal do
+  lane :upload_internal do
     upload_to_play_store(
       **play_options,
       track: "internal",
@@ -52,12 +53,12 @@ platform :android do
   end
 
   desc "Move the current internal release to closed testing (alpha)"
-  lane :alpha do
+  lane :promote_alpha do
     promote(from: "internal", to: "alpha")
   end
 
   desc "Move the alpha release (or, with from:internal, the internal one) to production"
-  lane :production do |options|
+  lane :promote_production do |options|
     from = options.fetch(:from, "alpha")
     UI.user_error!("from must be alpha or internal, not #{from}") unless %w[alpha internal].include?(from)
     if from == "alpha"
@@ -72,7 +73,7 @@ platform :android do
   end
 
   desc "Upload the store listing: texts, icon, feature graphic and screenshots"
-  lane :listing do
+  lane :upload_listing do
     upload_to_play_store(
       **play_options,
       skip_upload_aab: true,
