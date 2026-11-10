@@ -17,9 +17,10 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.junit.runner.RunWith
-import pl.stalmasinski.ballpassage.core.Ball
-import pl.stalmasinski.ballpassage.core.BallSets
-import pl.stalmasinski.ballpassage.core.TubeDimensions
+import pl.stalmasinski.ballpassage.core.balls.Ball
+import pl.stalmasinski.ballpassage.core.balls.BallSets
+import pl.stalmasinski.ballpassage.core.calculation.TubeDimensions
+import pl.stalmasinski.ballpassage.core.tube
 import java.io.File
 import java.math.BigDecimal
 
@@ -136,7 +137,4 @@ class DataStoreUserDataRepositoryTest {
             DataStoreUserDataRepository.decodeHistory("48.3,5,70;1,2;x,y,z;0,1,1"),
         )
     }
-
-    private fun tube(outer: String, wall: String, radius: String) =
-        TubeDimensions(BigDecimal(outer), BigDecimal(wall), BigDecimal(radius))
 }

@@ -1,11 +1,8 @@
 package pl.stalmasinski.ballpassage.ui.balls
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,34 +11,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuAnchorType
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.ListItemDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,33 +33,21 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import pl.stalmasinski.ballpassage.R
-import pl.stalmasinski.ballpassage.core.Ball
-import pl.stalmasinski.ballpassage.core.BallSet
-import pl.stalmasinski.ballpassage.core.CalculationResult
-import pl.stalmasinski.ballpassage.core.SharedBallSet
+import pl.stalmasinski.ballpassage.core.balls.SharedBallSet
 import pl.stalmasinski.ballpassage.ui.AppTopBar
 import pl.stalmasinski.ballpassage.ui.TestTags
-import pl.stalmasinski.ballpassage.ui.calculator.rememberNumberFormatter
+import pl.stalmasinski.ballpassage.ui.common.rememberNumberFormatter
 import pl.stalmasinski.ballpassage.ui.qr.QrScannerDialog
 import pl.stalmasinski.ballpassage.ui.rememberAppTopBarScrollBehavior
-
-/** The calculator's current tube, so that the list can mark the balls that fit it. */
-data class TubeContext(
-    val result: CalculationResult.Success,
-    val fittingBalls: List<Ball>,
-)
 
 @Composable
 fun BallsRoute(
@@ -91,7 +62,7 @@ private enum class BallsDialog { RANGE, NEW_SET, RENAME_SET, DELETE_SET, EXPORT,
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BallsScreen(state: BallsUiState, tubeContext: TubeContext?, actions: BallsViewModel) {
+fun BallsScreen(state: BallsUiState, tubeContext: TubeContext?, actions: BallsActions) {
     val formatter = rememberNumberFormatter()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -99,6 +70,14 @@ fun BallsScreen(state: BallsUiState, tubeContext: TubeContext?, actions: BallsVi
     val removedMessage = stringResource(R.string.balls_removed)
     val undoLabel = stringResource(R.string.balls_undo)
     val notFoundMessage = stringResource(R.string.import_not_found)
+    val saveFailedMessage = stringResource(R.string.balls_save_failed)
+
+    LaunchedEffect(state.saveFailed) {
+        if (state.saveFailed) {
+            snackbarHostState.showSnackbar(saveFailedMessage, duration = SnackbarDuration.Long)
+            actions.onSaveErrorShown()
+        }
+    }
     val defaultSetName = stringResource(R.string.set_default_name)
     val importedSetName = stringResource(R.string.set_imported_name)
     val activeSetName = state.activeSet.name.ifEmpty { defaultSetName }
@@ -294,244 +273,3 @@ private fun MenuItem(@StringRes text: Int, icon: Int, enabled: Boolean = true, o
         leadingIcon = { Icon(painterResource(icon), contentDescription = null) },
     )
 }
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun SetSelector(
-    sets: List<BallSet>,
-    active: BallSet,
-    defaultName: String,
-    onSelect: (BallSet) -> Unit,
-    onNewSet: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }, modifier = modifier) {
-        OutlinedTextField(
-            value = active.name.ifEmpty { defaultName },
-            onValueChange = {},
-            readOnly = true,
-            singleLine = true,
-            label = { Text(stringResource(R.string.set_label)) },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
-                .testTag(TestTags.SET_SELECTOR),
-        )
-        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            sets.forEach { set ->
-                DropdownMenuItem(
-                    text = { Text(set.name.ifEmpty { defaultName }) },
-                    onClick = {
-                        onSelect(set)
-                        expanded = false
-                    },
-                    trailingIcon = if (set.id == active.id) {
-                        { Icon(painterResource(R.drawable.ic_check), contentDescription = null) }
-                    } else {
-                        null
-                    },
-                )
-            }
-            HorizontalDivider()
-            DropdownMenuItem(
-                text = { Text(stringResource(R.string.set_new)) },
-                onClick = {
-                    expanded = false
-                    onNewSet()
-                },
-                leadingIcon = { Icon(painterResource(R.drawable.ic_add), contentDescription = null) },
-                modifier = Modifier.testTag(TestTags.SET_NEW),
-            )
-        }
-    }
-}
-
-/** Tells which tube from the calculator the marks in the list refer to. */
-@Composable
-private fun TubeContextCard(tubeContext: TubeContext?, hasBalls: Boolean, modifier: Modifier = Modifier) {
-    if (tubeContext == null && !hasBalls) return
-    val formatter = rememberNumberFormatter()
-
-    Card(
-        modifier = modifier.testTag(TestTags.TUBE_CONTEXT),
-        colors = CardDefaults.cardColors(
-            containerColor = if (tubeContext != null) {
-                MaterialTheme.colorScheme.primaryContainer
-            } else {
-                MaterialTheme.colorScheme.surfaceContainerHigh
-            },
-        ),
-    ) {
-        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            if (tubeContext == null) {
-                Text(
-                    text = stringResource(R.string.context_none),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                return@Column
-            }
-            val dimensions = tubeContext.result.dimensions
-            Text(
-                text = stringResource(
-                    R.string.context_tube,
-                    formatter.format(dimensions.outerDiameter),
-                    formatter.format(dimensions.wallThickness),
-                    formatter.format(dimensions.bendRadius),
-                ),
-                style = MaterialTheme.typography.titleSmall,
-            )
-            Text(
-                text = stringResource(
-                    R.string.result_standard_ball,
-                    formatter.format(tubeContext.result.minBallDiameter),
-                ),
-                style = MaterialTheme.typography.bodyMedium,
-            )
-            if (hasBalls && tubeContext.fittingBalls.isEmpty()) {
-                Text(stringResource(R.string.ball_none_fits), style = MaterialTheme.typography.bodyMedium)
-            }
-        }
-    }
-}
-
-@Composable
-private fun AddBallRow(
-    state: BallsUiState,
-    onInputChange: (String) -> Unit,
-    onAdd: () -> Unit,
-    onAddRange: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Column(modifier = modifier) {
-        Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            OutlinedTextField(
-                value = state.input,
-                onValueChange = onInputChange,
-                modifier = Modifier
-                    .weight(1f)
-                    .testTag(TestTags.BALL_INPUT),
-                label = { Text(stringResource(R.string.balls_input_label)) },
-                suffix = { Text(stringResource(R.string.unit_mm)) },
-                supportingText = state.inputError?.let { error -> { Text(stringResource(error.messageRes)) } },
-                isError = state.inputError != null,
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal, imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions(onDone = { onAdd() }),
-            )
-            FilledIconButton(
-                onClick = onAdd,
-                // Centred on the field's 56 dp outline, which starts 8 dp down to leave room for the label.
-                modifier = Modifier
-                    .padding(top = 12.dp)
-                    .size(48.dp)
-                    .testTag(TestTags.BALL_ADD),
-            ) {
-                Icon(painterResource(R.drawable.ic_add), contentDescription = stringResource(R.string.balls_add))
-            }
-        }
-        TextButton(onClick = onAddRange, modifier = Modifier.testTag(TestTags.RANGE_OPEN)) {
-            Text(stringResource(R.string.range_open))
-        }
-    }
-}
-
-@Composable
-private fun BallList(
-    balls: List<Ball>,
-    tubeContext: TubeContext?,
-    onEdit: (Ball) -> Unit,
-    onRemove: (Ball) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val formatter = rememberNumberFormatter()
-    val recommendedId = tubeContext?.fittingBalls?.firstOrNull()?.id
-    val fittingIds = tubeContext?.fittingBalls.orEmpty().map { it.id }.toSet()
-
-    Card(
-        modifier = modifier,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
-    ) {
-        if (balls.isEmpty()) {
-            Text(
-                text = stringResource(R.string.balls_empty),
-                modifier = Modifier.padding(20.dp),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            return@Card
-        }
-        Column(modifier = Modifier.padding(vertical = 8.dp)) {
-            // One hint for the whole list instead of repeating it in every row.
-            Text(
-                text = stringResource(R.string.ball_add_details),
-                modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            balls.forEachIndexed { index, ball ->
-                if (index > 0) HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp))
-                val size = formatter.format(ball.diameter)
-                val details = ball.details()
-                ListItem(
-                    headlineContent = {
-                        Text(stringResource(R.string.ball_size, size), style = MaterialTheme.typography.titleMedium)
-                    },
-                    supportingContent = if (details.isNotEmpty()) {
-                        { Text(details) }
-                    } else {
-                        null
-                    },
-                    trailingContent = {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            when (ball.id) {
-                                recommendedId -> FitBadge(R.string.ball_badge_recommended, recommended = true)
-                                in fittingIds -> FitBadge(R.string.ball_badge_fits, recommended = false)
-                            }
-                            IconButton(onClick = { onRemove(ball) }) {
-                                Icon(
-                                    painterResource(R.drawable.ic_delete),
-                                    contentDescription = stringResource(R.string.balls_remove, size),
-                                )
-                            }
-                        }
-                    },
-                    modifier = Modifier
-                        .clickable { onEdit(ball) }
-                        .padding(start = 4.dp)
-                        .testTag(TestTags.ballItem(ball.diameter)),
-                    colors = ListItemDefaults.colors(containerColor = Color.Transparent),
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun FitBadge(@StringRes text: Int, recommended: Boolean) {
-    Surface(
-        shape = RoundedCornerShape(8.dp),
-        color = if (recommended) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer,
-        contentColor = if (recommended) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondaryContainer,
-    ) {
-        Text(
-            text = stringResource(text),
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-            style = MaterialTheme.typography.labelMedium,
-        )
-    }
-}
-
-/** Label and location joined for display, e.g. "K-12 · case 2". */
-fun Ball.details(): String = listOf(label, location).filter { it.isNotEmpty() }.joinToString(" · ")
-
-@get:StringRes
-private val BallInputError.messageRes: Int
-    get() = when (this) {
-        BallInputError.INVALID_NUMBER -> R.string.error_invalid_number
-        BallInputError.MUST_BE_POSITIVE -> R.string.error_must_be_positive
-        BallInputError.DUPLICATE -> R.string.balls_error_duplicate
-    }

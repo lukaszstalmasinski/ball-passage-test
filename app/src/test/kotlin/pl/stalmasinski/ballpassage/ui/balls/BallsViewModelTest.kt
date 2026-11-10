@@ -9,6 +9,7 @@ import org.junit.Rule
 import org.junit.Test
 import pl.stalmasinski.ballpassage.MainDispatcherRule
 import pl.stalmasinski.ballpassage.data.FakeUserDataRepository
+import pl.stalmasinski.ballpassage.ui.common.details
 import java.math.BigDecimal
 
 class BallsViewModelTest {
@@ -142,6 +143,21 @@ class BallsViewModelTest {
     @Test
     fun `text without a set is not imported`() {
         assertNull(viewModel.parseImport("hello"))
+    }
+
+    @Test
+    fun `a failed save is reported until the message was shown`() {
+        viewModel.onInputChange("32")
+        repository.failWrites = true
+
+        viewModel.add()
+
+        assertTrue(state.saveFailed)
+        assertEquals(emptyList<String>(), diameters)
+
+        viewModel.onSaveErrorShown()
+
+        assertFalse(state.saveFailed)
     }
 
     @Test

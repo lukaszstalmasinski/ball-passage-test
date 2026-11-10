@@ -16,15 +16,16 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusProperties
@@ -38,16 +39,31 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import pl.stalmasinski.ballpassage.R
-import pl.stalmasinski.ballpassage.core.Ball
-import pl.stalmasinski.ballpassage.core.BallSet
-import pl.stalmasinski.ballpassage.core.TubeDimensions
+import pl.stalmasinski.ballpassage.core.balls.Ball
+import pl.stalmasinski.ballpassage.core.balls.BallSet
+import pl.stalmasinski.ballpassage.core.calculation.TubeDimensions
 import pl.stalmasinski.ballpassage.ui.AppTopBar
 import pl.stalmasinski.ballpassage.ui.TestTags
+import pl.stalmasinski.ballpassage.ui.common.rememberNumberFormatter
 import pl.stalmasinski.ballpassage.ui.rememberAppTopBarScrollBehavior
 import pl.stalmasinski.ballpassage.ui.theme.BallPassageTheme
 import java.math.BigDecimal
 import java.text.DecimalFormatSymbols
+
+@Composable
+fun CalculatorRoute(viewModel: CalculatorViewModel, onOpenBalls: () -> Unit) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    CalculatorScreen(
+        state = state,
+        onValueChange = viewModel::onValueChange,
+        onClearAll = viewModel::clearAll,
+        onApplyHistory = viewModel::applyHistory,
+        onClearHistory = viewModel::clearHistory,
+        onOpenBalls = onOpenBalls,
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

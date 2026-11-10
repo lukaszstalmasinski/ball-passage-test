@@ -27,10 +27,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import pl.stalmasinski.ballpassage.R
-import pl.stalmasinski.ballpassage.core.CalculationResult
+import pl.stalmasinski.ballpassage.core.calculation.CalculationResult
 import pl.stalmasinski.ballpassage.ui.balls.BallsRoute
 import pl.stalmasinski.ballpassage.ui.balls.TubeContext
-import pl.stalmasinski.ballpassage.ui.calculator.CalculatorScreen
+import pl.stalmasinski.ballpassage.ui.calculator.CalculatorRoute
 import pl.stalmasinski.ballpassage.ui.calculator.CalculatorViewModel
 import pl.stalmasinski.ballpassage.ui.calculator.CompactResultBar
 import pl.stalmasinski.ballpassage.ui.info.InfoScreen
@@ -84,12 +84,8 @@ fun BallPassageApp(calculatorViewModel: CalculatorViewModel = viewModel(factory 
                 .consumeWindowInsets(padding),
         ) {
             when (destination) {
-                Destination.CALCULATOR -> CalculatorScreen(
-                    state = calculatorState,
-                    onValueChange = calculatorViewModel::onValueChange,
-                    onClearAll = calculatorViewModel::clearAll,
-                    onApplyHistory = calculatorViewModel::applyHistory,
-                    onClearHistory = calculatorViewModel::clearHistory,
+                Destination.CALCULATOR -> CalculatorRoute(
+                    viewModel = calculatorViewModel,
                     onOpenBalls = { destination = Destination.BALLS },
                 )
                 Destination.BALLS -> BallsRoute(

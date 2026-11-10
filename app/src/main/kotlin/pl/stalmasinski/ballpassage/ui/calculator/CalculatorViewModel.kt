@@ -16,14 +16,16 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import pl.stalmasinski.ballpassage.BallPassageApplication
-import pl.stalmasinski.ballpassage.core.Ball
-import pl.stalmasinski.ballpassage.core.BallPassageCalculator
-import pl.stalmasinski.ballpassage.core.BallSet
-import pl.stalmasinski.ballpassage.core.BallSelector
-import pl.stalmasinski.ballpassage.core.CalculationProblem
-import pl.stalmasinski.ballpassage.core.CalculationResult
-import pl.stalmasinski.ballpassage.core.TubeDimensions
+import pl.stalmasinski.ballpassage.core.balls.Ball
+import pl.stalmasinski.ballpassage.core.balls.BallSelector
+import pl.stalmasinski.ballpassage.core.balls.BallSet
+import pl.stalmasinski.ballpassage.core.calculation.BallPassageCalculator
+import pl.stalmasinski.ballpassage.core.calculation.CalculationProblem
+import pl.stalmasinski.ballpassage.core.calculation.CalculationResult
+import pl.stalmasinski.ballpassage.core.calculation.TubeDimensions
 import pl.stalmasinski.ballpassage.data.UserDataRepository
+import pl.stalmasinski.ballpassage.ui.common.DecimalInput
+import java.io.IOException
 import java.math.BigDecimal
 
 /** Input fields in the order they are shown. */
@@ -96,7 +98,7 @@ class CalculatorViewModel(
     }
 
     fun clearHistory() {
-        viewModelScope.launch { repository.clearHistory() }
+        viewModelScope.launch { saveHistory { repository.clearHistory() } }
     }
 
     private fun setInputs(values: Map<DimensionField, String>) {
@@ -114,7 +116,16 @@ class CalculatorViewModel(
         val result = calculate(inputs.value).result as? CalculationResult.Success ?: return
         historyJob = viewModelScope.launch {
             delay(historyDelayMillis)
-            repository.addToHistory(result.dimensions)
+            saveHistory { repository.addToHistory(result.dimensions) }
+        }
+    }
+
+    /** Recent tubes are a convenience: when they cannot be saved, the calculator carries on without them. */
+    private suspend fun saveHistory(write: suspend () -> Unit) {
+        try {
+            write()
+        } catch (e: IOException) {
+            // Nothing to show: the result on screen is unaffected.
         }
     }
 

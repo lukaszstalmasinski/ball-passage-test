@@ -8,6 +8,7 @@ import pl.stalmasinski.ballpassage.data.UserDataRepository
 
 private val Context.userDataStore by preferencesDataStore(name = "user_data")
 
-class BallPassageApplication : Application() {
-    val userDataRepository: UserDataRepository by lazy { DataStoreUserDataRepository(userDataStore) }
+/** Holds the app-wide dependencies; Robolectric tests replace the repository with a fake. */
+open class BallPassageApplication : Application() {
+    open val userDataRepository: UserDataRepository by lazy { DataStoreUserDataRepository(userDataStore) }
 }
