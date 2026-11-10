@@ -91,6 +91,12 @@ android {
         localeFilters += setOf("en", "pl", "de")
     }
 
+    // Steps through the running app, shared by the JVM (test) and device (androidTest) UI tests.
+    sourceSets {
+        getByName("test").kotlin.directories.add("src/testShared/kotlin")
+        getByName("androidTest").kotlin.directories.add("src/testShared/kotlin")
+    }
+
     testOptions {
         unitTests.isIncludeAndroidResources = true
         animationsDisabled = true
@@ -149,6 +155,7 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     debugImplementation(libs.androidx.compose.ui.tooling)
 
+    testImplementation(testFixtures(project(":core")))
     testImplementation(libs.junit4)
     testImplementation(libs.robolectric)
     testImplementation(libs.kotlinx.coroutines.test)
@@ -157,6 +164,7 @@ dependencies {
     testImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
+    androidTestImplementation(testFixtures(project(":core")))
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.test.ext.junit)
     // Older versions pulled in by the Compose test library do not work on Android 17.

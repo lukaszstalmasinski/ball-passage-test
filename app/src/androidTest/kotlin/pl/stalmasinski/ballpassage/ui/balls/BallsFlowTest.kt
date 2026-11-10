@@ -1,8 +1,6 @@
 package pl.stalmasinski.ballpassage.ui.balls
 
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.hasTestTag
-import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -22,7 +20,11 @@ import pl.stalmasinski.ballpassage.MainActivity
 import pl.stalmasinski.ballpassage.core.balls.BallSets
 import pl.stalmasinski.ballpassage.ui.Destination
 import pl.stalmasinski.ballpassage.ui.TestTags
-import pl.stalmasinski.ballpassage.ui.calculator.DimensionField
+import pl.stalmasinski.ballpassage.ui.addBall
+import pl.stalmasinski.ballpassage.ui.enterTube
+import pl.stalmasinski.ballpassage.ui.openTab
+import pl.stalmasinski.ballpassage.ui.waitForTag
+import pl.stalmasinski.ballpassage.ui.waitForText
 import java.math.BigDecimal
 
 /** Ball set flows that go through dialogs, on a device or emulator. */
@@ -43,19 +45,19 @@ class BallsFlowTest {
 
     @Test
     fun rangeAddsBalls() {
-        openBalls()
+        goTo(Destination.BALLS)
 
         composeRule.onNodeWithTag(TestTags.RANGE_OPEN).performClick()
         composeRule.onNodeWithTag(TestTags.rangeField(0)).performTextInput("20")
         composeRule.onNodeWithTag(TestTags.rangeField(1)).performTextInput("22")
         composeRule.onNodeWithTag(TestTags.RANGE_CONFIRM).performClick()
 
-        listOf("20", "21", "22").forEach { waitForTag(TestTags.ballItem(BigDecimal(it))) }
+        listOf("20", "21", "22").forEach { composeRule.waitForTag(TestTags.ballItem(BigDecimal(it))) }
     }
 
     @Test
     fun rangeDialogShowsErrors() {
-        openBalls()
+        goTo(Destination.BALLS)
 
         composeRule.onNodeWithTag(TestTags.RANGE_OPEN).performClick()
         composeRule.onNodeWithTag(TestTags.rangeField(0)).performTextInput("30")
@@ -67,19 +69,19 @@ class BallsFlowTest {
 
     @Test
     fun ballDetailsAppearInTheRecommendation() {
-        openBalls()
-        addBall("32")
+        goTo(Destination.BALLS)
+        composeRule.addBall("32")
 
         Espresso.closeSoftKeyboard()
         composeRule.onNodeWithTag(TestTags.ballItem(BigDecimal("32"))).performScrollTo().performClick()
-        waitForTag(TestTags.BALL_LABEL)
+        composeRule.waitForTag(TestTags.BALL_LABEL)
         composeRule.onNodeWithTag(TestTags.BALL_LABEL).performTextInput("K-12")
         composeRule.onNodeWithTag(TestTags.BALL_LOCATION).performTextInput("case 2")
         composeRule.onNodeWithTag(TestTags.DIALOG_CONFIRM).performClick()
-        waitForText("K-12 · case 2")
+        composeRule.waitForText("K-12 · case 2")
 
         goTo(Destination.CALCULATOR)
-        enter(outer = "48.3", wall = "5", radius = "70")
+        composeRule.enterTube(outer = "48.3", wall = "5", radius = "70")
 
         composeRule.onNodeWithText("From your set: use the 32 mm ball").performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithText("K-12 · case 2").performScrollTo().assertIsDisplayed()
@@ -87,27 +89,27 @@ class BallsFlowTest {
 
     @Test
     fun setsCanBeCreatedAndSwitched() {
-        openBalls()
-        addBall("32")
+        goTo(Destination.BALLS)
+        composeRule.addBall("32")
 
         composeRule.onNodeWithTag(TestTags.SET_SELECTOR).performClick()
         composeRule.onNodeWithTag(TestTags.SET_NEW).performClick()
         composeRule.onNodeWithTag(TestTags.SET_NAME).performTextInput("Hall A")
         composeRule.onNodeWithTag(TestTags.DIALOG_CONFIRM).performClick()
 
-        waitForText("Hall A")
+        composeRule.waitForText("Hall A")
         composeRule.onNodeWithText("No balls added yet.").assertIsDisplayed()
-        addBall("40")
+        composeRule.addBall("40")
 
         composeRule.onNodeWithTag(TestTags.SET_SELECTOR).performClick()
         composeRule.onNodeWithText("My ball set").performClick()
-        waitForTag(TestTags.ballItem(BigDecimal("32")))
+        composeRule.waitForTag(TestTags.ballItem(BigDecimal("32")))
         composeRule.onNodeWithTag(TestTags.ballItem(BigDecimal("40"))).assertDoesNotExist()
     }
 
     @Test
     fun pastedSetIsImported() {
-        openBalls()
+        goTo(Destination.BALLS)
 
         composeRule.onNodeWithTag(TestTags.BALLS_MENU).performClick()
         composeRule.onNodeWithText("Import: paste text").performClick()
@@ -116,60 +118,35 @@ class BallsFlowTest {
         composeRule.onNodeWithText("Import “Hall B”?").assertIsDisplayed()
         composeRule.onNodeWithTag(TestTags.DIALOG_CONFIRM).performClick()
 
-        waitForTag(TestTags.ballItem(BigDecimal("35")))
+        composeRule.waitForTag(TestTags.ballItem(BigDecimal("35")))
         composeRule.onNodeWithText("Hall B").assertIsDisplayed()
         composeRule.onNodeWithText("K-1").assertIsDisplayed()
     }
 
     @Test
     fun deletingASetReturnsToTheOtherOne() {
-        openBalls()
+        goTo(Destination.BALLS)
         composeRule.onNodeWithTag(TestTags.SET_SELECTOR).performClick()
         composeRule.onNodeWithTag(TestTags.SET_NEW).performClick()
         composeRule.onNodeWithTag(TestTags.SET_NAME).performTextInput("Hall A")
         composeRule.onNodeWithTag(TestTags.DIALOG_CONFIRM).performClick()
-        waitForText("Hall A")
+        composeRule.waitForText("Hall A")
 
         composeRule.onNodeWithTag(TestTags.BALLS_MENU).performClick()
         composeRule.onNodeWithText("Delete set").performClick()
         composeRule.onNodeWithTag(TestTags.DIALOG_CONFIRM).performClick()
 
-        waitForText("My ball set")
+        composeRule.waitForText("My ball set")
     }
 
-    private fun enter(outer: String, wall: String, radius: String) {
-        composeRule.onNodeWithTag(TestTags.field(DimensionField.OUTER_DIAMETER)).performTextInput(outer)
-        composeRule.onNodeWithTag(TestTags.field(DimensionField.WALL_THICKNESS)).performTextInput(wall)
-        composeRule.onNodeWithTag(TestTags.field(DimensionField.BEND_RADIUS)).performTextInput(radius)
-    }
 
-    private fun openBalls() {
-        goTo(Destination.BALLS)
-        waitForTag(TestTags.SET_SELECTOR)
-    }
 
     /** The navigation bar is hidden while the keyboard is open, so close it first. */
     private fun goTo(destination: Destination) {
         Espresso.closeSoftKeyboard()
-        waitForTag(TestTags.destination(destination.name))
-        composeRule.onNodeWithTag(TestTags.destination(destination.name)).performClick()
+        composeRule.openTab(destination)
     }
 
-    private fun addBall(diameter: String) {
-        composeRule.onNodeWithTag(TestTags.BALL_INPUT).performTextInput(diameter)
-        composeRule.onNodeWithTag(TestTags.BALL_ADD).performClick()
-        waitForTag(TestTags.ballItem(BigDecimal(diameter)))
-    }
 
-    private fun waitForTag(tag: String) {
-        composeRule.waitUntil(timeoutMillis = 15_000) {
-            composeRule.onAllNodes(hasTestTag(tag)).fetchSemanticsNodes().isNotEmpty()
-        }
-    }
 
-    private fun waitForText(text: String) {
-        composeRule.waitUntil(timeoutMillis = 15_000) {
-            composeRule.onAllNodes(hasText(text)).fetchSemanticsNodes().isNotEmpty()
-        }
-    }
 }

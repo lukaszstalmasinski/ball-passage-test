@@ -126,8 +126,13 @@ the totals and a per-file table in the job summary of each run and keeps the rep
 - Tests mirror the packages of the code they test.
 - Robolectric tests use `TestBallPassageApplication` (see `app/src/test/resources/robolectric.properties`),
   which swaps DataStore for `FakeUserDataRepository`: every test starts with fresh data and sets
-  it up directly (`givenBalls(...)`), not through the UI. `AppTestRule.kt` holds the shared steps
-  (`enterTube`, `openTab`, `addBall`, `sharedText`).
+  it up directly (`givenBalls(...)`), not through the UI.
+- Shared test code:
+  - `core/src/testFixtures`: builders such as `tube("48.3", "5", "70")`, `calculate(...)` and
+    `ball("32", label = "K-12")`, used by the tests of `core` and `app`.
+  - `app/src/testShared`: steps through the running app (`enterTube`, `openTab`, `addBall`,
+    `waitForTag`), used by both the Robolectric and the device tests.
+  - `app/src/test/.../ui/AppTestRule.kt`: Robolectric-only steps (`givenBalls`, `sharedText`).
 - Dialogs are tested on a device, because Robolectric never gets idle after typing into text
   fields inside Compose dialogs. Real devices render those dialogs normally, which was checked by
   counting frames.

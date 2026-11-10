@@ -18,6 +18,7 @@ import pl.stalmasinski.ballpassage.MainDispatcherRule
 import pl.stalmasinski.ballpassage.core.calculation.CalculationProblem
 import pl.stalmasinski.ballpassage.core.calculation.CalculationResult
 import pl.stalmasinski.ballpassage.core.calculation.TubeDimensions
+import pl.stalmasinski.ballpassage.core.tube
 import pl.stalmasinski.ballpassage.data.FakeUserDataRepository
 import java.math.BigDecimal
 
@@ -225,6 +226,4 @@ class CalculatorViewModelTest {
         onValueChange(DimensionField.BEND_RADIUS, "70")
     }
 
-    private fun tube(outer: String, wall: String, radius: String) =
-        TubeDimensions(BigDecimal(outer), BigDecimal(wall), BigDecimal(radius))
 }
