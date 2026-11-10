@@ -137,7 +137,14 @@ class BallsViewModel(
         saveFailed.value = false
     }
 
+    /** The Balls tab is closed: an error about the typed ball no longer applies. */
+    fun onScreenLeft() {
+        inputError.value = null
+    }
+
     private fun update(transform: (BallSets) -> BallSets) {
+        // Any other change of the set makes an error about the typed ball outdated.
+        inputError.value = null
         viewModelScope.launch {
             try {
                 repository.updateBallSets(transform)

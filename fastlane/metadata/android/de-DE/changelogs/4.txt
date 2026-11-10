@@ -1,0 +1,5 @@
+• Letzte Rohre speichern nur fertig eingegebene Rohre
+• Ein gescannter oder eingefügter Kugelsatz wartet auch nach dem Drehen des Handys auf die Bestätigung
+• Hinweis, wenn eine Änderung nicht gespeichert werden kann, z. B. bei vollem Speicher
+• Flüssigere Kugelliste, auch mit Hunderten von Kugeln
+• Kleine Korrekturen im Tab Kugeln

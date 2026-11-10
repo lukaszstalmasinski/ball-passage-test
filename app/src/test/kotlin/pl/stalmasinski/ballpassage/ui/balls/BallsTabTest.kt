@@ -76,6 +76,20 @@ class BallsTabTest {
     }
 
     @Test
+    fun errorAboutTheTypedBallIsGoneAfterLeavingTheTab() {
+        composeRule.givenBalls("32")
+        composeRule.openTab(Destination.BALLS)
+        composeRule.onNodeWithTag(TestTags.BALL_INPUT).performTextInput("32")
+        composeRule.onNodeWithTag(TestTags.BALL_ADD).performClick()
+        composeRule.onNodeWithText("This ball is already in your set").assertIsDisplayed()
+
+        composeRule.openTab(Destination.CALCULATOR)
+        composeRule.openTab(Destination.BALLS)
+
+        composeRule.onNodeWithText("This ball is already in your set").assertDoesNotExist()
+    }
+
+    @Test
     fun removedBallCanBeRestored() {
         composeRule.givenBalls("32")
         composeRule.openTab(Destination.BALLS)

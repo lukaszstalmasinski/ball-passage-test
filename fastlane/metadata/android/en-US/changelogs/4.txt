@@ -1,0 +1,5 @@
+• Recent tubes keep only the tubes you finished entering
+• A scanned or pasted ball set waits for confirmation even after you rotate the phone
+• A message when a change cannot be saved, e.g. when the storage is full
+• Smoother ball list, also with hundreds of balls
+• Small fixes in the Balls tab
