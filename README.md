@@ -111,8 +111,8 @@ keyPassword=...
 ```
 
 The Release workflow signs with the same key, kept as secrets of the `release` environment:
-`UPLOAD_KEYSTORE_BASE64`, `UPLOAD_KEYSTORE_PASSWORD`, `UPLOAD_KEY_ALIAS` and
-`UPLOAD_KEY_PASSWORD` (see [Publishing to Google Play](#publishing-to-google-play)).
+`UPLOAD_KEYSTORE_BASE64`, `UPLOAD_KEYSTORE_PASSWORD` and `UPLOAD_KEY_PASSWORD`. The key alias
+is not secret, so it is the environment variable `UPLOAD_KEY_ALIAS` (see [Publishing to Google Play](#publishing-to-google-play)).
 
 To create the upload key:
 
@@ -138,9 +138,13 @@ policy is in [PRIVACY.md](PRIVACY.md).
    `git push origin v1.0.3`.
 4. Approve the **Release** run in GitHub Actions. It runs the tests, builds the signed bundle and
    uploads it with the changelogs to the **internal testing** track.
-5. Check the internal build on a phone. Then run **Actions → Promote to production → Run
-   workflow**. After approval it moves the release to production and uploads the store listing
-   (texts and images). Google reviews the changes before they appear.
+5. Check the internal build on a phone. Then run **Actions → Promote to alpha → Run workflow**.
+   After approval it moves the release to closed testing (alpha), where the testers get it as an
+   update from Google Play once Google has reviewed it.
+6. When the testers are happy, run **Actions → Promote to production → Run workflow**. It
+   promotes the alpha release by default; choose `internal` to skip alpha. After approval it
+   moves the release to production and uploads the store listing (texts and images). Google
+   reviews the changes before they appear.
 
 ## Publishing to Google Play
 
@@ -153,8 +157,8 @@ The `release` environment:
 
 - accepts only `v*` tags and `main`, and waits for approval by the owner,
 - holds the upload key secrets (see [Release signing](#release-signing)),
-- holds two variables: `GCP_WORKLOAD_IDENTITY_PROVIDER` (the provider's full resource name) and
-  `GCP_SERVICE_ACCOUNT` (the service account e-mail).
+- holds three variables: `GCP_WORKLOAD_IDENTITY_PROVIDER` (the provider's full resource name),
+  `GCP_SERVICE_ACCOUNT` (the service account e-mail) and `UPLOAD_KEY_ALIAS`.
 
 Google Cloud setup, done once in Cloud Shell:
 

@@ -1,11 +1,17 @@
 name: Promote to production
 
-# Started by hand (Actions → Promote to production → Run workflow) after the internal build
-# has been checked. Moves the current internal release to production and uploads the store
-# listing (texts, icon, feature graphic and screenshots) from fastlane/metadata/android.
+# Started by hand (Actions → Promote to production → Run workflow) after the build has been
+# tested. Moves the alpha release (or the internal one, if alpha is skipped) to production and
+# uploads the store listing (texts, icon, feature graphic and screenshots) from
+# fastlane/metadata/android.
 on:
   workflow_dispatch:
     inputs:
+      from:
+        description: Track to promote from
+        type: choice
+        options: [alpha, internal]
+        default: alpha
       listing:
         description: Also upload the store listing (texts and images)
         type: boolean
@@ -39,8 +45,8 @@ jobs:
       - name: Install fastlane
         run: gem install fastlane --no-document
 
-      - name: Promote internal to production
-        run: fastlane android production
+      - name: Promote to production
+        run: fastlane android production from:${{ inputs.from }}
 
       - name: Upload the store listing
         if: inputs.listing

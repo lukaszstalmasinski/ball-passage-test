@@ -1,17 +1,40 @@
 # Google Play publishing, run by the Release and Promote workflows.
 # Authentication: GOOGLE_APPLICATION_CREDENTIALS, set by google-github-actions/auth
 # (Workload Identity Federation). See "Publishing to Google Play" in README.md.
+#
+# Flow: a version tag uploads to internal testing; "Promote to alpha" moves it to closed
+# testing; "Promote to production" moves the alpha (or internal) release to production.
 
 default_platform(:android)
 
 platform :android do
-  def play_options
+  def play_auth
     {
       package_name: "pl.stalmasinski.ballpassage",
       json_key: ENV.fetch("GOOGLE_APPLICATION_CREDENTIALS"),
-      metadata_path: "fastlane/metadata/android",
-      skip_upload_apk: true,
     }
+  end
+
+  def play_options
+    play_auth.merge(metadata_path: "fastlane/metadata/android", skip_upload_apk: true)
+  end
+
+  # Moves the release of one track to another. Nothing is built or uploaded again, so the
+  # target track gets exactly the bundle that was tested.
+  def promote(from:, to:)
+    codes = google_play_track_version_codes(**play_auth, track: from)
+    UI.user_error!("The #{from} track has no release to promote.") if codes.empty?
+    UI.message("Promoting versionCode #{codes.max} from #{from} to #{to}")
+    upload_to_play_store(
+      **play_options,
+      track: from,
+      track_promote_to: to,
+      skip_upload_aab: true,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      skip_upload_changelogs: true,
+    )
   end
 
   desc "Upload the release bundle and its changelogs to the internal testing track"
@@ -21,25 +44,31 @@ platform :android do
       track: "internal",
       aab: "app/build/outputs/bundle/release/app-release.aab",
       mapping: "app/build/outputs/mapping/release/mapping.txt",
-      # The store listing is shared by all tracks, so it is uploaded only on promotion.
+      # The store listing is shared by all tracks, so it is uploaded only with production.
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,
     )
   end
 
-  desc "Move the current internal release to production"
-  lane :production do
-    upload_to_play_store(
-      **play_options,
-      track: "internal",
-      track_promote_to: "production",
-      skip_upload_aab: true,
-      skip_upload_metadata: true,
-      skip_upload_images: true,
-      skip_upload_screenshots: true,
-      skip_upload_changelogs: true,
-    )
+  desc "Move the current internal release to closed testing (alpha)"
+  lane :alpha do
+    promote(from: "internal", to: "alpha")
+  end
+
+  desc "Move the alpha release (or, with from:internal, the internal one) to production"
+  lane :production do |options|
+    from = options.fetch(:from, "alpha")
+    UI.user_error!("from must be alpha or internal, not #{from}") unless %w[alpha internal].include?(from)
+    if from == "alpha"
+      internal = google_play_track_version_codes(**play_auth, track: "internal").max
+      alpha = google_play_track_version_codes(**play_auth, track: "alpha").max
+      if internal && alpha && internal > alpha
+        UI.important("Internal testing has a newer versionCode (#{internal}) than alpha (#{alpha}). " \
+                     "Promoting the alpha one (#{alpha}).")
+      end
+    end
+    promote(from: from, to: "production")
   end
 
   desc "Upload the store listing: texts, icon, feature graphic and screenshots"

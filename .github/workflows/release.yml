@@ -2,7 +2,7 @@ name: Release
 
 # A pushed version tag (e.g. v1.0.3) builds a signed App Bundle and uploads it to the
 # internal testing track of Google Play, together with the changelogs for its versionCode.
-# Moving it to production is a separate, manual workflow (promote.yml).
+# Moving it on is manual: promote-alpha.yml (closed testing), then promote.yml (production).
 #
 # The job runs in the "release" environment, which holds the upload key, accepts only v* tags
 # and main, and waits for approval. Google Play access uses Workload Identity Federation, so
@@ -47,7 +47,7 @@ jobs:
         env:
           BPT_KEYSTORE_FILE: ${{ runner.temp }}/upload.jks
           BPT_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
-          BPT_KEY_ALIAS: ${{ secrets.UPLOAD_KEY_ALIAS }}
+          BPT_KEY_ALIAS: ${{ vars.UPLOAD_KEY_ALIAS }}
           BPT_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
         run: ./gradlew check bundleRelease
 
