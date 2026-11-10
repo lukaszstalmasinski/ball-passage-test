@@ -35,6 +35,8 @@ import pl.stalmasinski.ballpassage.core.BallPassageTable
 import pl.stalmasinski.ballpassage.core.BendRatioColumn
 import pl.stalmasinski.ballpassage.core.CalculationResult
 import pl.stalmasinski.ballpassage.core.DiameterRow
+import pl.stalmasinski.ballpassage.core.KtaTube
+import pl.stalmasinski.ballpassage.core.KtaTubeClass
 import pl.stalmasinski.ballpassage.ui.FittingText
 import pl.stalmasinski.ballpassage.ui.TestTags
 
@@ -112,7 +114,100 @@ fun StandardTableCard(result: CalculationResult?) {
     }
 }
 
+/**
+ * KTA 3211.1 has no table, only a formula: the card shows the formula and the tube sizes the rule
+ * covers, with the steel classes that cover [tube] highlighted.
+ */
+@Composable
+fun KtaScopeCard(tube: KtaTube?) {
+    val formatter = rememberNumberFormatter()
+    val columns = listOf(
+        stringResource(R.string.kta_scope_max_outer) to KtaTubeClass::maxOuterDiameter,
+        stringResource(R.string.kta_scope_max_wall) to KtaTubeClass::maxWallThickness,
+    )
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag(TestTags.KTA_SCOPE),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
+    ) {
+        Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Text(
+                text = stringResource(R.string.kta_card_title),
+                modifier = Modifier.semantics { heading() },
+                style = MaterialTheme.typography.titleMedium,
+            )
+            Text(
+                text = stringResource(R.string.kta_card_subtitle),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Box(
+                modifier = Modifier
+                    .padding(top = 12.dp)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.secondaryContainer)
+                    .padding(vertical = 14.dp, horizontal = 12.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                FittingText(
+                    text = stringResource(R.string.kta_formula),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                )
+            }
+
+            Text(
+                text = stringResource(R.string.kta_scope_title),
+                modifier = Modifier.padding(top = 16.dp),
+                style = MaterialTheme.typography.titleSmall,
+            )
+            Column(modifier = Modifier.padding(top = 4.dp)) {
+                TableRow {
+                    HeaderCell("", weight = KTA_ROW_HEADER_WEIGHT)
+                    columns.forEach { (label, _) -> HeaderCell(label, weight = 1f) }
+                }
+                KtaTubeClass.entries.forEachIndexed { rowIndex, tubeClass ->
+                    val covers = tube != null && tubeClass.covers(tube)
+                    val name = stringResource(tubeClass.labelRes)
+                    TableRow {
+                        HeaderCell(name, weight = KTA_ROW_HEADER_WEIGHT, highlighted = covers)
+                        columns.forEachIndexed { columnIndex, (label, limit) ->
+                            val value = stringResource(R.string.value_mm, formatter.format(limit(tubeClass)))
+                            ValueCell(
+                                text = value,
+                                description = stringResource(R.string.kta_scope_cell_description, name, label, value),
+                                active = covers,
+                                crossHighlighted = false,
+                                italic = false,
+                                modifier = Modifier.testTag(TestTags.ktaScopeCell(rowIndex, columnIndex)),
+                            )
+                        }
+                    }
+                }
+            }
+
+            Text(
+                text = stringResource(R.string.kta_scope_footnote),
+                modifier = Modifier.padding(top = 8.dp),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+private val KtaTubeClass.labelRes: Int
+    get() = when (this) {
+        KtaTubeClass.FERRITIC -> R.string.kta_class_ferritic
+        KtaTubeClass.AUSTENITIC -> R.string.kta_class_austenitic
+    }
+
 private const val ROW_HEADER_WEIGHT = 1.3f
+private const val KTA_ROW_HEADER_WEIGHT = 1.6f
 
 private fun BendRatioColumn.boundsText(formatter: NumberFormatter, separator: String): String {
     val lower = formatter.format(lowerBound)

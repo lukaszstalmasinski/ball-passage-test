@@ -10,6 +10,7 @@ object TestTags {
     const val BALL_RECOMMENDATION = "ball_recommendation"
     const val EXTRAPOLATION_WARNING = "extrapolation_warning"
     const val OUTSIDE_SCOPE_WARNING = "outside_scope_warning"
+    const val KTA_SCOPE = "kta_scope"
     const val FAILURE = "failure"
     const val SHARE = "share"
     const val CLEAR_ALL = "clear_all"
@@ -39,6 +40,8 @@ object TestTags {
     fun standard(standard: Standard) = "standard_${standard.name}"
 
     fun tableCell(rowIndex: Int, columnIndex: Int) = "cell_${rowIndex}_$columnIndex"
+
+    fun ktaScopeCell(rowIndex: Int, columnIndex: Int) = "kta_cell_${rowIndex}_$columnIndex"
 
     fun historyItem(index: Int) = "history_$index"
 

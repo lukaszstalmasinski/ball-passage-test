@@ -157,6 +157,15 @@
     <string name="breakdown_ball_kta">Średnica kulki dᵢ − (Δ + 0,1·dᵢ + 2 mm)</string>
     <string name="info_standards">Normę wybierasz na górze kalkulatora: VGB-S-013 albo KTA 3211.1.</string>
     <string name="info_kta" tools:ignore="TypographyDashes">KTA 3211.1 (wydanie 2017-11, punkty 10.2.2.2 i 10.4.2.2): przez każdą giętą rurę musi swobodnie przejść kulka o średnicy D_K = dᵢ − (Δ + 0,1·dᵢ + 2 mm). dᵢ to nominalna średnica wewnętrzna, a Δ to największa dopuszczalna odchyłka minus ze specyfikacji rury. Reguła obejmuje rury bez szwu gięte na zimno do 38 × 4 mm (ferrytyczne) i 42,4 × 3,6 mm (austenityczne).</string>
+    <string name="kta_card_title">KTA 3211.1, próba przelotu kulki</string>
+    <string name="kta_card_subtitle">Przez każdą rurę giętą na zimno musi swobodnie przejść kulka o tej średnicy</string>
+    <string name="kta_formula">D_K = dᵢ − (Δ + 0,1 · dᵢ + 2 mm)</string>
+    <string name="kta_scope_title">Rury objęte regułą</string>
+    <string name="kta_scope_max_outer">maks. dₒ</string>
+    <string name="kta_scope_max_wall">maks. s</string>
+    <string name="kta_class_ferritic">Ferrytyczne (10.2)</string>
+    <string name="kta_class_austenitic">Austenityczne (10.4)</string>
+    <string name="kta_scope_footnote">Rury bez szwu, gięte na zimno. Podświetlone: rodzaje stali, które obejmują tę rurę.</string>
     <plurals name="ball_count">
         <item quantity="one">%d kulka</item>
         <item quantity="few">%d kulki</item>

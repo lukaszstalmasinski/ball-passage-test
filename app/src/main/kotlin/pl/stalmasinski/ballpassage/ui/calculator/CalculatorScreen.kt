@@ -109,7 +109,10 @@ fun CalculatorScreen(
                 DimensionInputs(state = state, onValueChange = onValueChange)
                 ResultCard(state = state, onOpenBalls = onOpenBalls)
                 if (state.hasResult) CalculationBreakdown(state = state)
-                if (state.standard == Standard.VGB_S_013) StandardTableCard(result = state.result)
+                when (state.standard) {
+                    Standard.VGB_S_013 -> StandardTableCard(result = state.result)
+                    Standard.KTA_3211_1 -> KtaScopeCard(tube = state.ktaResult?.tube)
+                }
             }
         }
     }

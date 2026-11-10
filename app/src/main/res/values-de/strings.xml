@@ -157,6 +157,15 @@
     <string name="breakdown_ball_kta">Kugeldurchmesser dᵢ − (Δ + 0,1·dᵢ + 2 mm)</string>
     <string name="info_standards">Die Norm wählen Sie oben im Rechner: VGB-S-013 oder KTA 3211.1.</string>
     <string name="info_kta" tools:ignore="TypographyDashes">KTA 3211.1 (Fassung 2017-11, Abschnitte 10.2.2.2 und 10.4.2.2): Durch jedes gebogene Rohr muss eine Kugel vom Durchmesser D_K = dᵢ − (Δ + 0,1·dᵢ + 2 mm) frei durchgehen. dᵢ ist der Nenn-Innendurchmesser und Δ die größte zulässige Maßunterschreitung aus der Rohrspezifikation. Die Regel gilt für nahtlose, kaltgebogene Rohre bis 38 × 4 mm (ferritisch) und 42,4 × 3,6 mm (austenitisch).</string>
+    <string name="kta_card_title">KTA 3211.1, Kugeldurchlaufversuch</string>
+    <string name="kta_card_subtitle">Eine Kugel dieses Durchmessers muss durch jedes kaltgebogene Rohr frei durchgehen</string>
+    <string name="kta_formula">D_K = dᵢ − (Δ + 0,1 · dᵢ + 2 mm)</string>
+    <string name="kta_scope_title">Vom Regelwerk erfasste Rohre</string>
+    <string name="kta_scope_max_outer">max. dₒ</string>
+    <string name="kta_scope_max_wall">max. s</string>
+    <string name="kta_class_ferritic">Ferritisch (10.2)</string>
+    <string name="kta_class_austenitic">Austenitisch (10.4)</string>
+    <string name="kta_scope_footnote">Nahtlose, kaltgebogene Rohre. Hervorgehoben: die Stahlsorten, die dieses Rohr erfassen.</string>
     <plurals name="ball_count">
         <item quantity="one">%d Kugel</item>
         <item quantity="other">%d Kugeln</item>

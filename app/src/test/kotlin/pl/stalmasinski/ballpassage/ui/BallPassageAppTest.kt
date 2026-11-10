@@ -99,9 +99,21 @@ class BallPassageAppTest {
         composeRule.onNodeWithText("Ball diameter dᵢ − (Δ + 0.1·dᵢ + 2 mm)").performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithTag(TestTags.OUTSIDE_SCOPE_WARNING).assertDoesNotExist()
         composeRule.onNodeWithText("VGB-S-013, Table 3").assertDoesNotExist()
+        composeRule.onNodeWithTag(TestTags.KTA_SCOPE).performScrollTo().assertIsDisplayed()
+        // 25 × 2.6 is within both the ferritic (row 0) and the austenitic (row 1) limits.
+        composeRule.onNodeWithTag(TestTags.ktaScopeCell(0, 0)).assertIsSelected()
+        composeRule.onNodeWithTag(TestTags.ktaScopeCell(1, 1)).assertIsSelected()
+
+        // 40 × 2.6 is too large for ferritic tubes only.
+        composeRule.onNodeWithTag(TestTags.field(DimensionField.OUTER_DIAMETER)).performTextReplacement("40")
+        composeRule.onNodeWithTag(TestTags.ktaScopeCell(0, 0)).assertIsNotSelected()
+        composeRule.onNodeWithTag(TestTags.ktaScopeCell(1, 0)).assertIsSelected()
+        composeRule.onNodeWithTag(TestTags.OUTSIDE_SCOPE_WARNING).assertDoesNotExist()
 
         composeRule.onNodeWithTag(TestTags.field(DimensionField.OUTER_DIAMETER)).performTextReplacement("48.3")
         composeRule.onNodeWithTag(TestTags.OUTSIDE_SCOPE_WARNING).performScrollTo().assertIsDisplayed()
+        composeRule.onNodeWithTag(TestTags.ktaScopeCell(0, 0)).assertIsNotSelected()
+        composeRule.onNodeWithTag(TestTags.ktaScopeCell(1, 0)).assertIsNotSelected()
     }
 
     @Test

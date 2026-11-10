@@ -169,6 +169,16 @@
     <string name="breakdown_ball_kta">Ball diameter dᵢ − (Δ + 0.1·dᵢ + 2 mm)</string>
     <string name="info_standards">Choose the standard at the top of the calculator: VGB-S-013 or KTA 3211.1.</string>
     <string name="info_kta" tools:ignore="TypographyDashes">KTA 3211.1 (edition 2017-11, sections 10.2.2.2 and 10.4.2.2): a ball of diameter D_K = dᵢ − (Δ + 0.1·dᵢ + 2 mm) must pass freely through every bent tube. dᵢ is the nominal inner diameter and Δ the largest permissible undersize from the tube specification. The rule covers seamless cold-bent tubes up to 38 × 4 mm (ferritic) and 42.4 × 3.6 mm (austenitic).</string>
+    <string name="kta_scope_cell_description" translatable="false">%1$s, %2$s: %3$s</string>
+    <string name="kta_card_title">KTA 3211.1, ball passage test</string>
+    <string name="kta_card_subtitle">A ball of this diameter must pass freely through every cold-bent tube</string>
+    <string name="kta_formula">D_K = dᵢ − (Δ + 0.1 · dᵢ + 2 mm)</string>
+    <string name="kta_scope_title">Tubes covered by the rule</string>
+    <string name="kta_scope_max_outer">max dₒ</string>
+    <string name="kta_scope_max_wall">max s</string>
+    <string name="kta_class_ferritic">Ferritic (10.2)</string>
+    <string name="kta_class_austenitic">Austenitic (10.4)</string>
+    <string name="kta_scope_footnote">Seamless, cold-bent tubes. Highlighted: the steel classes that cover this tube.</string>
     <plurals name="ball_count">
         <item quantity="one">%d ball</item>
         <item quantity="other">%d balls</item>
