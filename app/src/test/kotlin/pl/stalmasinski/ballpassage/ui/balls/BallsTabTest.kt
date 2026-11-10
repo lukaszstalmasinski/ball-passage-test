@@ -1,12 +1,15 @@
 package pl.stalmasinski.ballpassage.ui.balls
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasScrollToKeyAction
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTextInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertTrue
@@ -23,6 +26,7 @@ import pl.stalmasinski.ballpassage.ui.givenBalls
 import pl.stalmasinski.ballpassage.ui.openTab
 import pl.stalmasinski.ballpassage.ui.repository
 import pl.stalmasinski.ballpassage.ui.sharedText
+import pl.stalmasinski.ballpassage.ui.waitForBall
 import pl.stalmasinski.ballpassage.ui.waitForTag
 import pl.stalmasinski.ballpassage.ui.waitForText
 import java.math.BigDecimal
@@ -59,6 +63,19 @@ class BallsTabTest {
     }
 
     @Test
+    fun longListComposesOnlyTheVisibleBalls() {
+        composeRule.givenBalls(*(1..200).map { "$it" }.toTypedArray())
+        composeRule.openTab(Destination.BALLS)
+
+        composeRule.onNodeWithTag(TestTags.ballItem(BigDecimal("1"))).assertExists()
+        composeRule.onNodeWithTag(TestTags.ballItem(BigDecimal("200"))).assertDoesNotExist()
+
+        composeRule.onNode(hasScrollToKeyAction()).performScrollToNode(hasTestTag(TestTags.ballItem(BigDecimal("200"))))
+
+        composeRule.onNodeWithTag(TestTags.ballItem(BigDecimal("200"))).assertIsDisplayed()
+    }
+
+    @Test
     fun removedBallCanBeRestored() {
         composeRule.givenBalls("32")
         composeRule.openTab(Destination.BALLS)
@@ -68,7 +85,7 @@ class BallsTabTest {
         composeRule.onNodeWithText("32 mm ball removed").assertIsDisplayed()
         composeRule.onNodeWithText("Undo").performClick()
 
-        composeRule.waitForTag(TestTags.ballItem(BigDecimal("32")))
+        composeRule.waitForBall("32")
     }
 
     @Test

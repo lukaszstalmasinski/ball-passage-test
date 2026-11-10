@@ -16,8 +16,23 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Runs before the approval of the release environment, so a wrong tag fails without a build.
+  check-version:
+    name: Check tag, version and changelogs
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Check out
+        uses: actions/checkout@v7
+
+      - name: Check tag, version and changelogs
+        run: .github/scripts/check_release.sh "$GITHUB_REF_NAME"
+
   release:
     name: Release to internal testing
+    needs: check-version
     runs-on: ubuntu-latest
     timeout-minutes: 40
     environment: release
