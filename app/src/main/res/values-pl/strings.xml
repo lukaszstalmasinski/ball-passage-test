@@ -75,6 +75,7 @@
     <string name="balls_removed">Usunięto kulkę %1$s mm</string>
     <string name="balls_undo">Cofnij</string>
     <string name="balls_error_duplicate">Ta kulka jest już w zestawie</string>
+    <string name="balls_save_failed">Nie udało się zapisać zmiany. Sprawdź wolne miejsce w telefonie i spróbuj ponownie.</string>
     <string name="context_none">Policz rurę w kalkulatorze, aby zobaczyć, które kulki do niej pasują.</string>
     <string name="context_tube">Dla rury %1$s × %2$s · R %3$s</string>
     <string name="ball_add_details">Dotknij kulki, aby dodać jej oznaczenie i miejsce.</string>

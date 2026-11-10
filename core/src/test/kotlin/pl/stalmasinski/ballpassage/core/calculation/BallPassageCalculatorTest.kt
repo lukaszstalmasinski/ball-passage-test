@@ -188,7 +188,6 @@ class BallPassageCalculatorTest {
         assertThrows<IllegalArgumentException> { calculate("10", "1", "-1") }
     }
 
-
     private fun assertNumberEquals(expected: String, actual: BigDecimal) =
         assertNumberEquals(BigDecimal(expected), actual)
 

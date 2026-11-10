@@ -25,7 +25,7 @@ class DataStoreUserDataRepository(private val dataStore: DataStore<Preferences>)
 
     override val ballSets: Flow<BallSets> = preferences.map(::readBallSets).distinctUntilChanged()
 
-    override val history: Flow<List<TubeDimensions>> = preferences.map { decodeHistory(it[HISTORY]) }
+    override val history: Flow<List<TubeDimensions>> = preferences.map { decodeHistory(it[HISTORY]) }.distinctUntilChanged()
 
     override suspend fun updateBallSets(transform: (BallSets) -> BallSets) {
         dataStore.edit { prefs ->

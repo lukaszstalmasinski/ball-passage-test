@@ -37,4 +37,7 @@ interface BallsActions {
     fun parseImport(text: String): SharedBallSet?
 
     fun importSet(shared: SharedBallSet)
+
+    /** The message about a failed save has been shown. */
+    fun onSaveErrorShown()
 }

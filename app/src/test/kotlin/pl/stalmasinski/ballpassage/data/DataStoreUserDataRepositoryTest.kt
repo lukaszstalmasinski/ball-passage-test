@@ -137,5 +137,4 @@ class DataStoreUserDataRepositoryTest {
             DataStoreUserDataRepository.decodeHistory("48.3,5,70;1,2;x,y,z;0,1,1"),
         )
     }
-
 }

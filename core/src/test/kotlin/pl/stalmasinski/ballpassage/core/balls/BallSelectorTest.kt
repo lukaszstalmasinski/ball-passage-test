@@ -16,5 +16,4 @@ class BallSelectorTest {
         assertEquals(listOf("31.8", "32", "35"), BallSelector.fittingBalls(result, balls).map { it.id })
         assertEquals(emptyList<Ball>(), BallSelector.fittingBalls(result, listOf(ball("20"))))
     }
-
 }

@@ -20,6 +20,7 @@ import pl.stalmasinski.ballpassage.core.balls.BallSets
 import pl.stalmasinski.ballpassage.core.balls.SharedBallSet
 import pl.stalmasinski.ballpassage.data.UserDataRepository
 import pl.stalmasinski.ballpassage.ui.common.DecimalInput
+import java.io.IOException
 import java.math.BigDecimal
 import java.util.UUID
 
@@ -49,6 +50,8 @@ data class BallsUiState(
     val activeSet: BallSet = BallSet(id = "", name = ""),
     val input: String = "",
     val inputError: BallInputError? = null,
+    /** The last change could not be saved, e.g. because the phone is out of storage. */
+    val saveFailed: Boolean = false,
 ) {
     val balls: List<Ball> get() = activeSet.balls
 
@@ -62,10 +65,11 @@ class BallsViewModel(
 
     private val input = MutableStateFlow("")
     private val inputError = MutableStateFlow<BallInputError?>(null)
+    private val saveFailed = MutableStateFlow(false)
 
     val uiState: StateFlow<BallsUiState> =
-        combine(repository.ballSets, input, inputError) { sets, input, error ->
-            BallsUiState(sets = sets.sets, activeSet = sets.active, input = input, inputError = error)
+        combine(repository.ballSets, input, inputError, saveFailed) { sets, input, error, saveFailed ->
+            BallsUiState(sets = sets.sets, activeSet = sets.active, input = input, inputError = error, saveFailed = saveFailed)
         }.stateIn(viewModelScope, SharingStarted.Eagerly, BallsUiState())
 
     private val activeSetId: String get() = uiState.value.activeSet.id
@@ -129,8 +133,18 @@ class BallsViewModel(
 
     override fun importSet(shared: SharedBallSet) = update { it.importSet(shared, newId) }
 
+    override fun onSaveErrorShown() {
+        saveFailed.value = false
+    }
+
     private fun update(transform: (BallSets) -> BallSets) {
-        viewModelScope.launch { repository.updateBallSets(transform) }
+        viewModelScope.launch {
+            try {
+                repository.updateBallSets(transform)
+            } catch (e: IOException) {
+                saveFailed.value = true
+            }
+        }
     }
 
     private fun BallRange.Error.toRangeError() = when (this) {

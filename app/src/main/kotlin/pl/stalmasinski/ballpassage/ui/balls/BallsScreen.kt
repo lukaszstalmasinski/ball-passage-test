@@ -24,6 +24,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -69,6 +70,14 @@ fun BallsScreen(state: BallsUiState, tubeContext: TubeContext?, actions: BallsAc
     val removedMessage = stringResource(R.string.balls_removed)
     val undoLabel = stringResource(R.string.balls_undo)
     val notFoundMessage = stringResource(R.string.import_not_found)
+    val saveFailedMessage = stringResource(R.string.balls_save_failed)
+
+    LaunchedEffect(state.saveFailed) {
+        if (state.saveFailed) {
+            snackbarHostState.showSnackbar(saveFailedMessage, duration = SnackbarDuration.Long)
+            actions.onSaveErrorShown()
+        }
+    }
     val defaultSetName = stringResource(R.string.set_default_name)
     val importedSetName = stringResource(R.string.set_imported_name)
     val activeSetName = state.activeSet.name.ifEmpty { defaultSetName }
