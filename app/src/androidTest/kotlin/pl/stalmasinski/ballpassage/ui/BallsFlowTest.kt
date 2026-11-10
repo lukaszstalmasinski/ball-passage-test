@@ -20,6 +20,7 @@ import org.junit.runner.RunWith
 import pl.stalmasinski.ballpassage.BallPassageApplication
 import pl.stalmasinski.ballpassage.MainActivity
 import pl.stalmasinski.ballpassage.core.BallSets
+import pl.stalmasinski.ballpassage.core.Standard
 import pl.stalmasinski.ballpassage.ui.calculator.DimensionField
 import java.math.BigDecimal
 
@@ -33,10 +34,18 @@ class BallsFlowTest {
     private val repository get() = (composeRule.activity.application as BallPassageApplication).userDataRepository
 
     @Before
+    fun setUp() {
+        clearUserData()
+        // The chosen standard is remembered, so a device may start in KTA 3211.1 mode;
+        // these flows use the VGB-S-013 fields.
+        composeRule.onNodeWithTag(TestTags.standard(Standard.VGB_S_013)).performClick()
+    }
+
     @After
     fun clearUserData() = runBlocking {
         repository.clearHistory()
         repository.updateBallSets { BallSets.initial("default") }
+        repository.setStandard(Standard.VGB_S_013)
     }
 
     @Test

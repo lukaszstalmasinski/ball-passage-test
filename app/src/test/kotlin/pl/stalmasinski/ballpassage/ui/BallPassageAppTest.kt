@@ -105,6 +105,32 @@ class BallPassageAppTest {
     }
 
     @Test
+    fun ktaTubeIsShownInTheBallsTab() {
+        composeRule.onNodeWithTag(TestTags.standard(Standard.KTA_3211_1)).performClick()
+        composeRule.onNodeWithTag(TestTags.field(DimensionField.OUTER_DIAMETER)).performTextInput("25")
+        composeRule.onNodeWithTag(TestTags.field(DimensionField.WALL_THICKNESS)).performTextInput("2.6")
+        composeRule.onNodeWithTag(TestTags.field(DimensionField.UNDERSIZE)).performTextInput("0.5")
+
+        openBalls()
+
+        composeRule.onNodeWithText("For tube 25 × 2.6 · Δ 0.5").assertIsDisplayed()
+        composeRule.onNodeWithText("Ball per standard: 15.32 mm").assertIsDisplayed()
+    }
+
+    @Test
+    fun explainsWhyKtaGivesNoBall() {
+        composeRule.onNodeWithTag(TestTags.standard(Standard.KTA_3211_1)).performClick()
+        composeRule.onNodeWithTag(TestTags.field(DimensionField.OUTER_DIAMETER)).performTextInput("6")
+        composeRule.onNodeWithTag(TestTags.field(DimensionField.WALL_THICKNESS)).performTextInput("2")
+        composeRule.onNodeWithTag(TestTags.field(DimensionField.UNDERSIZE)).performTextInput("0")
+
+        composeRule.onNodeWithTag(TestTags.FAILURE).assertIsDisplayed()
+        composeRule.onNodeWithText("The inner diameter of 2 mm is too small: after deducting Δ + 0.1·dᵢ + 2 mm, no ball remains.")
+            .performScrollTo()
+            .assertIsDisplayed()
+    }
+
+    @Test
     fun explainsHowToFixTooTightBend() {
         enter(outer = "48.3", wall = "5", radius = "20")
 
