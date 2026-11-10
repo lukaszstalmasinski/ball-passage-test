@@ -1,134 +1,104 @@
 <!doctype html>
-<html lang="pl">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Kulowanie rur – kalkulator średnicy kulki (VGB-S-013, KTA 3211.1)</title>
-  <meta name="description" content="Kulowanie rur giętych i wężownic: jak dobrać średnicę kulki do próby przelotu kulki według VGB-S-013 i KTA 3211.1. Darmowa aplikacja na Androida, bez reklam, działa offline.">
+  <title>Ball passage test – ball diameter calculator (VGB-S-013, KTA 3211.1)</title>
+  <meta name="description" content="Ball passage test (ball test) of bent tubes and tube coils: calculate the steel ball diameter per VGB-S-013 and KTA 3211.1. Free Android app, no ads, works offline.">
   <link rel="canonical" href="https://lukaszstalmasinski.github.io/ball-passage-test/">
-  <link rel="alternate" hreflang="pl" href="https://lukaszstalmasinski.github.io/ball-passage-test/">
+  <link rel="alternate" hreflang="en" href="https://lukaszstalmasinski.github.io/ball-passage-test/">
+  <link rel="alternate" hreflang="pl" href="https://lukaszstalmasinski.github.io/ball-passage-test/pl/">
   <link rel="alternate" hreflang="de" href="https://lukaszstalmasinski.github.io/ball-passage-test/de/">
-  <link rel="alternate" hreflang="en" href="https://lukaszstalmasinski.github.io/ball-passage-test/en/">
-  <link rel="alternate" hreflang="x-default" href="https://lukaszstalmasinski.github.io/ball-passage-test/en/">
-  <meta property="og:title" content="Kulowanie rur – kalkulator średnicy kulki">
-  <meta property="og:description" content="Średnica kulki do próby przelotu kulki rur giętych według VGB-S-013 i KTA 3211.1. Darmowa aplikacja na Androida.">
+  <link rel="alternate" hreflang="x-default" href="https://lukaszstalmasinski.github.io/ball-passage-test/">
+  <meta property="og:title" content="Ball passage test – ball diameter calculator">
+  <meta property="og:description" content="Steel ball diameter for the ball passage test of bent tubes per VGB-S-013 and KTA 3211.1. Free Android app.">
   <meta property="og:type" content="website">
-  <meta property="og:locale" content="pl_PL">
-  <meta property="og:image" content="https://lukaszstalmasinski.github.io/ball-passage-test/assets/pl-result.webp">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image" content="https://lukaszstalmasinski.github.io/ball-passage-test/assets/en-result.webp">
   <link rel="icon" href="assets/icon.png">
   <link rel="stylesheet" href="assets/site.css">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "Kalkulator kulowania rur",
+    "name": "Ball Passage Test Calculator",
     "operatingSystem": "Android",
     "applicationCategory": "BusinessApplication",
-    "inLanguage": ["pl", "de", "en"],
-    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "PLN"},
+    "inLanguage": ["en", "pl", "de"],
+    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"},
     "url": "https://play.google.com/store/apps/details?id=pl.stalmasinski.ballpassage"
-  }
-  </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {"@type": "Question", "name": "Jaką kulkę dobrać do kulowania rury 48,3 × 5 mm z promieniem gięcia 70 mm?",
-       "acceptedAnswer": {"@type": "Answer", "text": "Według VGB-S-013: średnica wewnętrzna wynosi 38,3 mm, stosunek gięcia R/dₒ = 1,44, odjęcie z tabeli 3 to 6,5 mm, więc średnica kulki wynosi 31,8 mm."}},
-      {"@type": "Question", "name": "Czy aplikacja działa bez internetu?",
-       "acceptedAnswer": {"@type": "Answer", "text": "Tak. Aplikacja działa w pełni offline, nie ma reklam i nie zbiera danych."}},
-      {"@type": "Question", "name": "Jaki jest wzór na średnicę kulki według KTA 3211.1?",
-       "acceptedAnswer": {"@type": "Answer", "text": "D_K = dᵢ − (Δ + 0,1·dᵢ + 2 mm), gdzie dᵢ to nominalna średnica wewnętrzna, a Δ to największa dopuszczalna odchyłka minus ze specyfikacji rury."}}
-    ]
   }
   </script>
 </head>
 <body>
   <div class="wrap">
     <header class="top">
-      <a class="brand" href="./"><img src="assets/icon.png" alt="" width="36" height="36">Kalkulator kulowania</a>
-      <nav class="lang" aria-label="Język">
-        <a href="./" aria-current="page" hreflang="pl" lang="pl">PL</a>
+      <a class="brand" href="./"><img src="assets/icon.png" alt="" width="36" height="36">Ball Passage Test</a>
+      <nav class="lang" aria-label="Language">
+        <a href="./" aria-current="page" hreflang="en" lang="en">EN</a>
+        <a href="pl/" hreflang="pl" lang="pl">PL</a>
         <a href="de/" hreflang="de" lang="de">DE</a>
-        <a href="en/" hreflang="en" lang="en">EN</a>
       </nav>
     </header>
 
     <main>
       <div class="hero">
         <div>
-          <h1>Kulowanie rur – średnica kulki w kilka sekund</h1>
-          <p class="lead">Wpisz średnicę zewnętrzną, grubość ścianki i promień gięcia, a aplikacja poda średnicę kulki do próby przelotu kulki według <strong>VGB-S-013</strong> albo <strong>KTA 3211.1</strong>. Podpowie też, której kulki z Twojej walizki użyć.</p>
-          <a class="cta" href="https://play.google.com/store/apps/details?id=pl.stalmasinski.ballpassage&amp;hl=pl">Pobierz z Google Play</a>
-          <span class="cta-note">Za darmo, bez reklam, działa offline. Android 8.0 lub nowszy.</span>
+          <h1>Ball passage test – the ball diameter in seconds</h1>
+          <p class="lead">Enter the outer diameter, wall thickness and bend radius, and the app gives the steel ball diameter for the ball passage test per <strong>VGB-S-013</strong> or <strong>KTA 3211.1</strong> – and tells you which ball from your case to use.</p>
+          <a class="cta" href="https://play.google.com/store/apps/details?id=pl.stalmasinski.ballpassage&amp;hl=en">Get it on Google Play</a>
+          <span class="cta-note">Free, no ads, works offline. Android 8.0 or newer.</span>
         </div>
         <div class="shots">
-          <img src="assets/pl-result.webp" width="540" height="1080" alt="Wynik kulowania: średnica kulki 31,8 mm dla rury 48,3 × 5, R 70">
-          <img src="assets/pl-balls.webp" width="540" height="1080" alt="Zestaw kulek z podpowiedzią, której kulki użyć">
+          <img src="assets/en-result.webp" width="540" height="1080" alt="Result: ball diameter 31.8 mm for tube 48.3 × 5, R 70">
+          <img src="assets/en-balls.webp" width="540" height="1080" alt="Ball set with the suggested ball">
         </div>
       </div>
 
       <section>
-        <h2>Czym jest kulowanie</h2>
-        <p>Kulowanie, czyli próba przelotu kulki (niem. <em>Kugeldurchlaufversuch</em>), sprawdza, czy rura gięta albo wężownica nie jest za bardzo spłaszczona w łukach. Przez rurę przepycha się stalową kulkę o określonej średnicy. Jeśli kulka przejdzie swobodnie, przekrój rury jest w porządku. Próbę wykonuje się przy produkcji kotłów, przegrzewaczy, ekonomizerów i innych elementów ciśnieniowych.</p>
+        <h2>What is the ball passage test?</h2>
+        <p>The ball passage test (<em>Kugeldurchlaufversuch</em>) checks that bent tubes and tube coils are not flattened too much in their bends. A steel ball of a specified diameter is driven through the tube; if it passes freely, the cross-section is acceptable. The test is part of manufacturing boilers, superheaters, economisers and other pressure parts.</p>
       </section>
 
       <section>
-        <h2>Jak dobrać średnicę kulki</h2>
-        <h3>VGB-S-013 (punkt 7.2.5, tabela 3)</h3>
-        <p>Średnicę kulki liczy się jako średnicę wewnętrzną rury minus wartość z tabeli 3. Wartość zależy od średnicy wewnętrznej (wiersze 20–29, 30–39 i 40–49 mm) oraz od stosunku promienia gięcia do średnicy zewnętrznej R/dₒ.</p>
+        <h2>Choosing the ball diameter</h2>
+        <h3>VGB-S-013 (section 7.2.5, Table 3)</h3>
+        <p>The ball diameter is the inner diameter minus the value from Table 3, which depends on the inner diameter (rows 20–29, 30–39 and 40–49 mm) and on the bend ratio R/dₒ.</p>
         <div class="example">
-          <p><strong>Przykład: rura 48,3 × 5 mm, promień gięcia 70 mm</strong></p>
+          <p><strong>Example: tube 48.3 × 5 mm, bend radius 70 mm</strong></p>
           <ol>
-            <li>Średnica wewnętrzna: dᵢ = 48,3 − 2 · 5 = 38,3 mm (wiersz 30–39 mm)</li>
-            <li>Stosunek gięcia: R/dₒ = 70 / 48,3 = 1,44 (kolumna 1,0–1,5)</li>
-            <li>Odjęcie z tabeli 3: 6,5 mm</li>
-            <li><strong>Średnica kulki: 38,3 − 6,5 = 31,8 mm</strong></li>
+            <li>Inner diameter: dᵢ = 48.3 − 2 · 5 = 38.3 mm (row 30–39 mm)</li>
+            <li>Bend ratio: R/dₒ = 70 / 48.3 = 1.44 (column 1.0–1.5)</li>
+            <li>Deduction from Table 3: 6.5 mm</li>
+            <li><strong>Ball diameter: 38.3 − 6.5 = 31.8 mm</strong></li>
           </ol>
         </div>
-        <h3>KTA 3211.1 (punkty 10.2.2.2 i 10.4.2.2)</h3>
-        <p>Niemiecka reguła KTA 3211.1 wymaga kulowania każdej rury giętej na zimno i podaje wzór:</p>
-        <p class="formula">D_K = dᵢ − (Δ + 0,1 · dᵢ + 2 mm)</p>
-        <p>dᵢ to nominalna średnica wewnętrzna, a Δ to największa dopuszczalna odchyłka minus ze specyfikacji rury. Reguła obejmuje rury ferrytyczne do 38 × 4 mm i austenityczne do 42,4 × 3,6 mm.</p>
+        <h3>KTA 3211.1 (sections 10.2.2.2 and 10.4.2.2)</h3>
+        <p>The German nuclear safety rule KTA 3211.1 requires the test on every cold-bent tube, with a ball of</p>
+        <p class="formula">D_K = dᵢ − (Δ + 0.1 · dᵢ + 2 mm)</p>
+        <p>where dᵢ is the nominal inner diameter and Δ the largest permissible undersize from the tube specification. It covers ferritic tubes up to 38 × 4 mm and austenitic tubes up to 42.4 × 3.6 mm.</p>
       </section>
 
       <section>
-        <h2>Co potrafi aplikacja</h2>
+        <h2>Features</h2>
         <ul class="features">
-          <li><strong>Wynik od razu</strong>Średnica kulki pojawia się podczas wpisywania, także nad klawiaturą na małych telefonach.</li>
-          <li><strong>Obliczenia krok po kroku</strong>Średnica wewnętrzna, stosunek gięcia i odjęcie z tabeli – wynik łatwo sprawdzić i wpisać do protokołu.</li>
-          <li><strong>Twoje zestawy kulek</strong>Kulki z każdej walizki czy warsztatu, z oznaczeniem i miejscem. Aplikacja podpowie, której użyć.</li>
-          <li><strong>Udostępnianie zestawu</strong>Przekaż zestaw kulek współpracownikom kodem QR albo tekstem.</li>
-          <li><strong>Dwie normy</strong>VGB-S-013 i KTA 3211.1, z ostrzeżeniem, gdy rura wykracza poza zakres normy.</li>
-          <li><strong>Bez reklam i offline</strong>Nie zbiera żadnych danych. Po polsku, niemiecku i angielsku.</li>
+          <li><strong>Instant result</strong>The ball diameter appears as you type, even above the keyboard on small phones.</li>
+          <li><strong>Step by step</strong>Inner diameter, bend ratio and deduction – easy to check and copy into a test report.</li>
+          <li><strong>Your ball sets</strong>The balls of each case or workshop, with marking and location. The app suggests which one to use.</li>
+          <li><strong>Share sets</strong>Send a ball set to colleagues as a QR code or text.</li>
+          <li><strong>Two standards</strong>VGB-S-013 and KTA 3211.1, with a warning when a tube is outside the scope.</li>
+          <li><strong>No ads, offline</strong>No data collection. English, Polish and German.</li>
         </ul>
       </section>
 
       <section>
-        <h2>Pytania</h2>
-        <details>
-          <summary>Jaką kulkę dobrać do kulowania rury 48,3 × 5 mm z promieniem gięcia 70 mm?</summary>
-          <p>Według VGB-S-013: średnica wewnętrzna 38,3 mm, R/dₒ = 1,44, odjęcie z tabeli 3 to 6,5 mm, więc kulka ma 31,8 mm. Pasuje też każda większa kulka, mniejsza od średnicy wewnętrznej rury.</p>
-        </details>
-        <details>
-          <summary>Czy aplikacja działa bez internetu?</summary>
-          <p>Tak. Działa w pełni offline, nie ma reklam i nie zbiera danych. Zestawy kulek i ostatnie rury zostają tylko na telefonie.</p>
-        </details>
-        <details>
-          <summary>Czy aplikacja zastępuje normę?</summary>
-          <p>Nie. To narzędzie pomocnicze – wyniki zawsze sprawdzaj z aktualnym wydaniem normy i wymaganiami projektu.</p>
-        </details>
-      </section>
-
-      <section>
-        <a class="cta" href="https://play.google.com/store/apps/details?id=pl.stalmasinski.ballpassage&amp;hl=pl">Pobierz z Google Play</a>
+        <a class="cta" href="https://play.google.com/store/apps/details?id=pl.stalmasinski.ballpassage&amp;hl=en">Get it on Google Play</a>
       </section>
     </main>
 
     <footer>
-      <p>© 2026 Łukasz Stalmasiński · <a href="https://github.com/lukaszstalmasinski/ball-passage-test/blob/main/PRIVACY.md">Polityka prywatności</a> · <a href="https://github.com/lukaszstalmasinski/ball-passage-test">Kod źródłowy</a></p>
-      <p>Aplikacja ma charakter pomocniczy i nie jest powiązana z VGB PowerTech ani z KTA.</p>
+      <p>© 2026 Łukasz Stalmasiński · <a href="https://github.com/lukaszstalmasinski/ball-passage-test/blob/main/PRIVACY.md">Privacy policy</a> · <a href="https://github.com/lukaszstalmasinski/ball-passage-test">Source code</a></p>
+      <p>This app is an aid only and is not affiliated with VGB PowerTech or the KTA.</p>
     </footer>
   </div>
 </body>
