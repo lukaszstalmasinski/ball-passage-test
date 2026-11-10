@@ -41,7 +41,7 @@ def main(title, paths):
                     files.append((percent(c['LINE']), f"{package.get('name')}/{source.get('name')}", c))
 
     if rows:
-        lines += ['| Module | Lines | Branches |', '|---|---|---|']
+        lines += ['', '| Module | Lines | Branches |', '|---|---|---|']
         for name, total in rows:
             lines.append(f"| {name} | {cell(total['LINE'])} | {cell(total.get('BRANCH', (0, 0)))} |")
         lines += ['', '<details><summary>Per file, lowest line coverage first</summary>', '',
