@@ -92,6 +92,16 @@ Requirements: JDK 17+ and the Android SDK. Missing SDK platforms are downloaded 
 
 Lint warnings fail the build, and so do Kotlin warnings in the app module.
 
+Test coverage is measured with JaCoCo:
+
+```sh
+./gradlew :core:jacocoTestReport :app:createDebugUnitTestCoverageReport  # unit tests
+./gradlew createDebugAndroidTestCoverageReport                          # tests on a device
+```
+
+The HTML reports are in `core/build/reports/jacoco/` and `app/build/reports/coverage/`. CI shows
+the totals and a per-file table in the job summary of each run and keeps the reports as artifacts.
+
 Instrumented tests (`app/src/androidTest`) cover the dialogs of the Balls tab. They run on a
 device because Robolectric never gets idle after typing into text fields inside Compose
 dialogs. Real devices render those dialogs normally, which was checked by counting frames.
