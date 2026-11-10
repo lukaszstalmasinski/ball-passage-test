@@ -102,9 +102,29 @@ Test coverage is measured with JaCoCo:
 The HTML reports are in `core/build/reports/jacoco/` and `app/build/reports/coverage/`. CI shows
 the totals and a per-file table in the job summary of each run and keeps the reports as artifacts.
 
-Instrumented tests (`app/src/androidTest`) cover the dialogs of the Balls tab. They run on a
-device because Robolectric never gets idle after typing into text fields inside Compose
-dialogs. Real devices render those dialogs normally, which was checked by counting frames.
+
+## Tests
+
+| Layer | Where | Runs on | Tools |
+|---|---|---|---|
+| Calculation and ball sets | `core/src/test` | JVM | JUnit 5, parameterized tests |
+| View models | `app/src/test/.../ui/<feature>/*ViewModelTest` | JVM | JUnit 4, `FakeUserDataRepository`, `MainDispatcherRule` |
+| Storage | `app/src/test/.../data/DataStoreUserDataRepositoryTest` | JVM | Robolectric, real DataStore |
+| Single composables | `app/src/test/.../ui/<feature>/*Test` | JVM | Robolectric, `createComposeRule` |
+| Tabs of the running app | `app/src/test/.../ui/<feature>/*TabTest`, `NavigationTest`, `LocalizationTest` | JVM | Robolectric, `MainActivity` with a fake repository |
+| Dialogs and dialog flows | `app/src/androidTest/.../ui/balls` | device or emulator | Compose UI test |
+
+- Tests mirror the packages of the code they test.
+- Robolectric tests use `TestBallPassageApplication` (see `app/src/test/resources/robolectric.properties`),
+  which swaps DataStore for `FakeUserDataRepository`: every test starts with fresh data and sets
+  it up directly (`givenBalls(...)`), not through the UI. `AppTestRule.kt` holds the shared steps
+  (`enterTube`, `openTab`, `addBall`, `sharedText`).
+- Dialogs are tested on a device, because Robolectric never gets idle after typing into text
+  fields inside Compose dialogs. Real devices render those dialogs normally, which was checked by
+  counting frames.
+- Names: JVM tests may use sentences in backticks (`` `adds a range and reports only new balls` ``);
+  tests on a device use camelCase (`removedBallCanBeRestored`), because method names with spaces
+  need Android 11, and the app supports Android 8. Either way the name says what happens.
 
 ## Release signing
 

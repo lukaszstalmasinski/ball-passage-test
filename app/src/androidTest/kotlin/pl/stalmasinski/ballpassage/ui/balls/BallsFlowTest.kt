@@ -1,4 +1,4 @@
-package pl.stalmasinski.ballpassage.ui
+package pl.stalmasinski.ballpassage.ui.balls
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasTestTag
@@ -20,6 +20,8 @@ import org.junit.runner.RunWith
 import pl.stalmasinski.ballpassage.BallPassageApplication
 import pl.stalmasinski.ballpassage.MainActivity
 import pl.stalmasinski.ballpassage.core.BallSets
+import pl.stalmasinski.ballpassage.ui.Destination
+import pl.stalmasinski.ballpassage.ui.TestTags
 import pl.stalmasinski.ballpassage.ui.calculator.DimensionField
 import java.math.BigDecimal
 
