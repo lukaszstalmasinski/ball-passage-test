@@ -1,10 +1,13 @@
 package pl.stalmasinski.ballpassage.ui
 
+import androidx.compose.ui.test.hasScrollToKeyAction
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
+import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTextInput
 import pl.stalmasinski.ballpassage.MainActivity
 import pl.stalmasinski.ballpassage.ui.calculator.DimensionField
@@ -34,7 +37,22 @@ fun AppTestRule.openTab(destination: Destination) {
 fun AppTestRule.addBall(diameter: String) {
     onNodeWithTag(TestTags.BALL_INPUT).performTextInput(diameter)
     onNodeWithTag(TestTags.BALL_ADD).performClick()
-    waitForTag(TestTags.ballItem(BigDecimal(diameter)))
+    waitForBall(diameter)
+}
+
+/**
+ * Waits until the ball is in the list of the Balls tab, scrolling the list to it: the list is lazy,
+ * so a row off screen (e.g. under the keyboard) does not exist until it is scrolled into view.
+ */
+fun AppTestRule.waitForBall(diameter: String) {
+    waitForTagInList(TestTags.ballItem(BigDecimal(diameter)))
+}
+
+/** Waits until a node with [tag] is in the lazy list of the screen and scrolls it into view. */
+fun AppTestRule.waitForTagInList(tag: String) {
+    waitUntil(timeoutMillis = WAIT_MILLIS) {
+        runCatching { onAllNodes(hasScrollToKeyAction()).onFirst().performScrollToNode(hasTestTag(tag)) }.isSuccess
+    }
 }
 
 fun AppTestRule.waitForTag(tag: String) {
