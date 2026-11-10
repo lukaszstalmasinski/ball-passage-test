@@ -21,6 +21,7 @@ import pl.stalmasinski.ballpassage.ui.addBall
 import pl.stalmasinski.ballpassage.ui.enterTube
 import pl.stalmasinski.ballpassage.ui.givenBalls
 import pl.stalmasinski.ballpassage.ui.openTab
+import pl.stalmasinski.ballpassage.ui.repository
 import pl.stalmasinski.ballpassage.ui.sharedText
 import pl.stalmasinski.ballpassage.ui.waitForTag
 import pl.stalmasinski.ballpassage.ui.waitForText
@@ -44,6 +45,17 @@ class BallsTabTest {
         composeRule.addBall("32")
 
         composeRule.onNodeWithText("Ø 32 mm").assertIsDisplayed()
+    }
+
+    @Test
+    fun failedSaveShowsAMessage() {
+        composeRule.openTab(Destination.BALLS)
+        composeRule.repository.failWrites = true
+
+        composeRule.onNodeWithTag(TestTags.BALL_INPUT).performTextInput("32")
+        composeRule.onNodeWithTag(TestTags.BALL_ADD).performClick()
+
+        composeRule.waitForText("Could not save the change. Check the free storage on the phone and try again.")
     }
 
     @Test
