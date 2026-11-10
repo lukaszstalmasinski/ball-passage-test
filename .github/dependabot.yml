@@ -1,0 +1,23 @@
+# Weekly pull requests for dependency updates; each one runs the Checks workflow.
+version: 2
+updates:
+  - package-ecosystem: gradle
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      # One pull request for libraries that are released together.
+      androidx:
+        patterns: ['androidx.*']
+      kotlin:
+        patterns: ['org.jetbrains.kotlin*', 'org.jetbrains.kotlinx*']
+      tests:
+        patterns: ['org.junit*', 'junit:*', 'org.robolectric*', 'com.pinterest.ktlint*']
+
+  - package-ecosystem: github-actions
+    directories: ['/', '/.github/actions/*']
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ['*']

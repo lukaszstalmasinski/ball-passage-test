@@ -26,7 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import pl.stalmasinski.ballpassage.R
-import pl.stalmasinski.ballpassage.core.Ball
+import pl.stalmasinski.ballpassage.core.balls.Ball
 import pl.stalmasinski.ballpassage.ui.TestTags
 import pl.stalmasinski.ballpassage.ui.common.details
 import pl.stalmasinski.ballpassage.ui.common.rememberNumberFormatter

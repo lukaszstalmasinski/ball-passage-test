@@ -1,8 +1,8 @@
 package pl.stalmasinski.ballpassage.data
 
 import kotlinx.coroutines.flow.Flow
-import pl.stalmasinski.ballpassage.core.BallSets
-import pl.stalmasinski.ballpassage.core.TubeDimensions
+import pl.stalmasinski.ballpassage.core.balls.BallSets
+import pl.stalmasinski.ballpassage.core.calculation.TubeDimensions
 
 /** Data the user enters that is kept between app launches; stored only on the device. */
 interface UserDataRepository {

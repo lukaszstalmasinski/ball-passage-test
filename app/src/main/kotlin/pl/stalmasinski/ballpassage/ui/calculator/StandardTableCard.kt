@@ -31,10 +31,10 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import pl.stalmasinski.ballpassage.R
-import pl.stalmasinski.ballpassage.core.BallPassageTable
-import pl.stalmasinski.ballpassage.core.BendRatioColumn
-import pl.stalmasinski.ballpassage.core.CalculationResult
-import pl.stalmasinski.ballpassage.core.DiameterRow
+import pl.stalmasinski.ballpassage.core.calculation.BallPassageTable
+import pl.stalmasinski.ballpassage.core.calculation.BendRatioColumn
+import pl.stalmasinski.ballpassage.core.calculation.CalculationResult
+import pl.stalmasinski.ballpassage.core.calculation.DiameterRow
 import pl.stalmasinski.ballpassage.ui.FittingText
 import pl.stalmasinski.ballpassage.ui.TestTags
 import pl.stalmasinski.ballpassage.ui.common.NumberFormatter

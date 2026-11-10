@@ -1,18 +1,4 @@
-package pl.stalmasinski.ballpassage.core
-
-import java.math.BigDecimal
-
-/** A ball set as exchanged between devices: no ids, which are assigned on import. */
-public data class SharedBallSet(
-    val name: String,
-    val balls: List<SharedBall>,
-)
-
-public data class SharedBall(
-    val diameter: BigDecimal,
-    val label: String = "",
-    val location: String = "",
-)
+package pl.stalmasinski.ballpassage.core.balls
 
 /**
  * Plain-text format for sharing a ball set by QR code or message:

@@ -3,7 +3,6 @@ package pl.stalmasinski.ballpassage.ui.qr
 import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.Color as AndroidColor
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
@@ -58,6 +57,7 @@ import pl.stalmasinski.ballpassage.sharing.QrCodes
 import pl.stalmasinski.ballpassage.ui.TestTags
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
+import android.graphics.Color as AndroidColor
 
 /** Black-on-white QR code; the matrix is drawn without smoothing so that modules stay sharp. */
 @Composable

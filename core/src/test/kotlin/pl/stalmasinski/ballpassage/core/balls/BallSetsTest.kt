@@ -1,8 +1,6 @@
-package pl.stalmasinski.ballpassage.core
+package pl.stalmasinski.ballpassage.core.balls
 
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertInstanceOf
-import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -106,77 +104,5 @@ class BallSetsTest {
     @Test
     fun `there is always a set`() {
         assertThrows<IllegalArgumentException> { BallSets(emptyList(), "x") }
-    }
-
-    @Test
-    fun `range of diameters`() {
-        val range = BallRange.of(BigDecimal("20"), BigDecimal("22"), BigDecimal("0.5"))
-
-        assertInstanceOf(BallRange.Result.Valid::class.java, range)
-        assertEquals(listOf("20", "20.5", "21", "21.5", "22"), (range as BallRange.Result.Valid).diameters.map { it.toPlainString() })
-    }
-
-    @Test
-    fun `range stops before passing the end`() {
-        val range = BallRange.of(BigDecimal("20"), BigDecimal("21"), BigDecimal("0.3")) as BallRange.Result.Valid
-
-        assertEquals(listOf("20", "20.3", "20.6", "20.9"), range.diameters.map { it.toPlainString() })
-    }
-
-    @Test
-    fun `invalid ranges`() {
-        fun error(from: String, to: String, step: String) =
-            (BallRange.of(BigDecimal(from), BigDecimal(to), BigDecimal(step)) as BallRange.Result.Invalid).error
-
-        assertEquals(BallRange.Error.FROM_NOT_POSITIVE, error("0", "10", "1"))
-        assertEquals(BallRange.Error.STEP_NOT_POSITIVE, error("10", "20", "0"))
-        assertEquals(BallRange.Error.TO_BELOW_FROM, error("20", "10", "1"))
-        assertEquals(BallRange.Error.TOO_MANY, error("1", "1000", "1"))
-        assertInstanceOf(BallRange.Result.Valid::class.java, BallRange.of(BigDecimal("1"), BigDecimal("200"), BigDecimal("1")))
-    }
-
-    @Test
-    fun `codec round trip`() {
-        val set = BallSet(
-            id = "s",
-            name = "Hall A",
-            balls = listOf(
-                Ball("1", BigDecimal("31.8"), "K-12", "case 2"),
-                Ball("2", BigDecimal("32")),
-                Ball("3", BigDecimal("35"), location = "drawer"),
-            ),
-        )
-
-        val text = BallSetCodec.encode(set)
-
-        assertEquals("BPT1\nHall A\n31.8\tK-12\tcase 2\n32\n35\t\tdrawer", text)
-        assertEquals(
-            SharedBallSet(
-                "Hall A",
-                listOf(
-                    SharedBall(BigDecimal("31.8"), "K-12", "case 2"),
-                    SharedBall(BigDecimal("32")),
-                    SharedBall(BigDecimal("35"), location = "drawer"),
-                ),
-            ),
-            BallSetCodec.decode(text),
-        )
-    }
-
-    @Test
-    fun `decode finds the block inside a pasted message`() {
-        val message = "Ball set from Ball Passage Test:\r\n\r\nBPT1\r\nCase\r\n32,5\r\nabc\r\n-1\r\n40\r\n\r\nSent from my phone"
-
-        val decoded = BallSetCodec.decode(message)!!
-
-        assertEquals("Case", decoded.name)
-        assertEquals(listOf("32.5", "40"), decoded.balls.map { it.diameter.toPlainString() })
-    }
-
-    @Test
-    fun `decode rejects text without a set`() {
-        assertNull(BallSetCodec.decode("hello"))
-        assertNull(BallSetCodec.decode("BPT1"))
-        assertNull(BallSetCodec.decode("BPT1\nName\nabc"))
     }
 }

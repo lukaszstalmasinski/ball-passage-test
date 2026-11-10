@@ -20,7 +20,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import pl.stalmasinski.ballpassage.R
-import pl.stalmasinski.ballpassage.core.BallSet
+import pl.stalmasinski.ballpassage.core.balls.BallSet
 import pl.stalmasinski.ballpassage.ui.TestTags
 
 @OptIn(ExperimentalMaterial3Api::class)

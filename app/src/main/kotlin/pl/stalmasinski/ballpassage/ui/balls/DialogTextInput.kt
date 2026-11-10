@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import pl.stalmasinski.ballpassage.core.BallSets
+import pl.stalmasinski.ballpassage.core.balls.BallSets
 
 @Composable
 internal fun TextInput(
