@@ -1,4 +1,4 @@
-package pl.stalmasinski.ballpassage.ui.qr
+package pl.stalmasinski.ballpassage.sharing
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse

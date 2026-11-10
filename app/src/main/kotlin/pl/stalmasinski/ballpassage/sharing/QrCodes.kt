@@ -1,4 +1,4 @@
-package pl.stalmasinski.ballpassage.ui.qr
+package pl.stalmasinski.ballpassage.sharing
 
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.BinaryBitmap

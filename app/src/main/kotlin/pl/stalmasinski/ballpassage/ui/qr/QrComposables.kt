@@ -54,6 +54,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import pl.stalmasinski.ballpassage.R
+import pl.stalmasinski.ballpassage.sharing.QrCodes
 import pl.stalmasinski.ballpassage.ui.TestTags
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean

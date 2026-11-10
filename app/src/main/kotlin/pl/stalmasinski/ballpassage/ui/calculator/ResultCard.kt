@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
@@ -14,19 +13,16 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
-import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -41,7 +37,6 @@ import pl.stalmasinski.ballpassage.ui.common.NumberFormatter
 import pl.stalmasinski.ballpassage.ui.common.details
 import pl.stalmasinski.ballpassage.ui.common.rememberNumberFormatter
 import pl.stalmasinski.ballpassage.ui.theme.LocalWarningColors
-import java.math.BigDecimal
 
 @Composable
 fun ResultCard(state: CalculatorUiState, onOpenBalls: () -> Unit) {
@@ -265,133 +260,4 @@ private fun PlaceholderContent(hasFieldErrors: Boolean) {
         style = MaterialTheme.typography.bodyLarge,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
-}
-
-/** Shown above the keyboard while typing, when the result card may be covered. */
-@Composable
-fun CompactResultBar(state: CalculatorUiState) {
-    val formatter = rememberNumberFormatter()
-    val result = state.result
-    val (container, content) = when (result) {
-        is CalculationResult.Success -> MaterialTheme.colorScheme.primaryContainer to MaterialTheme.colorScheme.onPrimaryContainer
-        is CalculationResult.Failure -> MaterialTheme.colorScheme.errorContainer to MaterialTheme.colorScheme.onErrorContainer
-        null -> MaterialTheme.colorScheme.surfaceContainerHigh to MaterialTheme.colorScheme.onSurfaceVariant
-    }
-
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .testTag(TestTags.COMPACT_RESULT),
-        color = container,
-        contentColor = content,
-    ) {
-        Row(
-            modifier = Modifier
-                .imePadding()
-                .padding(horizontal = 16.dp, vertical = 12.dp)
-                .semantics { liveRegion = LiveRegionMode.Polite },
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            when (result) {
-                is CalculationResult.Success -> {
-                    Text(
-                        text = stringResource(R.string.compact_result, formatter.format(result.minBallDiameter)),
-                        modifier = Modifier.weight(1f),
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Medium,
-                    )
-                    if (result.isExtrapolated) {
-                        Icon(painterResource(R.drawable.ic_warning), contentDescription = stringResource(R.string.compact_extrapolated))
-                    }
-                    state.fittingBalls.firstOrNull()?.let { ball ->
-                        val size = formatter.format(ball.diameter)
-                        Text(
-                            text = if (ball.label.isEmpty()) {
-                                stringResource(R.string.compact_ball, size)
-                            } else {
-                                stringResource(R.string.compact_ball_label, size, ball.label)
-                            },
-                            style = MaterialTheme.typography.titleSmall,
-                        )
-                    }
-                }
-                is CalculationResult.Failure -> Text(
-                    text = stringResource(R.string.result_failure_title),
-                    style = MaterialTheme.typography.titleSmall,
-                )
-                null -> Text(
-                    text = stringResource(if (state.hasFieldErrors) R.string.result_fix_inputs else R.string.compact_placeholder),
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-            }
-        }
-    }
-}
-
-/** Step-by-step values, so that the result can be checked by hand. */
-@Composable
-fun CalculationBreakdown(result: CalculationResult) {
-    val formatter = rememberNumberFormatter()
-    val mm = { value: BigDecimal -> formatter.format(value) }
-
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
-    ) {
-        Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text(
-                text = stringResource(R.string.breakdown_title),
-                modifier = Modifier.semantics { heading() },
-                style = MaterialTheme.typography.titleMedium,
-            )
-            BreakdownRow(
-                label = stringResource(R.string.breakdown_inner_diameter),
-                value = stringResource(R.string.value_mm, mm(result.innerDiameter)),
-            )
-            BreakdownRow(
-                label = stringResource(R.string.breakdown_bend_ratio),
-                value = bendRatioText(result.bendRatio, formatter),
-            )
-            if (result is CalculationResult.Success) {
-                BreakdownRow(
-                    label = stringResource(R.string.breakdown_deduction),
-                    value = stringResource(R.string.value_mm, mm(result.deduction)),
-                )
-                HorizontalDivider()
-                BreakdownRow(
-                    label = stringResource(R.string.breakdown_ball_diameter),
-                    value = stringResource(R.string.value_mm, mm(result.minBallDiameter)),
-                    emphasized = true,
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun BreakdownRow(label: String, value: String, emphasized: Boolean = false) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            text = label,
-            modifier = Modifier.weight(1f),
-            style = MaterialTheme.typography.bodyMedium,
-            color = if (emphasized) Color.Unspecified else MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Text(
-            text = value,
-            style = if (emphasized) MaterialTheme.typography.titleMedium else MaterialTheme.typography.bodyLarge,
-            fontWeight = if (emphasized) FontWeight.SemiBold else FontWeight.Normal,
-        )
-    }
-}
-
-@Composable
-private fun bendRatioText(bendRatio: BendRatio, formatter: NumberFormatter): String = when (bendRatio) {
-    BendRatio.StraightTube -> stringResource(R.string.breakdown_straight_tube)
-    is BendRatio.Finite -> formatter.format(bendRatio.value)
 }
