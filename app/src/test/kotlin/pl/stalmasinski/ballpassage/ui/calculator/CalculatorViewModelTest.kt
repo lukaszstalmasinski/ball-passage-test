@@ -170,18 +170,19 @@ class CalculatorViewModelTest {
     }
 
     @Test
-    fun `result is added to history only after the input settles`() = runTest(mainDispatcher.dispatcher) {
+    fun `tubes typed on the way are not recorded, only the saved one`() = runTest(mainDispatcher.dispatcher) {
         val viewModel = viewModel()
         viewModel.onValueChange(DimensionField.OUTER_DIAMETER, "48.3")
         viewModel.onValueChange(DimensionField.WALL_THICKNESS, "5")
         viewModel.onValueChange(DimensionField.BEND_RADIUS, "7")
-        advanceTimeBy(500)
+        advanceTimeBy(10_000)
         viewModel.onValueChange(DimensionField.BEND_RADIUS, "70")
-
-        advanceTimeBy(CalculatorViewModel.HISTORY_DELAY_MILLIS - 1)
+        advanceTimeBy(10_000)
         assertEquals(emptyList<TubeDimensions>(), repository.history.value)
 
-        advanceTimeBy(2)
+        viewModel.saveToHistory()
+        runCurrent()
+
         assertEquals(listOf(tube("48.3", "5", "70")), repository.history.value)
         assertEquals(repository.history.value, viewModel.state.history)
     }
@@ -193,7 +194,8 @@ class CalculatorViewModelTest {
         viewModel.onValueChange(DimensionField.WALL_THICKNESS, "5")
         viewModel.onValueChange(DimensionField.BEND_RADIUS, "10")
 
-        advanceTimeBy(CalculatorViewModel.HISTORY_DELAY_MILLIS * 2)
+        viewModel.saveToHistory()
+        runCurrent()
 
         assertEquals(emptyList<TubeDimensions>(), repository.history.value)
     }
@@ -214,7 +216,7 @@ class CalculatorViewModelTest {
         repository.failWrites = true
         val viewModel = viewModel().filled()
 
-        advanceTimeBy(CalculatorViewModel.HISTORY_DELAY_MILLIS * 2)
+        viewModel.saveToHistory()
         viewModel.clearHistory()
         runCurrent()
 

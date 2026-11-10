@@ -7,8 +7,6 @@ import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -64,7 +62,6 @@ data class CalculatorUiState(
 class CalculatorViewModel(
     private val savedStateHandle: SavedStateHandle,
     private val repository: UserDataRepository,
-    private val historyDelayMillis: Long = HISTORY_DELAY_MILLIS,
 ) : ViewModel() {
 
     private val inputs = MutableStateFlow(
@@ -75,8 +72,6 @@ class CalculatorViewModel(
         combine(inputs, repository.ballSets, repository.history) { inputs, ballSets, history ->
             buildState(inputs, ballSets.active, history)
         }.stateIn(viewModelScope, SharingStarted.Eagerly, buildState(inputs.value, EMPTY_SET, emptyList()))
-
-    private var historyJob: Job? = null
 
     fun onValueChange(field: DimensionField, text: String) {
         setInputs(inputs.value + (field to DecimalInput.sanitize(text)))
@@ -104,20 +99,16 @@ class CalculatorViewModel(
     private fun setInputs(values: Map<DimensionField, String>) {
         values.forEach { (field, text) -> savedStateHandle[field.name] = text }
         inputs.value = values
-        scheduleHistoryEntry()
     }
 
     /**
-     * Results are added to the history only once the input has stayed unchanged for a moment,
-     * so that intermediate values typed on the way (4 → 48 → 48.3) are not recorded.
+     * Adds the calculated tube to the recent tubes. The screen calls it when the user is done with
+     * the input (the keyboard closes or the app goes to the background), so that tubes typed on the
+     * way, one field at a time, are not recorded.
      */
-    private fun scheduleHistoryEntry() {
-        historyJob?.cancel()
+    fun saveToHistory() {
         val result = calculate(inputs.value).result as? CalculationResult.Success ?: return
-        historyJob = viewModelScope.launch {
-            delay(historyDelayMillis)
-            saveHistory { repository.addToHistory(result.dimensions) }
-        }
+        viewModelScope.launch { saveHistory { repository.addToHistory(result.dimensions) } }
     }
 
     /** Recent tubes are a convenience: when they cannot be saved, the calculator carries on without them. */
@@ -130,8 +121,6 @@ class CalculatorViewModel(
     }
 
     companion object {
-        const val HISTORY_DELAY_MILLIS = 2_000L
-
         val Factory = viewModelFactory {
             initializer {
                 val application = this[APPLICATION_KEY] as BallPassageApplication

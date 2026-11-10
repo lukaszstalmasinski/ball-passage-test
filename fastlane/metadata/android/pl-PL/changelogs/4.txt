@@ -1,0 +1,5 @@
+• Ostatnie rury zapisują tylko rury, które skończysz wpisywać
+• Zeskanowany lub wklejony zestaw kulek czeka na potwierdzenie także po obróceniu telefonu
+• Komunikat, gdy zmiany nie da się zapisać, np. przy braku miejsca w telefonie
+• Płynniejsza lista kulek, także przy setkach kulek
+• Drobne poprawki w zakładce Kulki

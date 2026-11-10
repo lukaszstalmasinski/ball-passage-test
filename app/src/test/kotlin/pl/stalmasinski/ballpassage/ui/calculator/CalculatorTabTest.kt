@@ -15,8 +15,10 @@ import androidx.compose.ui.test.performImeAction
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTextReplacement
+import androidx.lifecycle.Lifecycle
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -24,6 +26,7 @@ import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import pl.stalmasinski.ballpassage.MainActivity
 import pl.stalmasinski.ballpassage.core.calculation.TubeDimensions
+import pl.stalmasinski.ballpassage.core.tube
 import pl.stalmasinski.ballpassage.ui.TestTags
 import pl.stalmasinski.ballpassage.ui.enterTube
 import pl.stalmasinski.ballpassage.ui.givenBalls
@@ -135,6 +138,17 @@ class CalculatorTabTest {
 
         composeRule.waitForText("From your set: use the 32 mm ball")
         composeRule.onNodeWithText("Also fits: 35 mm").performScrollTo().assertIsDisplayed()
+    }
+
+    @Test
+    fun tubeGoesToRecentTubesWhenTheAppGoesToTheBackground() {
+        composeRule.enterTube(outer = "48.3", wall = "5", radius = "70")
+        composeRule.waitForIdle()
+        assertEquals(emptyList<TubeDimensions>(), composeRule.repository.history.value)
+
+        composeRule.activityRule.scenario.moveToState(Lifecycle.State.CREATED)
+
+        assertEquals(listOf(tube("48.3", "5", "70")), composeRule.repository.history.value)
     }
 
     @Test
