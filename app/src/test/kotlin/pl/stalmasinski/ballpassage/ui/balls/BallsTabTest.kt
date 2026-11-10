@@ -26,6 +26,7 @@ import pl.stalmasinski.ballpassage.ui.givenBalls
 import pl.stalmasinski.ballpassage.ui.openTab
 import pl.stalmasinski.ballpassage.ui.repository
 import pl.stalmasinski.ballpassage.ui.sharedText
+import pl.stalmasinski.ballpassage.ui.waitForBall
 import pl.stalmasinski.ballpassage.ui.waitForTag
 import pl.stalmasinski.ballpassage.ui.waitForText
 import java.math.BigDecimal
@@ -84,7 +85,7 @@ class BallsTabTest {
         composeRule.onNodeWithText("32 mm ball removed").assertIsDisplayed()
         composeRule.onNodeWithText("Undo").performClick()
 
-        composeRule.waitForTag(TestTags.ballItem(BigDecimal("32")))
+        composeRule.waitForBall("32")
     }
 
     @Test

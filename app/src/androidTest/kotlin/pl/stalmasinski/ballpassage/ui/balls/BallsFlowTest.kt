@@ -23,7 +23,9 @@ import pl.stalmasinski.ballpassage.ui.TestTags
 import pl.stalmasinski.ballpassage.ui.addBall
 import pl.stalmasinski.ballpassage.ui.enterTube
 import pl.stalmasinski.ballpassage.ui.openTab
+import pl.stalmasinski.ballpassage.ui.waitForBall
 import pl.stalmasinski.ballpassage.ui.waitForTag
+import pl.stalmasinski.ballpassage.ui.waitForTagInList
 import pl.stalmasinski.ballpassage.ui.waitForText
 import java.math.BigDecimal
 
@@ -52,7 +54,7 @@ class BallsFlowTest {
         composeRule.onNodeWithTag(TestTags.rangeField(1)).performTextInput("22")
         composeRule.onNodeWithTag(TestTags.RANGE_CONFIRM).performClick()
 
-        listOf("20", "21", "22").forEach { composeRule.waitForTag(TestTags.ballItem(BigDecimal(it))) }
+        listOf("20", "21", "22").forEach { composeRule.waitForBall(it) }
     }
 
     @Test
@@ -92,6 +94,7 @@ class BallsFlowTest {
         goTo(Destination.BALLS)
         composeRule.addBall("32")
 
+        composeRule.waitForTagInList(TestTags.SET_SELECTOR)
         composeRule.onNodeWithTag(TestTags.SET_SELECTOR).performClick()
         composeRule.onNodeWithTag(TestTags.SET_NEW).performClick()
         composeRule.onNodeWithTag(TestTags.SET_NAME).performTextInput("Hall A")
@@ -101,9 +104,10 @@ class BallsFlowTest {
         composeRule.onNodeWithText("No balls added yet.").assertIsDisplayed()
         composeRule.addBall("40")
 
+        composeRule.waitForTagInList(TestTags.SET_SELECTOR)
         composeRule.onNodeWithTag(TestTags.SET_SELECTOR).performClick()
         composeRule.onNodeWithText("My ball set").performClick()
-        composeRule.waitForTag(TestTags.ballItem(BigDecimal("32")))
+        composeRule.waitForBall("32")
         composeRule.onNodeWithTag(TestTags.ballItem(BigDecimal("40"))).assertDoesNotExist()
     }
 
@@ -118,7 +122,7 @@ class BallsFlowTest {
         composeRule.onNodeWithText("Import “Hall B”?").assertIsDisplayed()
         composeRule.onNodeWithTag(TestTags.DIALOG_CONFIRM).performClick()
 
-        composeRule.waitForTag(TestTags.ballItem(BigDecimal("35")))
+        composeRule.waitForBall("35")
         composeRule.onNodeWithText("Hall B").assertIsDisplayed()
         composeRule.onNodeWithText("K-1").assertIsDisplayed()
     }
@@ -137,13 +141,14 @@ class BallsFlowTest {
 
         composeRule.waitForText("Import “Hall C”?")
         composeRule.onNodeWithTag(TestTags.DIALOG_CONFIRM).performClick()
-        composeRule.waitForTag(TestTags.ballItem(BigDecimal("32")))
+        composeRule.waitForBall("32")
         composeRule.onNodeWithText("Hall C").assertIsDisplayed()
     }
 
     @Test
     fun deletingASetReturnsToTheOtherOne() {
         goTo(Destination.BALLS)
+        composeRule.waitForTagInList(TestTags.SET_SELECTOR)
         composeRule.onNodeWithTag(TestTags.SET_SELECTOR).performClick()
         composeRule.onNodeWithTag(TestTags.SET_NEW).performClick()
         composeRule.onNodeWithTag(TestTags.SET_NAME).performTextInput("Hall A")
