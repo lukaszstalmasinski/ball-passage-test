@@ -21,7 +21,7 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import pl.stalmasinski.ballpassage.R
-import pl.stalmasinski.ballpassage.core.SharedBallSet
+import pl.stalmasinski.ballpassage.core.balls.SharedBallSet
 import pl.stalmasinski.ballpassage.ui.TestTags
 import pl.stalmasinski.ballpassage.ui.common.rememberNumberFormatter
 

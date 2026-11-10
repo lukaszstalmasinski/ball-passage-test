@@ -5,9 +5,9 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Test
-import pl.stalmasinski.ballpassage.core.Ball
-import pl.stalmasinski.ballpassage.core.BallSet
-import pl.stalmasinski.ballpassage.core.BallSetCodec
+import pl.stalmasinski.ballpassage.core.balls.Ball
+import pl.stalmasinski.ballpassage.core.balls.BallSet
+import pl.stalmasinski.ballpassage.core.balls.BallSetCodec
 import java.math.BigDecimal
 
 class QrCodesTest {

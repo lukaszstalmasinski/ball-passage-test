@@ -1,8 +1,8 @@
 package pl.stalmasinski.ballpassage.ui.balls
 
-import pl.stalmasinski.ballpassage.core.Ball
-import pl.stalmasinski.ballpassage.core.BallSet
-import pl.stalmasinski.ballpassage.core.SharedBallSet
+import pl.stalmasinski.ballpassage.core.balls.Ball
+import pl.stalmasinski.ballpassage.core.balls.BallSet
+import pl.stalmasinski.ballpassage.core.balls.SharedBallSet
 
 /**
  * What the Balls screen can do. [BallsViewModel] implements it; the screen depends only on this

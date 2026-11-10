@@ -22,7 +22,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import pl.stalmasinski.ballpassage.R
-import pl.stalmasinski.ballpassage.core.CalculationResult
+import pl.stalmasinski.ballpassage.core.calculation.CalculationResult
 import pl.stalmasinski.ballpassage.ui.TestTags
 import pl.stalmasinski.ballpassage.ui.common.rememberNumberFormatter
 

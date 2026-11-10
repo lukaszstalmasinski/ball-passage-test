@@ -19,7 +19,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import pl.stalmasinski.ballpassage.BallPassageApplication
 import pl.stalmasinski.ballpassage.MainActivity
-import pl.stalmasinski.ballpassage.core.BallSets
+import pl.stalmasinski.ballpassage.core.balls.BallSets
 import pl.stalmasinski.ballpassage.ui.Destination
 import pl.stalmasinski.ballpassage.ui.TestTags
 import pl.stalmasinski.ballpassage.ui.calculator.DimensionField

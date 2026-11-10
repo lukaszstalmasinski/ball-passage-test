@@ -1,26 +1,6 @@
-package pl.stalmasinski.ballpassage.core
+package pl.stalmasinski.ballpassage.core.balls
 
 import java.math.BigDecimal
-
-/**
- * A steel ball available in the workshop.
- *
- * @property label marking used to identify the ball, e.g. "K-12"; empty when not set.
- * @property location where the ball is kept, e.g. "case 2"; empty when not set.
- */
-public data class Ball(
-    val id: String,
-    val diameter: BigDecimal,
-    val label: String = "",
-    val location: String = "",
-)
-
-/** A named group of balls, e.g. one per workshop or case. An empty [name] means the default set. */
-public data class BallSet(
-    val id: String,
-    val name: String,
-    val balls: List<Ball> = emptyList(),
-)
 
 /** All ball sets of the user; [activeSetId] is the one the calculator recommends from. */
 public data class BallSets(

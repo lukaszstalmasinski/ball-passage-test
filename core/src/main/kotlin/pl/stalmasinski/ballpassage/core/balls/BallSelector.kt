@@ -1,4 +1,6 @@
-package pl.stalmasinski.ballpassage.core
+package pl.stalmasinski.ballpassage.core.balls
+
+import pl.stalmasinski.ballpassage.core.calculation.CalculationResult
 
 /** Picks balls from the user's set that are suitable for a calculated tube. */
 public object BallSelector {

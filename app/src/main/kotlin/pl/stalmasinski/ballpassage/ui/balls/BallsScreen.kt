@@ -41,7 +41,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import pl.stalmasinski.ballpassage.R
-import pl.stalmasinski.ballpassage.core.SharedBallSet
+import pl.stalmasinski.ballpassage.core.balls.SharedBallSet
 import pl.stalmasinski.ballpassage.ui.AppTopBar
 import pl.stalmasinski.ballpassage.ui.TestTags
 import pl.stalmasinski.ballpassage.ui.common.rememberNumberFormatter

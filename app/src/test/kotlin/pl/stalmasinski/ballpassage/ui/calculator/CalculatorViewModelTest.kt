@@ -15,9 +15,9 @@ import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import pl.stalmasinski.ballpassage.MainDispatcherRule
-import pl.stalmasinski.ballpassage.core.CalculationProblem
-import pl.stalmasinski.ballpassage.core.CalculationResult
-import pl.stalmasinski.ballpassage.core.TubeDimensions
+import pl.stalmasinski.ballpassage.core.calculation.CalculationProblem
+import pl.stalmasinski.ballpassage.core.calculation.CalculationResult
+import pl.stalmasinski.ballpassage.core.calculation.TubeDimensions
 import pl.stalmasinski.ballpassage.data.FakeUserDataRepository
 import java.math.BigDecimal
 

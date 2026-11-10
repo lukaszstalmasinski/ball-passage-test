@@ -70,10 +70,19 @@ message is fixed, and the extrapolated row is marked.
 
 ## Project structure
 
-| Module | Contents |
+| Module / package | Contents |
 |---|---|
-| `:core` | Pure Kotlin calculation (`BallPassageCalculator`, `BallPassageTable`), ball sets (`BallSets`, `BallRange`), sharing format (`BallSetCodec`) and ball selection (`BallSelector`), no Android dependencies |
-| `:app` | Jetpack Compose UI (Material 3) with three tabs, ViewModels, DataStore persistence (`UserDataRepository`), resources in EN / PL / DE |
+| `:core` | Pure Kotlin, no Android dependencies, one main type per file |
+| `core.calculation` | `TubeDimensions`, `BallPassageCalculator`, `CalculationResult`, VGB-S-013 Table 3 (`BallPassageTable`, `DiameterRow`, `BendRatioColumn`) |
+| `core.balls` | Ball sets (`BallSets`, `BallRange`), ball selection (`BallSelector`) and the sharing format (`BallSetCodec`, `SharedBallSet`) |
+| `:app` | Android app |
+| `app/data` | `UserDataRepository` and its DataStore implementation |
+| `app/sharing` | QR code encoding and decoding (`QrCodes`) |
+| `app/ui/<feature>` | Jetpack Compose (Material 3) screens and ViewModels: `calculator`, `balls`, `info`, `qr` |
+| `app/ui/common` | UI helpers shared by the features (number formatting and input, ball details) |
+| `app/ui/theme` | Colours and theme |
+
+Features depend on `ui/common` and `core`, not on each other. Resources are in EN / PL / DE.
 
 Tech: Kotlin, Jetpack Compose, Material 3 (dynamic color, dark theme), DataStore, AGP 9,
 minSdk 26, targetSdk 36. No network permission, no analytics, no third-party SDKs. Android

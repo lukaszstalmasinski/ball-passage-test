@@ -3,8 +3,8 @@ package pl.stalmasinski.ballpassage.data
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import pl.stalmasinski.ballpassage.core.BallSets
-import pl.stalmasinski.ballpassage.core.TubeDimensions
+import pl.stalmasinski.ballpassage.core.balls.BallSets
+import pl.stalmasinski.ballpassage.core.calculation.TubeDimensions
 
 class FakeUserDataRepository(
     ballSets: BallSets = BallSets.initial("default"),

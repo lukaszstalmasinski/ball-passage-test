@@ -41,9 +41,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import pl.stalmasinski.ballpassage.R
-import pl.stalmasinski.ballpassage.core.Ball
-import pl.stalmasinski.ballpassage.core.BallSet
-import pl.stalmasinski.ballpassage.core.TubeDimensions
+import pl.stalmasinski.ballpassage.core.balls.Ball
+import pl.stalmasinski.ballpassage.core.balls.BallSet
+import pl.stalmasinski.ballpassage.core.calculation.TubeDimensions
 import pl.stalmasinski.ballpassage.ui.AppTopBar
 import pl.stalmasinski.ballpassage.ui.TestTags
 import pl.stalmasinski.ballpassage.ui.common.rememberNumberFormatter

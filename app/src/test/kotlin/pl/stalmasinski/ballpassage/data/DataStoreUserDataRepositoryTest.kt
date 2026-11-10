@@ -17,9 +17,9 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.junit.runner.RunWith
-import pl.stalmasinski.ballpassage.core.Ball
-import pl.stalmasinski.ballpassage.core.BallSets
-import pl.stalmasinski.ballpassage.core.TubeDimensions
+import pl.stalmasinski.ballpassage.core.balls.Ball
+import pl.stalmasinski.ballpassage.core.balls.BallSets
+import pl.stalmasinski.ballpassage.core.calculation.TubeDimensions
 import java.io.File
 import java.math.BigDecimal
 

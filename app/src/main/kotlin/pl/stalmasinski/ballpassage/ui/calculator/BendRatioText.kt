@@ -3,7 +3,7 @@ package pl.stalmasinski.ballpassage.ui.calculator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import pl.stalmasinski.ballpassage.R
-import pl.stalmasinski.ballpassage.core.BendRatio
+import pl.stalmasinski.ballpassage.core.calculation.BendRatio
 import pl.stalmasinski.ballpassage.ui.common.NumberFormatter
 
 @Composable

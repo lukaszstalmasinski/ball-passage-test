@@ -11,10 +11,10 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import pl.stalmasinski.ballpassage.core.Ball
-import pl.stalmasinski.ballpassage.core.BallSet
-import pl.stalmasinski.ballpassage.core.BallSets
-import pl.stalmasinski.ballpassage.core.TubeDimensions
+import pl.stalmasinski.ballpassage.core.balls.Ball
+import pl.stalmasinski.ballpassage.core.balls.BallSet
+import pl.stalmasinski.ballpassage.core.balls.BallSets
+import pl.stalmasinski.ballpassage.core.calculation.TubeDimensions
 import java.io.IOException
 
 class DataStoreUserDataRepository(private val dataStore: DataStore<Preferences>) : UserDataRepository {

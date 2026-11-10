@@ -15,10 +15,10 @@ import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import pl.stalmasinski.ballpassage.core.Ball
-import pl.stalmasinski.ballpassage.core.BallSetCodec
-import pl.stalmasinski.ballpassage.core.SharedBall
-import pl.stalmasinski.ballpassage.core.SharedBallSet
+import pl.stalmasinski.ballpassage.core.balls.Ball
+import pl.stalmasinski.ballpassage.core.balls.BallSetCodec
+import pl.stalmasinski.ballpassage.core.balls.SharedBall
+import pl.stalmasinski.ballpassage.core.balls.SharedBallSet
 import pl.stalmasinski.ballpassage.ui.TestTags
 import pl.stalmasinski.ballpassage.ui.theme.BallPassageTheme
 import java.math.BigDecimal

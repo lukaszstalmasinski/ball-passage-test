@@ -1,4 +1,4 @@
-package pl.stalmasinski.ballpassage.core
+package pl.stalmasinski.ballpassage.core.calculation
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -178,15 +178,6 @@ class BallPassageCalculatorTest {
         assertTrue(result.fits(BigDecimal("31.8")))
         assertTrue(result.fits(BigDecimal("38.2")))
         assertFalse(result.fits(BigDecimal("38.3")))
-    }
-
-    @Test
-    fun `ball selector returns fitting balls smallest first`() {
-        val result = calculate("48.3", "5", "70") as CalculationResult.Success
-        val balls = listOf("40", "35", "30", "32", "31.8", "38.3").map { Ball(id = it, diameter = BigDecimal(it)) }
-
-        assertEquals(listOf("31.8", "32", "35"), BallSelector.fittingBalls(result, balls).map { it.id })
-        assertEquals(emptyList<Ball>(), BallSelector.fittingBalls(result, listOf(Ball("20", BigDecimal("20")))))
     }
 
     @Test

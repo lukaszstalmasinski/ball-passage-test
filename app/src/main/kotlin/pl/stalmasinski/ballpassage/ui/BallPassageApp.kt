@@ -27,7 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import pl.stalmasinski.ballpassage.R
-import pl.stalmasinski.ballpassage.core.CalculationResult
+import pl.stalmasinski.ballpassage.core.calculation.CalculationResult
 import pl.stalmasinski.ballpassage.ui.balls.BallsRoute
 import pl.stalmasinski.ballpassage.ui.balls.TubeContext
 import pl.stalmasinski.ballpassage.ui.calculator.CalculatorRoute
