@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
+    jacoco
 }
 
 /**
@@ -58,6 +59,12 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Coverage reports: createDebugUnitTestCoverageReport and, on a device,
+            // createDebugAndroidTestCoverageReport (build/reports/coverage).
+            enableUnitTestCoverage = true
+            enableAndroidTestCoverage = true
+        }
         release {
             isMinifyEnabled = true
             isShrinkResources = true
@@ -110,6 +117,11 @@ kotlin {
 }
 
 tasks.withType<Test>().configureEach {
+    // Robolectric loads app classes through its own class loader; without this JaCoCo misses them.
+    extensions.configure<JacocoTaskExtension> {
+        isIncludeNoLocationClasses = true
+        excludes = listOf("jdk.internal.*")
+    }
     // Robolectric reaches into JDK internals, which newer JDKs no longer expose by default.
     jvmArgs(
         "--add-exports=java.base/jdk.internal.access=ALL-UNNAMED",
