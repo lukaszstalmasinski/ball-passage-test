@@ -188,7 +188,9 @@ policy is in [PRIVACY.md](PRIVACY.md).
 2. Add `fastlane/metadata/android/<locale>/changelogs/<versionCode>.txt`.
 3. Merge to `main`, then tag and push, for example `git tag -a v1.0.3 -m "Version 1.0.3"` and
    `git push origin v1.0.3`.
-4. Approve the **Play: release to internal testing** run in GitHub Actions. It runs the tests, builds the signed bundle and
+4. The **Play: release to internal testing** run first checks that the tag is `v` + `versionName`
+   and that every language has the changelog for `versionCode`; if not, it fails before asking
+   for approval. Then approve the run in GitHub Actions. It runs the tests, builds the signed bundle and
    uploads it with the changelogs to the **internal testing** track.
 5. Check the internal build on a phone. Then run **Actions → Play: promote to alpha → Run workflow**.
    After approval it moves the release to closed testing (alpha), where the testers get it as an
