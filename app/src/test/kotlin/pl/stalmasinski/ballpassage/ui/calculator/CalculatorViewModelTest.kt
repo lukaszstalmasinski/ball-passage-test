@@ -225,5 +225,4 @@ class CalculatorViewModelTest {
         onValueChange(DimensionField.WALL_THICKNESS, "5")
         onValueChange(DimensionField.BEND_RADIUS, "70")
     }
-
 }

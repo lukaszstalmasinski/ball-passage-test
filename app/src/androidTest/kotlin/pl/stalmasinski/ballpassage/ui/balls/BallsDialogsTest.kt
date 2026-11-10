@@ -94,7 +94,14 @@ class BallsDialogsTest {
     @Test
     fun setNameDialogNeedsAName() {
         var confirmed: String? = null
-        show { SetNameDialog(title = pl.stalmasinski.ballpassage.R.string.set_new_title, initialName = "", onConfirm = { confirmed = it }, onDismiss = {}) }
+        show {
+            SetNameDialog(
+                title = pl.stalmasinski.ballpassage.R.string.set_new_title,
+                initialName = "",
+                onConfirm = { confirmed = it },
+                onDismiss = {},
+            )
+        }
 
         rule.onNodeWithTag(TestTags.DIALOG_CONFIRM).assertIsNotEnabled()
         rule.onNodeWithTag(TestTags.SET_NAME).performTextInput("Hall A")

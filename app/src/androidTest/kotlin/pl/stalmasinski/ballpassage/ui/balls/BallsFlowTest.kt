@@ -139,14 +139,9 @@ class BallsFlowTest {
         composeRule.waitForText("My ball set")
     }
 
-
-
     /** The navigation bar is hidden while the keyboard is open, so close it first. */
     private fun goTo(destination: Destination) {
         Espresso.closeSoftKeyboard()
         composeRule.openTab(destination)
     }
-
-
-
 }

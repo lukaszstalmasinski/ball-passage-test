@@ -10,3 +10,15 @@ trim_trailing_whitespace = true
 
 [*.{yml,yaml,toml}]
 indent_size = 2
+
+# ktlint, run by ./gradlew check (ktlintCheck); ./gradlew ktlintFormat fixes most findings.
+[*.{kt,kts}]
+ktlint_code_style = intellij_idea
+max_line_length = 140
+# Composable functions are named like types (BallsScreen), as in all Compose code.
+ktlint_function_naming_ignore_when_annotated_with = Composable
+# Parameters one per line are kept as written, even when they would fit on one line.
+ktlint_standard_function-signature = disabled
+ktlint_standard_class-signature = disabled
+# Branches of a when are not separated by blank lines.
+ktlint_standard_blank-line-between-when-conditions = disabled

@@ -99,7 +99,8 @@ Requirements: JDK 17+ and the Android SDK. Missing SDK platforms are downloaded 
 ./gradlew bundleRelease    # release App Bundle (R8 minified)
 ```
 
-Lint warnings fail the build, and so do Kotlin warnings in the app module.
+Lint warnings fail the build, and so do Kotlin compiler warnings in both modules. `check` also runs
+ktlint (code style, configured in `.editorconfig`); `./gradlew ktlintFormat` fixes most findings.
 
 Test coverage is measured with JaCoCo:
 
