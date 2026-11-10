@@ -33,7 +33,7 @@ def main(title, paths):
         root = ET.parse(path).getroot()
         total = counters(root)
         # The module directory (core, app) reads better than the report name ("debug" for the app).
-        rows.append((path.replace('\', '/').split('/')[0], total))
+        rows.append((path.replace(os.sep, '/').split('/')[0], total))
         for package in root.findall('package'):
             for source in package.findall('sourcefile'):
                 c = counters(source)
